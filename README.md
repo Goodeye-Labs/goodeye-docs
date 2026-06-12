@@ -28,17 +28,17 @@ assistants via Context7. Pages:
 
 | Page | Description |
 |------|-------------|
-| Overview | Core concepts and the Goodeye mental model |
-| Getting Started | Install the CLI, sign in, fetch and run your first template |
-| CLI | Command reference for the `goodeye` CLI |
-| MCP | Connect AI assistants via the Model Context Protocol |
-| REST API | Use Goodeye from the `/v1` REST API |
-| Workflows | Author, version, teach, optimize, and share workflows |
-| Templates | Publish, fork, and manage public templates |
-| Verifiers | Score agent output with structural, functional, and semantic checks |
-| Image Generators | Deploy and run owner-scoped image generation |
-| Teams | Collaborate with teams, grants, and invitations |
-| Accounts and Billing | Handles, API keys, usage, tiers, and credits |
+| [Overview](overview.md) | Core concepts and the Goodeye mental model |
+| [Getting Started](getting-started.md) | Install the CLI, sign in, fetch and run your first template |
+| [CLI](cli.md) | Command reference for the `goodeye` CLI |
+| [MCP](mcp.md) | Connect AI assistants via the Model Context Protocol |
+| [REST API](rest-api.md) | Use Goodeye from the `/v1` REST API |
+| [Workflows](workflows.md) | Author, version, teach, optimize, and share workflows |
+| [Templates](templates.md) | Publish, fork, and manage public templates |
+| [Verifiers](verifiers.md) | Score agent output with structural, functional, and semantic checks |
+| [Image Generators](image-generators.md) | Deploy and run owner-scoped image generation |
+| [Teams](teams.md) | Collaborate with teams, grants, and invitations |
+| [Accounts and Billing](accounts-and-billing.md) | Handles, API keys, usage, tiers, and credits |
 
 ## Quick links
 
