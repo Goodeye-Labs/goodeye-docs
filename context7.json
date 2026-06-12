@@ -1,0 +1,14 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Goodeye",
+  "description": "Outcome-aligned AI workflow registry: author workflows and verifiers, publish templates, generate images, and run them from CLI, MCP, or REST.",
+  "rules": [
+    "Goodeye stores workflows (private to the owner) and shares them publicly as templates.",
+    "An agent fetches a workflow or template body and executes it as a runbook, it does not summarize it.",
+    "Authenticate MCP with OAuth or a good_live_ API key. Authenticate REST with a good_live_ API key. Anonymous callers can browse public templates over REST.",
+    "The MCP endpoint is mcp.goodeye.dev/mcp. The REST base is api.goodeye.dev/v1.",
+    "Verifiers must be outcome-specific, never a holistic is-this-good check."
+  ],
+  "excludeFolders": [],
+  "excludeFiles": []
+}
