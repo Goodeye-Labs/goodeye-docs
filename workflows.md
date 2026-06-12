@@ -116,6 +116,51 @@ Common build artifacts are ignored by default (`.git/`, `node_modules/`,
 `__pycache__/`, `.venv/`, `.DS_Store`, `dist/`, `build/`, `*.log`, and similar).
 Per-file and total size caps apply.
 
+### Importing an existing skill
+
+If you already keep agent skills on disk (for example under `~/.claude/skills/`,
+`~/.agents/skills/`, or `~/.cursor/skills/`), each one is a directory holding a
+`SKILL.md` plus optional sibling files. That is exactly the shape directory-mode
+publish expects, so importing a skill into Goodeye is a single `publish` call.
+There is no separate import command.
+
+A skill's `SKILL.md` front-matter already carries a `name` and a `description`.
+Goodeye also requires an `outcome`, the measurable result the workflow drives
+toward, which a skill file does not have. Supply it with `--outcome`, or add an
+`outcome:` line to the front-matter before importing:
+
+```sh
+goodeye workflows publish ~/.claude/skills/incident-postmortem \
+  --outcome "Reduce mean-time-to-postmortem from days to hours."
+```
+
+`SKILL.md` becomes the workflow body and every other non-ignored file in the
+directory uploads alongside it. Front-matter keys Goodeye does not recognize
+(such as `allowed-tools`) are preserved verbatim in the stored body; they are
+simply not read as discovery facets. The default ignore rules and size caps from
+[directory mode](#multi-file-bundles-directory-mode) apply.
+
+To bring over a whole library, run one `publish` per skill, each with its own
+outcome. The outcome is what makes a workflow discoverable, so set a real one for
+each rather than reusing a single placeholder:
+
+```sh
+for skill in ~/.claude/skills/*/; do
+  # Replace the outcome per skill before running.
+  goodeye workflows publish "$skill" --outcome "State the measurable outcome here"
+done
+```
+
+The same import works on the other surfaces, matching three-surface parity: an
+agent connected over [MCP](mcp.md) reads the skill's files locally and calls
+`save_workflow` with a `files` array (plus an `outcome`), and the
+[REST API](rest-api.md) takes the same tree on `POST /v1/workflows`.
+
+An imported skill lands as a private workflow, like any other save. To share it
+publicly afterward, publish it as a [template](templates.md). To keep registry
+workflows mirrored back to a skills directory on an ongoing basis (the reverse
+direction), use [sync](#syncing-a-bundle-locally) rather than a one-time import.
+
 ## Fetching, listing, and searching
 
 ### Get a workflow

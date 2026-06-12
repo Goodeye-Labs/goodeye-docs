@@ -171,6 +171,11 @@ new version. To share a workflow publicly later, run
 **Tip:** To design a workflow and its verifiers interactively, run
 `goodeye design` and pipe the printed prompt into your AI assistant.
 
+**Already have skills on disk?** If you keep agent skills under
+`~/.claude/skills/` (or `~/.agents/skills/`, `~/.cursor/skills/`), import one by
+pointing `publish` at its directory and supplying an `outcome`. See
+[Importing an existing skill](workflows.md#importing-an-existing-skill).
+
 ## Connect your agent
 
 The CLI is one of three peer surfaces. To wire Goodeye into an agent that does
