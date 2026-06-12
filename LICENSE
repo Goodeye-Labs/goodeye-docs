@@ -1,21 +1,48 @@
-MIT License
+Goodeye Documentation License
 
-Copyright (c) 2026 Goodeye Labs
+Copyright (c) 2026 Goodeye Labs. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This repository contains the official documentation for Goodeye (the
+"Documentation"), including prose, images, and fenced code and configuration
+samples (the "Code Samples"). The Documentation is proprietary to Goodeye Labs.
+It is not open-source software, and no open-source or Creative Commons license
+is granted.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+PERMITTED USES
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+You are granted a non-exclusive, worldwide, royalty-free permission to:
+
+1. Read, reference, and use the Documentation to learn about, evaluate, and use
+   Goodeye products and services.
+
+2. Allow third-party documentation, search, and AI assistant tools (for example,
+   Context7) to index, cache, and serve the Documentation to their users for the
+   purpose of helping those users understand and use Goodeye.
+
+3. Copy, modify, and reuse the Code Samples in your own projects without
+   restriction and without attribution.
+
+RESERVED RIGHTS
+
+Except as expressly permitted above, all rights are reserved. Without limiting
+the foregoing, you may not, without prior written permission from Goodeye Labs:
+
+1. Redistribute, republish, sell, host, or mirror the Documentation, in whole or
+   in substantial part, as your own or as a standalone work.
+
+2. Create or distribute derivative, modified, or rebranded versions of the
+   Documentation prose.
+
+3. Use the Goodeye name, logo, or other Goodeye Labs trademarks, except for
+   nominative reference to Goodeye products and services.
+
+The third-party indexing permission above does not authorize republishing the
+Documentation as a competing or standalone documentation product.
+
+NO WARRANTY
+
+THE DOCUMENTATION IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. GOODEYE LABS IS NOT LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY
+ARISING FROM OR IN CONNECTION WITH THE DOCUMENTATION OR ITS USE.
+
+For permissions beyond this license, contact Goodeye Labs.

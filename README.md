@@ -57,3 +57,11 @@ executes the instructions rather than summarizing them.
 These docs are indexed by [Context7](https://context7.com) so AI coding
 assistants can pull accurate, up-to-date Goodeye usage instructions instead of
 guessing.
+
+## License
+
+The documentation in this repository is proprietary to Goodeye Labs and provided
+under the [Goodeye Documentation License](LICENSE). You may read and use it to
+work with Goodeye, allow AI and documentation tools such as Context7 to index
+it, and freely reuse the code samples. Redistributing or creating derivative
+documentation is not permitted. See [LICENSE](LICENSE) for details.
