@@ -88,6 +88,87 @@ A status of `clean` means automated checks did not flag the version; `flagged`
 means the advisory raised concerns. (A `blocked` version is never published, so
 you will not see one in the catalog.)
 
+## Add a demo to your template page
+
+A demo is a short visual writeup that renders on the public template page, so a
+visitor can picture what your workflow produces before they fork it. Its anchor
+is a `demo/README.md` file in the workflow bundle, with any referenced images (and
+an optional social-share card) alongside it. The whole demo travels with the
+workflow and ships when you publish.
+
+### The `demo/README.md` convention
+
+Add a `demo/README.md` file to your workflow bundle (see
+[Multi-file bundles](workflows.md#multi-file-bundles-directory-mode)) and author
+it like a repository README. Its presence is what makes the public template page
+render a demo section. There is no schema to fill in: write headings, prose,
+images, and a video link in plain markdown. A before/after is just two captioned
+images.
+
+```markdown
+# What this produces
+
+A clean incident postmortem in minutes.
+
+![Sample output](output.png)
+
+https://www.youtube.com/watch?v=EXAMPLE
+```
+
+### Images
+
+Reference images by relative path inside `demo/`. `![Result](output.png)`
+resolves to `demo/output.png`. External or absolute image URLs are dropped and
+will not render, so always use a relative `demo/` path; the image must be a file
+in the bundle.
+
+Demo images use a closed format allowlist: PNG, JPEG, WebP (including animated
+WebP), and GIF. SVG and other vector or markup formats are not allowed for demo
+images and are rejected at publish.
+
+For a short motion clip, animated WebP is recommended (much smaller than GIF for
+the same clip). GIF is accepted.
+
+### Video
+
+You can embed one short video by putting an allowlisted video URL on its own line
+in the README. Allowed providers are YouTube, Loom, and Vimeo. The page renders a
+click-to-load embed. A link from any other host stays a normal link and does not
+embed.
+
+### Social-share card
+
+Add an optional `demo/og.png` (or `demo/og.webp` / `demo/og.jpg` / `demo/og.jpeg`,
+raster only) to set the image used when your template page is shared on social
+platforms.
+Without one, a card is generated automatically from the template's metadata.
+
+### Image checks at publish
+
+Every image in a published template, including the social-share card, is screened
+for disallowed content at publish. Disallowed content blocks the publish, the same
+way the hard safety gate above does. The screen reads a still image, so it does
+not inspect later frames of an animated clip; the video host performs its own
+moderation on embedded video.
+
+A bundle with too many images is rejected before any screen runs: trim the image
+count and publish again. If the screening service is unreachable, the publish
+still succeeds but the version is stamped `flagged` (advisory) rather than blocked,
+so a screening outage surfaces for review instead of passing silently.
+
+### Authoring notes
+
+When you save or publish a workflow that has a `demo/README.md`, the response
+surfaces advisory notes for anything that will not render as expected: an external
+image that will be dropped, a video link from a host that will not embed, or a
+referenced `demo/` image that is not in the bundle. The notes are non-blocking;
+watch for them so your demo renders the way you intended.
+
+To pull a published demo asset's raw bytes (a preview image, for example), use
+`goodeye templates get-file <identifier> <path> --output <file>` (REST
+`GET /v1/templates/{identifier}/files?path=&format=raw`). See
+[Get a template](#get-a-template) for the full file-fetching surface.
+
 ## Reference forms
 
 A template is addressable three ways. Most commands accept any of them:
@@ -279,7 +360,7 @@ The recipient accepts with `goodeye invitations accept <id>` (or the
 ## See also
 
 - [Workflows](workflows.md): the private object you publish from and fork back
-  into.
+  into, including how to carry demo files in a multi-file bundle.
 - [Verifiers](verifiers.md): the semantic checks a template snapshots.
 - [Accounts and Billing](accounts-and-billing.md): handles, usage, and credits.
 - [CLI](cli.md), [MCP](mcp.md), [REST API](rest-api.md): the three surfaces in
