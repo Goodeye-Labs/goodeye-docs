@@ -91,8 +91,10 @@ you will not see one in the catalog.)
 ## Add a demo to your template page
 
 A demo is a short visual writeup that renders on the public template page, so a
-visitor can picture what your workflow produces before they fork it. It travels
-with the workflow as a single file in the bundle and ships when you publish.
+visitor can picture what your workflow produces before they fork it. Its anchor
+is a `demo/README.md` file in the workflow bundle, with any referenced images (and
+an optional social-share card) alongside it. The whole demo travels with the
+workflow and ships when you publish.
 
 ### The `demo/README.md` convention
 
@@ -148,6 +150,11 @@ way the hard safety gate above does. The screen reads a still image, so it does
 not inspect later frames of an animated clip; the video host performs its own
 moderation on embedded video.
 
+A bundle with too many images is rejected before any screen runs: trim the image
+count and publish again. If the screening service is unreachable, the publish
+still succeeds but the version is stamped `flagged` (advisory) rather than blocked,
+so a screening outage surfaces for review instead of passing silently.
+
 ### Authoring notes
 
 When you save or publish a workflow that has a `demo/README.md`, the response
@@ -155,6 +162,11 @@ surfaces advisory notes for anything that will not render as expected: an extern
 image that will be dropped, a video link from a host that will not embed, or a
 referenced `demo/` image that is not in the bundle. The notes are non-blocking;
 watch for them so your demo renders the way you intended.
+
+To pull a published demo asset's raw bytes (a preview image, for example), use
+`goodeye templates get-file <identifier> <path> --output <file>` (REST
+`GET /v1/templates/{identifier}/files?path=&format=raw`). See
+[Get a template](#get-a-template) for the full file-fetching surface.
 
 ## Reference forms
 
