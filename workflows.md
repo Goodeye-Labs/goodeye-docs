@@ -303,6 +303,30 @@ setting).
 - **MCP tool:** `optimize_workflow`
 - **REST:** `POST /v1/workflows/{id_or_slug}/optimize`
 
+## Optimizing a workflow's trigger description
+
+A workflow's `description` is the text that decides when it fires. A weak
+description misfires: it triggers on prompts it should not, or fails to trigger
+on prompts it should. Description optimization tunes that text for trigger
+accuracy. Like the other packs, it returns a prompt pack your agent runs
+locally; it changes only the `description` (the body, outcome, tags, and any
+attached files carry forward unchanged), and it persists the winner only after
+you explicitly approve it (the loop never auto-saves). Requires at least `edit`
+access. `max_iterations` defaults to 10 and accepts 1 to 1000 (the upper bound
+is a safety cap, not a recommended setting).
+
+The loop builds a labeled set of test prompts (the ones the workflow should fire
+on, and look-alikes it should not), then iterates: it proposes a sharper
+description, re-checks every test prompt with an isolated firing test, and keeps
+the change only when it improves how reliably the workflow triggers. It does not
+draw from your credit balance, because the firing test is a routing judgment your
+own agent makes rather than a metered verifier run. The saved version is marked
+with the provenance `source=description_optimization`.
+
+- **CLI:** `goodeye workflows optimize-description <id-or-name>` (`--max-iterations`)
+- **MCP tool:** `optimize_description`
+- **REST:** `POST /v1/workflows/{id_or_slug}/optimize-description`
+
 ## Sharing with grants
 
 A grant gives a named user or team access to a private workflow. There are three

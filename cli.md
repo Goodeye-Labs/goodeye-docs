@@ -239,6 +239,14 @@ goodeye workflows optimize <id-or-name> [--max-iterations N]
 
 Fetches the optimize pack for an existing workflow (defaults to 20 iterations, max 1000). The pack drives an optimization loop; the caller saves the result explicitly with `workflows publish ... --source optimization` after user approval.
 
+### `workflows optimize-description`
+
+```sh
+goodeye workflows optimize-description <id-or-name> [--max-iterations N]
+```
+
+Fetches the description-optimize pack for an existing workflow (defaults to 10 iterations, max 1000). The pack tunes the workflow's `description`, the text that decides when it fires, for trigger accuracy. It changes only the description; the caller saves the result explicitly with `workflows publish ... --source description_optimization` after user approval.
+
 ### `workflows check-safety`
 
 ```sh
