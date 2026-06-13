@@ -173,7 +173,7 @@ Fetches the workflow body. By default prints markdown to stdout wrapped in agent
 ```sh
 goodeye workflows publish <file.md|-> [--name NAME] [--description TEXT] \
   [--outcome TEXT] [--tag TAG] [--expected-version-token TOKEN] \
-  [--source manual|teach|optimization|description_optimization|audit] [--verifier NAME=UUID] \
+  [--source manual|teach|optimization|description_optimization|audit] [--verifier NAME=UUID[@VERSION]] \
   [--clear-verifiers] [--clear-files]
 ```
 

@@ -81,7 +81,9 @@ unarchive and rename, or delete, that archived workflow first.
 Bind a deployed semantic verifier to the workflow with a repeatable
 `--verifier name=verifier_id` flag (the MCP and REST surfaces accept a structured
 `verifiers` array). Each binding name must be lowercase letters, digits, and
-hyphens. Reference a pinned version with `verifier_id@version`. Use
+hyphens. Append a version to the binding (`name=verifier_id@version`) to pin it,
+which keeps a published template's verifier snapshot deterministic; an unpinned
+binding resolves to the verifier's current version at publish time. Use
 `--clear-verifiers` to send an empty binding list and remove all existing
 bindings. On an update, omitting verifiers entirely preserves the prior set;
 sending an explicit empty list clears them. Only the workflow owner can change
