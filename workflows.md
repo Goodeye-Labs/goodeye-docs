@@ -3,8 +3,8 @@
 A workflow is the private stored object in Goodeye: a markdown runbook with a
 `name`, a one-line `description`, a declared `outcome`, and optional `tags`. This
 page covers the full private lifecycle: designing, saving, versioning, fetching,
-syncing, archiving, deleting, teaching, optimizing, sharing through grants,
-transferring, and tracing fork lineage.
+syncing, archiving, deleting, teaching, optimizing, auditing, sharing through
+grants, transferring, and tracing fork lineage.
 
 Workflows stay private to their owner. Public sharing happens on a separate
 surface: you publish a snapshot of a workflow as a [template](templates.md).
@@ -327,12 +327,34 @@ with the provenance `source=description_optimization`.
 - **MCP tool:** `optimize_description`
 - **REST:** `POST /v1/workflows/{id_or_slug}/optimize-description`
 
+## Auditing a workflow
+
+An audit is an opinionated health check against a documented best-practice
+rubric. Like the other packs, it returns a prompt pack your agent runs locally.
+It inspects the workflow body and every directing sibling file, enforces at least
+one criterion with a platform LLM judge, and produces a priority-ranked report:
+each finding is tagged P0 (blocker), P1 (recommended), or P2 (polish), quotes the
+text to change, and states one concrete fix. Requires at least `view` access.
+
+The rubric covers both workflow design (a specific, measurable outcome,
+outcome-specific verifiers with explicit pass and fail conditions, a clear input
+and output contract) and skill authoring (actionable instructions, consistent
+terminology, a discoverable description). You choose which findings to fix; the
+audit applies only what you approve and never auto-saves, editing a local copy
+first when one exists and marking the saved version `source=audit`. You can also
+audit a local skill that is not on Goodeye yet, in which case the report
+recommends saving it.
+
+- **CLI:** `goodeye workflows audit <id-or-name>` (omit the id to audit a local skill)
+- **MCP tool:** `audit_workflow`
+- **REST:** `POST /v1/workflows/{id_or_slug}/audit`, or `GET /v1/audit/workflow-prompt` for a local skill
+
 ## Sharing with grants
 
 A grant gives a named user or team access to a private workflow. There are three
 roles, in increasing order of capability:
 
-- **view**: read the workflow and run it.
+- **view**: read the workflow, run it, and audit it.
 - **edit**: also save new versions and teach or optimize.
 - **admin**: also manage grants.
 

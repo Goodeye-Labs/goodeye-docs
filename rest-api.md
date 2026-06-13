@@ -294,6 +294,14 @@ Run an iterative optimization loop. Optional query param `max_iterations` (1 to 
 
 Tune the workflow's trigger description for accuracy (description-only). Optional query param `max_iterations` (1 to 1000, defaults to 10).
 
+### `POST /v1/workflows/{id_or_slug}/audit`
+
+Audit a workflow against a best-practice rubric. Returns a priority-ranked report (P0, P1, P2) with concrete fixes and runs at least one platform LLM-judge criterion. Requires at least `view` access.
+
+### `GET /v1/audit/workflow-prompt`
+
+Fetch the audit pack with no workflow subject, for auditing a local skill that is not on Goodeye yet.
+
 ### `POST /v1/workflows/{id_or_slug}/safety-check`
 
 Run both platform safety checks on a workflow version. Requires auth; bills two metered runs.
