@@ -290,6 +290,10 @@ Teach an existing workflow with new examples.
 
 Run an iterative optimization loop. Optional query param `max_iterations` (1 to 1000).
 
+### `POST /v1/workflows/{id_or_slug}/optimize-description`
+
+Tune the workflow's trigger description for accuracy (description-only). Optional query param `max_iterations` (1 to 1000, defaults to 10).
+
 ### `POST /v1/workflows/{id_or_slug}/safety-check`
 
 Run both platform safety checks on a workflow version. Requires auth; bills two metered runs.

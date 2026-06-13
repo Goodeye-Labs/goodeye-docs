@@ -222,6 +222,7 @@ All tools are available to any authenticated caller. The tool groups below refle
 | `delete_workflow_version` | Permanently erase a single non-current workflow version. |
 | `teach_workflow` | Teach an existing workflow with new examples. |
 | `optimize_workflow` | Run an agent-driven iteration loop to improve a workflow. |
+| `optimize_description` | Tune a workflow's trigger description for accuracy (description-only). |
 | `check_workflow_safety` | Run platform safety checks on a workflow version. |
 | `grant_workflow` | Share a workflow with another user or team. |
 | `revoke_workflow_grant` | Remove an access grant. |
