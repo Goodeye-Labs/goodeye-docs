@@ -173,7 +173,7 @@ Fetches the workflow body. By default prints markdown to stdout wrapped in agent
 ```sh
 goodeye workflows publish <file.md|-> [--name NAME] [--description TEXT] \
   [--outcome TEXT] [--tag TAG] [--expected-version-token TOKEN] \
-  [--source manual|teach|optimization] [--verifier NAME=UUID] \
+  [--source manual|teach|optimization|description_optimization|audit] [--verifier NAME=UUID] \
   [--clear-verifiers] [--clear-files]
 ```
 
@@ -246,6 +246,14 @@ goodeye workflows optimize-description <id-or-name> [--max-iterations N]
 ```
 
 Fetches the description-optimize pack for an existing workflow (defaults to 10 iterations, max 1000). The pack tunes the workflow's `description`, the text that decides when it fires, for trigger accuracy. It changes only the description; the caller saves the result explicitly with `workflows publish ... --source description_optimization` after user approval.
+
+### `workflows audit`
+
+```sh
+goodeye workflows audit [<id-or-name>]
+```
+
+Fetches the audit pack for a workflow, or for a local skill when you omit the id. The pack inspects the workflow against a best-practice rubric and returns a priority-ranked report (P0, P1, P2) with a concrete fix for each finding, enforcing at least one criterion with a platform LLM judge. You apply only the fixes you approve; they are saved explicitly with `workflows publish ... --source audit`, editing a local copy first when one exists.
 
 ### `workflows check-safety`
 
