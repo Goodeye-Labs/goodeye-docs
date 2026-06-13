@@ -138,8 +138,9 @@ embed.
 
 ### Social-share card
 
-Add an optional `demo/og.png` (or `demo/og.webp` / `demo/og.jpg`, raster only) to
-set the image used when your template page is shared on social platforms.
+Add an optional `demo/og.png` (or `demo/og.webp` / `demo/og.jpg` / `demo/og.jpeg`,
+raster only) to set the image used when your template page is shared on social
+platforms.
 Without one, a card is generated automatically from the template's metadata.
 
 ### Image checks at publish
