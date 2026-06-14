@@ -104,6 +104,7 @@ All errors return JSON with a stable `error` slug and a human-readable `message`
 | 401 | `auth_required` | Missing or invalid credentials |
 | 401 | `invalid_credentials` | Bad email code at login/register |
 | 402 | `budget_exhausted` | Monthly credit grant spent |
+| 402 | `anonymous_daily_cap` | Shared daily limit on anonymous usage reached (anonymous callers only) |
 | 403 | `account_suspended` | Account suspended |
 | 403 | `forbidden` | Caller lacks the required role |
 | 404 | `not_found` | Resource not found or masked (private resources are masked as not-found for unauthorized callers) |
