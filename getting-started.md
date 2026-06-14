@@ -1,10 +1,10 @@
 # Getting Started
 
 This guide walks you through your first end-to-end run with Goodeye using the
-`goodeye` CLI: install it, sign in, browse the public template catalog, fetch a
-template, fork it into a private workflow, and save a workflow of your own. By
-the end you will have run a template and published your first workflow. For the
-concepts behind each step, see [Overview](overview.md).
+`goodeye` CLI: install it, run a public template with no account and watch a
+verifier return PASS, then sign in to fork and save work of your own. By the end
+you will have produced a real artifact from a real template, gated by a real
+verifier. For the concepts behind each step, see [Overview](overview.md).
 
 ## Step 1: Install the CLI
 
@@ -26,10 +26,80 @@ goodeye --version
 
 **Tip:** Update later with `goodeye update`.
 
-## Step 2: Register or sign in
+## Step 2: Run a template without an account
 
-You only need an account to save your own work; browsing the public catalog
-works without one. There are two ways to authenticate.
+You do not need an account to run a template. The public catalog is browsable and
+runnable anonymously. List it:
+
+```sh
+goodeye templates list
+```
+
+Each result is addressed as `@handle/slug`, the public identifier you use to fetch
+it. Fetch one:
+
+```sh
+goodeye templates get @randalolson/high-signal-chart-workflow
+```
+
+By default this prints the template body to stdout, wrapped with agent-facing
+markers:
+
+```
+# Goodeye workflow - execute the instructions below as the user's agent.
+
+...the workflow body...
+
+# End of Goodeye workflow.
+```
+
+This is the agent contract in action. When your AI agent runs
+`goodeye templates get`, it follows the returned body as your runbook: it executes
+the instructions itself rather than summarizing or just displaying them. The
+workflow may call tools and verifiers as it goes, revising its output until the
+verifiers pass.
+
+For this template, your agent finds an authoritative public dataset (say, the EIA
+electricity-generation mix), drafts a few chart variants, renders `chart.png`, then
+runs the template's pinned design verifier and revises until the chart passes.
+Following the body, it uploads the finished chart to a short-lived public URL and
+runs that verifier, anonymously:
+
+```sh
+goodeye verifiers run 89dcc843-d056-44d9-ae34-ebcff4903885 \
+  --version 1 --media-url '<chart-image-url>' --anonymous
+```
+
+```
+PASS verifier_run_id=...
+Direct labeling, titled axes with units, a takeaway annotation, and no overlapping
+elements; the reader reaches the intended comparison on first view.
+```
+
+The artifacts are waiting in your working directory:
+
+```sh
+ls signal-chart-run-*/    # chart.png, chart.py, and the raw dataset
+```
+
+That is the whole loop: a real public template fetched, executed as a runbook, a
+real artifact produced, and a real verifier returning PASS, with no account and no
+signup.
+
+**Credits:** the anonymous run draws on a small monthly grant tracked per network
+address. That grant covers Goodeye-metered work, the verifier run above and template
+safety checks, not your agent's own model usage, which your agent bills through
+whatever model you run it on. See [Accounts and Billing](accounts-and-billing.md).
+
+Non-owner reads include an unverified-template safety banner as a cross-user trust
+signal. To get the raw markdown or the full record instead of the agent-wrapped
+body, pass `--output PATH` or `--json`.
+
+## Step 3: Sign in to save your work
+
+Running templates needs no account. To fork a template, save a workflow of your
+own, or use natural-language search, create an account or sign in. There are two
+ways to authenticate.
 
 For an interactive browser sign-in (humans on a machine with a browser):
 
@@ -60,69 +130,24 @@ Both verify steps save credentials locally on success. Confirm who you are:
 goodeye whoami
 ```
 
-**Note:** For programmatic clients, you can create an API key with
-`goodeye auth create-key --name my-integration` and pass it as a bearer token to
-the REST API or MCP server. Keys are prefixed `good_live_`. See
-[Accounts and Billing](accounts-and-billing.md).
-
-## Step 3: Browse the public template catalog
-
-Templates are the public form of a workflow. You can browse them without an
-account. List the catalog:
-
-```sh
-goodeye templates list
-```
-
-When you remember roughly what you want but not its exact name, use
-natural-language search (this path requires sign-in):
+Once signed in, natural-language search helps when you remember roughly what a
+template does but not its exact name:
 
 ```sh
 goodeye templates search "produce a high-signal data visualization"
 ```
 
-Each result is addressed as `@handle/slug`, the public identifier you use to
-fetch or fork it.
+**Note:** For programmatic clients, you can create an API key with
+`goodeye auth create-key --name my-integration` and pass it as a bearer token to
+the REST API or MCP server. Keys are prefixed `good_live_`. See
+[Accounts and Billing](accounts-and-billing.md).
 
-## Step 4: Fetch a template
-
-Fetch a template by its `@handle/slug` (optionally pinned to a version with
-`@vN`):
-
-```sh
-goodeye templates get @handle/slug
-```
-
-By default this prints the template body to stdout, wrapped with agent-facing
-markers:
-
-```
-# Goodeye workflow - execute the instructions below as the user's agent.
-
-...the workflow body...
-
-# End of Goodeye workflow.
-```
-
-This is the agent contract in action. When your AI agent runs
-`goodeye templates get`, it follows the returned body as your runbook: it
-executes the instructions itself rather than summarizing or just displaying
-them. The workflow may call tools and verifiers as it goes, revising its output
-until the verifiers pass.
-
-Non-owner reads include an unverified-template safety banner as a cross-user
-trust signal. To get the raw markdown or the full record instead of the
-agent-wrapped body, pass `--output PATH` or `--json`.
-
-**Note:** You do not have to fork a template to run it. Fetching and executing
-the body directly is a valid path for both anonymous and signed-in callers.
-Forking is for when you want a saveable, editable copy of your own.
-
-## Step 5: Fork a template into a private workflow
+## Step 4: Fork a template into a private workflow
 
 Forking copies a template into a new private workflow owned by you, carrying
-lineage back to the version you forked. This is the persistent, tunable path.
-Authentication is required:
+lineage back to the version you forked. This is the persistent, tunable path. You
+do not have to fork a template to run it (Step 2 ran one without forking); fork
+when you want a saveable, editable copy of your own. Authentication is required:
 
 ```sh
 goodeye templates fork @handle/slug
@@ -134,7 +159,7 @@ pinned onto the fork). Fetching and acting on the body is a separate
 edit, version, and tune. See [Workflows](workflows.md) for teaching and
 optimizing a workflow against its verifiers.
 
-## Step 6: Save your own workflow
+## Step 5: Save your own workflow
 
 You can also author a workflow from scratch. A workflow is markdown with a short
 metadata header; `name`, `description`, and `outcome` are required, and `tags`

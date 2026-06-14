@@ -175,7 +175,7 @@ Run `goodeye usage` to see the actual dollar amounts for your tier. Amounts are 
 | `hobby` | Default tier for new accounts. Includes a monthly credit grant for personal and exploratory use. |
 | `pro` | Higher monthly credit grant, suitable for production workflows. Contact us to upgrade. |
 
-Anonymous callers (no auth) who reach public REST endpoints that consume credits have their own small monthly grant, tracked per network address. This covers use cases like running a verifier against a published template without signing in.
+Anonymous callers (no auth) who reach public REST endpoints that consume credits have their own small monthly grant, tracked per network address. This covers use cases like running a verifier against a published template without signing in. The grant, like the authenticated tiers, pays for Goodeye-metered work (verifier runs and template safety checks), not the model usage an agent incurs while executing a workflow body, which your agent bills through whatever model you run it on.
 
 ### Billing errors
 
