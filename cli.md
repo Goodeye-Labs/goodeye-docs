@@ -174,7 +174,7 @@ Fetches the workflow body. By default prints markdown to stdout wrapped in agent
 goodeye workflows publish <file.md|-> [--name NAME] [--description TEXT] \
   [--outcome TEXT] [--tag TAG] [--expected-version-token TOKEN] \
   [--source manual|teach|optimization|description_optimization|audit] [--verifier NAME=UUID[@VERSION]] \
-  [--clear-verifiers] [--clear-files]
+  [--clear-verifiers] [--image-generator NAME=REF[@VERSION]] [--clear-image-generators] [--clear-files]
 ```
 
 Saves a workflow from a markdown file, a directory containing `SKILL.md`, or stdin (use `-` for stdin, which is preferred for generated output). Metadata comes from command-line flags, YAML front matter in the markdown, or both: flags override front matter. `name`, `description`, and `outcome` are required. Repeat `--tag` to attach multiple tags.
