@@ -305,7 +305,10 @@ execution is REST-only; MCP always requires auth.
 
 Every semantic verifier run, yours or anonymous, draws on your credit balance.
 If the balance is exhausted the run returns 402 `budget_exhausted`; a suspended
-account returns 403 `account_suspended`. Check granted, used, and remaining
+account returns 403 `account_suspended`. Anonymous runs are also subject to a
+platform-wide daily limit on total anonymous usage, which returns 402
+`anonymous_daily_cap` once reached (it resets at UTC midnight). Check granted,
+used, and remaining
 credit with `goodeye usage` (or `GET /v1/me/usage`). See
 [Accounts and billing](accounts-and-billing.md) for tiers and grants.
 

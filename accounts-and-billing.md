@@ -175,13 +175,14 @@ Run `goodeye usage` to see the actual dollar amounts for your tier. Amounts are 
 | `hobby` | Default tier for new accounts. Includes a monthly credit grant for personal and exploratory use. |
 | `pro` | Higher monthly credit grant, suitable for production workflows. Contact us to upgrade. |
 
-Anonymous callers (no auth) who reach public REST endpoints that consume credits have their own small monthly grant, tracked per network address. This covers use cases like running a verifier against a published template without signing in. The grant, like the authenticated tiers, pays for Goodeye-metered work (verifier runs and template safety checks), not the model usage an agent incurs while executing a workflow body, which your agent bills through whatever model you run it on.
+Anonymous callers (no auth) who reach public REST endpoints that consume credits have their own small monthly grant, tracked per network address. This covers use cases like running a verifier against a published template without signing in. The grant, like the authenticated tiers, pays for Goodeye-metered work (verifier runs and template safety checks), not the model usage an agent incurs while executing a workflow body, which your agent bills through whatever model you run it on. Total anonymous usage is also bounded by a platform-wide daily limit; once it is reached, anonymous credit-consuming calls return `402 anonymous_daily_cap` until the limit resets at UTC midnight. Signing in gives you your own credits.
 
 ### Billing errors
 
 | HTTP status | Error slug | Meaning |
 |---|---|---|
 | `402` | `budget_exhausted` | Your available credit balance is zero. Wait for your next monthly refill or contact us to discuss a credit top-up. |
+| `402` | `anonymous_daily_cap` | The shared daily limit on anonymous usage has been reached. Sign in for your own credits, or try again after the limit resets at UTC midnight. |
 | `403` | `account_suspended` | Your account has been suspended. Contact support. |
 
 When your budget is exhausted, LLM-powered operations (verifier runs, workflow optimization, design sessions) return `402`. Other operations (saving workflows, listing templates, managing teams) are not credit-gated and continue to work.

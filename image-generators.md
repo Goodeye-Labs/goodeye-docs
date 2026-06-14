@@ -235,6 +235,7 @@ image in a multi-image call is billed separately. Billing-gate errors propagate
 before any image is produced:
 
 - 402 `budget_exhausted` when the credit balance is spent.
+- 402 `anonymous_daily_cap` when the shared daily limit on anonymous usage is reached (anonymous callers only; resets at UTC midnight).
 - 403 `account_suspended` when the account is suspended.
 
 Provider and timeout errors are different: they return a completed call with
