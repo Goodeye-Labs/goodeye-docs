@@ -22,13 +22,12 @@ MCP tool: `get_referral_status`
 Example output:
 
 ```
-Referral code:  K7MNP2QR
-Share this code anywhere. Anyone who redeems K7MNP2QR becomes your referral.
-
-Redeemed:   8 people redeemed your code
-Qualified:  3 people activated (earned your reward)
-Earned:     $3.00 in bonus credits
-Slots left: 7 reward slots remaining
+Your referral code: K7MNP2QR
+Instructions: Share this code anywhere. Anyone who redeems K7MNP2QR becomes your referral.
+Redeemed: 8
+Qualified: 3
+Credits earned: $15.00
+Slots remaining: 2
 ```
 
 The response fields are:
@@ -107,7 +106,7 @@ Bonus credits appear in your available balance alongside your monthly grant and 
 
 The inviter's reward lands shortly after the referred user activates. A background process reconciles pending referrals, so it can take a few minutes to appear. Each inviter can earn rewards for a limited number of referrals (shown as "slots remaining" in `goodeye referral status`).
 
-Run `goodeye referral status` to see the actual bonus amounts for your account. Amounts are not hardcoded in this document because they may change.
+Run `goodeye referral status` to see your total credits earned from referrals and how many reward slots you have left. The exact bonus for a single redemption is shown to the redeemer when they redeem a code (as credits granted). Amounts are not hardcoded in this document because they may change.
 
 ## Errors
 
