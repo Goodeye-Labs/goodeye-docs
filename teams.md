@@ -2,6 +2,12 @@
 
 Teams let you share workflows with a group rather than granting access one person at a time. You create a team with a handle, add members via invitations, and then grant workflows to `@teamhandle`. Every team member gains the access level you specified on the grant.
 
+```diagram-grants
+head: Workflow owner | holds a private workflow
+A user | grant: view or edit
+A team | grant: every member inherits the role
+```
+
 ## How teams work
 
 A team has:
