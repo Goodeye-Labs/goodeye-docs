@@ -9,7 +9,7 @@ Every account has one shareable referral code. It is created the first time you 
 ### Viewing your code and stats
 
 ```sh
-goodeye referral status
+goodeye referrals status
 ```
 
 ```http
@@ -54,7 +54,7 @@ To claim the new-user bonus, redeem a referral code. You can do this as a standa
 ### Standalone redeem
 
 ```sh
-goodeye referral redeem <code>
+goodeye referrals redeem <code>
 ```
 
 ```http
@@ -111,9 +111,9 @@ Browsing, searching, or viewing templates does not count toward activation. Ther
 
 Bonus credits appear in your available balance alongside your monthly grant and are spent the same way, with no special restrictions. They expire one year after they are granted.
 
-The inviter's reward lands shortly after the referred user activates. A background process reconciles pending referrals, so it can take a few minutes to appear. Each inviter can earn rewards for a limited number of referrals (shown as "slots remaining" in `goodeye referral status`).
+The inviter's reward lands shortly after the referred user activates. A background process reconciles pending referrals, so it can take a few minutes to appear. Each inviter can earn rewards for a limited number of referrals (shown as "slots remaining" in `goodeye referrals status`).
 
-Run `goodeye referral status` to see your total credits earned from referrals and how many reward slots you have left. The exact bonus for a single redemption is shown to the redeemer when they redeem a code (as credits granted). Amounts are not hardcoded in this document because they may change.
+Run `goodeye referrals status` to see your total credits earned from referrals and how many reward slots you have left. The exact bonus for a single redemption is shown to the redeemer when they redeem a code (as credits granted). Amounts are not hardcoded in this document because they may change.
 
 ## Errors
 
