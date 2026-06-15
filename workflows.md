@@ -89,6 +89,18 @@ bindings. On an update, omitting verifiers entirely preserves the prior set;
 sending an explicit empty list clears them. Only the workflow owner can change
 verifier references. See [Verifiers](verifiers.md) for deploying them.
 
+### Image generator references
+
+Bind a deployed image generator to the workflow with a repeatable
+`--image-generator name=generator_ref` flag (the MCP and REST surfaces accept a
+structured `image_generators` array). The `generator_ref` is a quality tier
+(`system:<tier>`), a deployed generator UUID, or `uuid@version` to pin a specific
+version, which keeps a published template's generator snapshot deterministic.
+Binding names follow the same rule as verifiers (lowercase letters, digits, and
+hyphens), and the same update semantics apply: omitting image generators
+preserves the prior set, while `--clear-image-generators` sends an empty list to
+remove them all. See [Image generators](image-generators.md) for deploying them.
+
 ### Multi-file bundles (directory mode)
 
 A workflow can carry sibling files (scripts, reference docs, assets) alongside

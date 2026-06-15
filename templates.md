@@ -166,7 +166,9 @@ watch for them so your demo renders the way you intended.
 
 To pull a published demo asset's raw bytes (a preview image, for example), use
 `goodeye templates get-file <identifier> <path> --output <file>` (REST
-`GET /v1/templates/{identifier}/files?path=&format=raw`). See
+`GET /v1/templates/{identifier}/files?path=&format=raw`). Pass `--sha256 HASH` to
+content-address the fetch: the file is confirmed to match that hash, so a
+republished or removed file no longer resolves at a stale address. See
 [Get a template](#get-a-template) for the full file-fetching surface.
 
 ## Reference forms
