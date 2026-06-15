@@ -1,6 +1,6 @@
 # REST API
 
-Use the Goodeye REST API to integrate workflows, templates, verifiers, and image generators directly into your application or automation pipeline.
+The Goodeye REST API drives workflows, templates, verifiers, and image generators straight from your own application or automation pipeline.
 
 ## Base URL
 

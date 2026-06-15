@@ -1,10 +1,10 @@
 # MCP Integration
 
-Connect any MCP-compatible AI assistant to Goodeye so it can manage your workflows, publish templates, run verifiers, and generate images through natural language.
+Connect an MCP-compatible AI assistant to Goodeye and it can manage your workflows, publish templates, run verifiers, and generate images from natural language.
 
 ## Overview
 
-Goodeye exposes its full capability set through MCP. When connected, your AI assistant can:
+Everything Goodeye does is reachable over MCP. Once connected, your AI assistant can:
 
 - Design, save, fetch, and manage workflows
 - Publish, search, fork, and verify templates
@@ -24,11 +24,11 @@ https://mcp.goodeye.dev/mcp
 
 ## Authentication
 
-You have two options.
+There are two ways in.
 
-**OAuth (sign-in flow):** connect in your MCP client and sign in when prompted. The transport returns a `401` with a `WWW-Authenticate` challenge when no credentials are present, which tells the client where to send you to authorize. This is the right choice for interactive assistants like Claude.ai, Cursor, and VS Code.
+**OAuth (sign-in flow):** connect in your MCP client and sign in when prompted. With no credentials present, the transport returns a `401` with a `WWW-Authenticate` challenge that tells the client where to send you to authorize. Use this for interactive assistants like Claude.ai, Cursor, and VS Code.
 
-**API key:** create a `good_live_` key with `goodeye auth create-key` (or `POST /v1/api-keys`), then pass it as a `Bearer` token in your MCP client config. This is the right choice for automated agents and CI pipelines.
+**API key:** create a `good_live_` key with `goodeye auth create-key` (or `POST /v1/api-keys`), then pass it as a `Bearer` token in your MCP client config. Use this for automated agents and CI pipelines.
 
 ```http
 Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
@@ -203,7 +203,7 @@ To use an API key:
 
 ## Available tools
 
-All tools are available to any authenticated caller. The tool groups below reflect the main resource areas.
+Any authenticated caller gets every tool. The groups below follow the main resource areas.
 
 ### Workflows
 

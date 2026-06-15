@@ -1,6 +1,6 @@
 # CLI Reference
 
-The `goodeye` CLI lets you manage workflows, templates, verifiers, and image generators from the terminal. Its primary caller is an AI agent acting on your behalf, though every command works just as well when you run it yourself.
+The `goodeye` CLI manages workflows, templates, verifiers, and image generators from the terminal. Its primary caller is an AI agent acting on your behalf, though every command works just as well when you run it yourself.
 
 ## Install
 
@@ -643,11 +643,7 @@ goodeye design          # print the workflow-designer prompt to stdout
 goodeye design --json   # print the full response object as JSON
 ```
 
-Prints the workflow-designer prompt to stdout. Pipe it into your AI assistant to start designing a workflow with built-in verifiers:
-
-```sh
-goodeye design
-```
+Pipe the printed prompt into your AI assistant to start designing a workflow with built-in verifiers.
 
 **Note:** the designer prompt is the recommended starting point for new workflows. After the design session, save the result with `goodeye workflows publish -`.
 

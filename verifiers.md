@@ -18,6 +18,13 @@ the runbooks that invoke them, see [Workflows](workflows.md).
 A single workflow usually combines all three. They differ in what they check and
 where they run.
 
+```diagram-verifier-types
+head: Verifier | a check the workflow runs on agent output, pass or fail with reasoning
+Structural | Format and schema | required fields, the shape parses | inline, free
+Functional | Tests and bounds | tests, ranges, regex, hashes | inline, free
+* Semantic | Interpretive judgment | tone, factuality, image quality | judge runtime
+```
+
 ### Structural
 
 Format and schema checks: required fields are present, the output parses, the

@@ -175,7 +175,7 @@ Run `goodeye usage` to see the actual dollar amounts for your tier. Amounts are 
 | `hobby` | Default tier for new accounts. Includes a monthly credit grant for personal and exploratory use. |
 | `pro` | Higher monthly credit grant, suitable for production workflows. Contact us to upgrade. |
 
-Anonymous callers (no auth) who reach public REST endpoints that consume credits have their own small monthly grant, tracked per network address. This covers use cases like running a verifier against a published template without signing in. The grant, like the authenticated tiers, pays for Goodeye-metered work (verifier runs and template safety checks), not the model usage an agent incurs while executing a workflow body, which your agent bills through whatever model you run it on. Total anonymous usage is also bounded by a platform-wide daily limit; once it is reached, anonymous credit-consuming calls return `402 anonymous_daily_cap` until the limit resets at UTC midnight. Signing in gives you your own credits.
+Anonymous callers (no auth) who reach public REST endpoints that consume credits have their own small monthly grant, tracked per network address. That is what lets someone run a verifier against a published template without signing in. Like the authenticated tiers, the grant pays for Goodeye-metered work (verifier runs and template safety checks), not the model usage an agent incurs while executing a workflow body. Your agent bills that through whatever model you run it on. Total anonymous usage is also bounded by a platform-wide daily limit; once it is reached, anonymous credit-consuming calls return `402 anonymous_daily_cap` until the limit resets at UTC midnight. Signing in gives you your own credits.
 
 ### Billing errors
 

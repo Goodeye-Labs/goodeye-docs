@@ -24,10 +24,11 @@ API), so the same capability is available wherever your agent runs.
 
 Every Goodeye artifact ties back to a named outcome. The chain is:
 
-```
-Outcome  >  KPI(s)  >  Task  >  Workflow + Verifiers
-business     measurable  agent    runbook plus checks that
-result       indicator   work     align the agent to the outcome
+```diagram-chain
+Outcome | business result you steer toward
+KPI(s) | measurable indicator, fast feedback
+Task | the unit of agent work that moves the KPI
+* Workflow + Verifiers | the runbook plus the checks that align the agent
 ```
 
 - **Outcome**: the real business result you are steering the agent toward.
@@ -103,17 +104,24 @@ See [Image Generators](image-generators.md) for deployment and runs.
 
 ## The three surfaces, and when to reach for each
 
-Goodeye ships every capability on three peer surfaces. Pick the one that matches
-how your agent runs:
+Goodeye ships every capability on all three surfaces, so they are peers. Reach
+for the one that fits how your agent runs:
 
-- **CLI** (`goodeye ...`): reach for it when an agent shells out in a terminal
-  (for example a coding agent that can run commands), or when you want to drive
-  Goodeye by hand. The CLI is a convenience layer over the REST API. See
-  [CLI](cli.md).
-- **MCP** (`https://mcp.goodeye.dev/mcp`): reach for it when your agent is an
-  IDE or connector client (Claude Code, Cursor, and similar) that speaks the
-  Model Context Protocol. The tools appear natively in the assistant. See
-  [MCP](mcp.md).
+```diagram-three-surfaces
+head: One capability, three surfaces | reach for the one that fits how your agent runs
+CLI | Your agent runs commands | coding agents, CI, or by hand | goodeye ...
+MCP | Your agent speaks MCP | chat and connector clients | mcp.goodeye.dev/mcp
+REST | You integrate in code | services and pipelines | api.goodeye.dev/v1
+```
+
+- **CLI** (`goodeye ...`): reach for it when your agent can run shell commands (a
+  coding agent like Claude Code or Cursor, a CI job) or when you are driving
+  Goodeye by hand. See [CLI](cli.md).
+- **MCP** (`https://mcp.goodeye.dev/mcp`): reach for it when your agent is a chat
+  or connector client that speaks the Model Context Protocol (Claude on the web,
+  ChatGPT, Claude Desktop). The tools appear natively in the assistant. Coding
+  agents like Claude Code and Cursor can connect this way too, so either surface
+  works for them. See [MCP](mcp.md).
 - **REST** (`https://api.goodeye.dev/v1`): reach for it for direct integrations
   and services that call Goodeye programmatically. The public template catalog
   is readable over REST without an account. See [REST API](rest-api.md).
@@ -131,6 +139,14 @@ bodies with explicit agent-facing markers
 knows the body is for it to act on. A workflow can call tools and verifiers along
 the way; those are the agent's hands and quality gates, and the workflow is how
 the agent knows what to do with them.
+
+```diagram-agent-loop
+Agent loads the workflow | the fetched body is the runbook
+^ Executes the steps | calls tools and verifiers
+Verifiers judge the output | pass or fail with reasoning
+exit: Passes, ship the result
+loop: Fails, revise and re-run until verifiers pass
+```
 
 ## Next steps
 

@@ -6,6 +6,14 @@ verifier return PASS, then sign in to fork and save work of your own. By the end
 you will have produced a real artifact from a real template, gated by a real
 verifier. For the concepts behind each step, see [Overview](overview.md).
 
+```diagram-first-run
+Install the CLI | uv tool install goodeye
+Run a template anonymously | watch a verifier return PASS
+Sign in | to fork and save your own
+Fork a template | a private, editable copy
+* Save your own workflow | author one from scratch
+```
+
 ## Step 1: Install the CLI
 
 The CLI requires Python 3.12 or newer. Install it with any of the following:
@@ -87,8 +95,8 @@ real artifact produced, and a real verifier returning PASS, with no account and 
 signup.
 
 **Credits:** the anonymous run draws on a small monthly grant tracked per network
-address. That grant covers Goodeye-metered work, the verifier run above and template
-safety checks, not your agent's own model usage, which your agent bills through
+address. That grant covers Goodeye-metered work (the verifier run above and template
+safety checks), not your agent's own model usage. Your agent bills that through
 whatever model you run it on. See [Accounts and Billing](accounts-and-billing.md).
 
 Non-owner reads include an unverified-template safety banner as a cross-user trust
@@ -203,11 +211,13 @@ pointing `publish` at its directory and supplying an `outcome`. See
 
 ## Connect your agent
 
-The CLI is one of three peer surfaces. To wire Goodeye into an agent that does
-not shell out to a terminal:
+This guide uses the CLI throughout. To connect an agent that runs over MCP or
+calls the REST API instead:
 
-- **MCP**: connect IDE and connector clients (Claude Code, Cursor, and similar)
-  to `https://mcp.goodeye.dev/mcp` so the Goodeye tools appear natively. See
+- **MCP**: connect chat and connector clients that speak the Model Context
+  Protocol (Claude on the web, ChatGPT, Claude Desktop) to
+  `https://mcp.goodeye.dev/mcp` so the Goodeye tools appear natively. Coding
+  agents like Claude Code and Cursor can connect over MCP as well. See
   [MCP](mcp.md).
 - **REST**: call `https://api.goodeye.dev/v1` directly from a service or
   integration, authenticating with a `good_live_` API key. The public template

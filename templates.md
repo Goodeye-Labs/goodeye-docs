@@ -10,6 +10,13 @@ on-demand safety check, and transferring ownership.
 Templates are immutable and versioned. Continued edits to your private workflow
 never leak into a published template; a new round of work becomes a new version.
 
+```diagram-template-lifecycle
+Private workflow | your editable runbook
+Publish a version | an immutable, versioned snapshot
+* Public template | anyone, or any agent, can find and run it
+Fork | a saveable private copy, with lineage back
+```
+
 **The agent contract:** when an agent fetches a template body, it executes that
 body as the user's runbook. Non-owner reads carry a safety banner (see
 [The unverified-template banner](#the-unverified-template-banner)). See
