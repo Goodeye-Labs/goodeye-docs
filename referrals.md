@@ -23,7 +23,9 @@ Example output:
 
 ```
 Your referral code: K7MNP2QR
-Instructions: Share this code anywhere. Anyone who redeems K7MNP2QR becomes your referral.
+Instructions: Your referral code: K7MNP2QR
+To invite someone: share this code and ask them to install the Goodeye CLI, then run `goodeye login --referral-code K7MNP2QR` to sign in and claim their bonus credits.
+If they use Goodeye through an MCP client, they can connect their account and redeem the code with the redeem referral tool.
 Redeemed: 8
 Qualified: 3
 Credits earned: $15.00
@@ -70,12 +72,17 @@ MCP tool: `redeem_referral_code` (connect your account first, then call it)
 Pass `--referral-code` to the sign-in or registration commands and the code is redeemed automatically right after you authenticate:
 
 ```sh
-# Interactive sign-in (OAuth or email-code flow)
+# Interactive sign-in (browser/device-code flow)
 goodeye login --referral-code <code>
+
+# Non-interactive email-code sign-in: pass the code on the verify step
+goodeye login-verify --email <email> --code <code> --referral-code <code>
 
 # Email-code registration: verify step
 goodeye register-verify --email <email> --code <code> --referral-code <code>
 ```
+
+`--referral-code` is accepted on `login`, `login-verify`, and `register-verify`, and the code is redeemed only after credentials are saved. The two-step `goodeye login --email` flow does not redeem on the first step: it just sends the email and exits, so pass `--referral-code` on the following `login-verify` step instead.
 
 If the code cannot be applied (for example, you have already redeemed one), the sign-in still completes and the CLI tells you why the code was not applied.
 
