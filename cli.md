@@ -321,7 +321,9 @@ never pushes.
   time).
 
 The automatic pull applies to all configured sync targets and is suppressed in
-CI environments and for `--json` output. Workflows with local edits or conflicts
+CI environments, for `--json` output, for `--help`/`--version` and the bare
+invocation, and while you are running a `workflows sync` command yourself, so it
+never shadows a manual sync. Workflows with local edits or conflicts
 are reported but never clobbered; workflows deleted on the registry are reported
 but never removed locally. See [Syncing a bundle locally](workflows.md#syncing-a-bundle-locally)
 for the full behavior.
