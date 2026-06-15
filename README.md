@@ -39,6 +39,7 @@ assistants via Context7. Pages:
 | [Image Generators](image-generators.md) | Deploy and run owner-scoped image generation |
 | [Teams](teams.md) | Collaborate with teams, grants, and invitations |
 | [Accounts and Billing](accounts-and-billing.md) | Handles, API keys, usage, tiers, and credits |
+| [Referrals](referrals.md) | Invite new users and earn bonus credits on both sides |
 
 ## Quick links
 
