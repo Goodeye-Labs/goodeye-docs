@@ -270,9 +270,9 @@ The automatic pull is global: it applies to every configured target. The
 interval (default 3600 seconds) is a floor on how often the pull runs, not a
 freshness guarantee; a manual `pull` still gives you an immediate refresh.
 
-The pull runs after your command finishes and never delays it. When it writes or
-skips something, it prints a single line to stderr. When nothing changed and
-nothing was skipped, it stays silent. It is suppressed in CI environments, for
+The pull runs after your command finishes and never delays it. When it writes,
+skips, or finds a workflow gone from the registry, it prints a single line to
+stderr. When nothing changed and nothing was skipped or gone, it stays silent. It is suppressed in CI environments, for
 `--json` output, for `--help`/`--version` and the bare invocation, and when you
 are explicitly running a `workflows sync` command, so it never shadows an
 operation you ran yourself.
