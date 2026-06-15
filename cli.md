@@ -295,8 +295,38 @@ Pulls every configured sync target and then reports status. Equivalent to `sync 
 | `sync pull [SLUG...]` | Pull workflows from the registry to local directories. |
 | `sync push [SLUG...]` | Upload locally edited workflows back to the registry. |
 | `sync status` | Report drift between the registry and local directories without writing anything. |
+| `sync auto on [--interval <seconds>]` | Enable the automatic background pull (opt-in; default interval 3600 s). |
+| `sync auto off` | Disable the automatic background pull. |
+| `sync auto` | Print the current auto-pull setting and last run time. |
 
 **`--scope`** on `sync target add` controls which workflows land in that directory: `owned` (default), `all` (owned plus shared), or `selected` (only slugs or globs supplied with `--only`).
+
+### `workflows sync auto`
+
+```sh
+goodeye workflows sync auto on [--interval <seconds>]
+goodeye workflows sync auto off
+goodeye workflows sync auto
+```
+
+Manages the opt-in automatic background pull. When enabled, the CLI pulls the
+safe set (new and updated workflows) in the background after your command
+completes. It never overwrites local edits, never deletes local directories, and
+never pushes.
+
+- `on` enables auto-pull. Pass `--interval <seconds>` to set the minimum gap
+  between automatic pulls (default: 3600, which is one hour).
+- `off` disables it.
+- With no subcommand, prints the current setting (on/off, interval, last run
+  time).
+
+The automatic pull applies to all configured sync targets and is suppressed in
+CI environments, for `--json` output, for `--help`/`--version` and the bare
+invocation, and while you are running a `workflows sync` command yourself, so it
+never shadows a manual sync. Workflows with local edits or conflicts
+are reported but never clobbered; workflows deleted on the registry are reported
+but never removed locally. See [Syncing a bundle locally](workflows.md#syncing-a-bundle-locally)
+for the full behavior.
 
 ---
 

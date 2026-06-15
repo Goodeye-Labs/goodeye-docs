@@ -237,6 +237,46 @@ Running `goodeye workflows sync` with no subcommand pulls every target and then
 prints status. `goodeye workflows sync` and `goodeye workflows pull` consume the
 file-fetch routes internally; you do not call them directly.
 
+### Automatic pull
+
+The automatic pull is an opt-in mode that keeps your configured sync targets
+fresh without a manual `pull`. When enabled, the CLI pulls the safe set (new
+workflows and ones updated on the registry) in the background after your command
+completes, so your local copies stay current for whatever agent loads them.
+
+Turn it on with:
+
+```sh
+goodeye workflows sync auto on                    # enable with the default interval (1 hour)
+goodeye workflows sync auto on --interval 1800    # enable with a custom interval in seconds
+goodeye workflows sync auto off                   # disable
+goodeye workflows sync auto                       # print current setting and last run time
+```
+
+What the automatic pull does and does not do:
+
+- **Writes** new workflows and ones where the registry version has moved since
+  the last sync. Only those workflows are fetched; unchanged ones are skipped.
+- **Skips, never clobbers** workflows with local edits or conflicts. These are
+  surfaced in a one-line notice so you know to reconcile them manually with
+  `workflows sync pull` or `workflows sync status`.
+- **Reports, never removes** workflows that were deleted on the registry. Auto
+  mode never removes a local directory; deletion is always an explicit, confirmed
+  step through a manual `pull`.
+- **Never pushes.** The automatic path is pull-only. Pushing local edits back
+  is always an explicit `workflows sync push`.
+
+The automatic pull is global: it applies to every configured target. The
+interval (default 3600 seconds) is a floor on how often the pull runs, not a
+freshness guarantee; a manual `pull` still gives you an immediate refresh.
+
+The pull runs after your command finishes and never delays it. When it writes,
+skips, or finds a workflow gone from the registry, it prints a single line to
+stderr. When nothing changed and nothing was skipped or gone, it stays silent. It is suppressed in CI environments, for
+`--json` output, for `--help`/`--version` and the bare invocation, and when you
+are explicitly running a `workflows sync` command, so it never shadows an
+operation you ran yourself.
+
 ## Archive, unarchive, and permanent delete
 
 These are two distinct paths: a reversible hide (archive) and an irreversible
