@@ -105,7 +105,7 @@ Activation means your account meets both of these conditions:
 - You own at least one private workflow.
 - You have run a verifier or generated an image.
 
-Browsing, searching, or viewing templates does not count toward activation. There is no time limit on activation: a referral stays pending until the referred user activates, however long that takes.
+There is no time limit on activation: a referral stays pending until the referred user activates, however long that takes.
 
 ## Bonus credits and expiry
 
