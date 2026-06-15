@@ -119,8 +119,9 @@ REST | You integrate in code | services and pipelines | api.goodeye.dev/v1
   Goodeye by hand. See [CLI](cli.md).
 - **MCP** (`https://mcp.goodeye.dev/mcp`): reach for it when your agent is a chat
   or connector client that speaks the Model Context Protocol (Claude on the web,
-  ChatGPT, Claude Desktop). The tools appear natively in the assistant. See
-  [MCP](mcp.md).
+  ChatGPT, Claude Desktop). The tools appear natively in the assistant. Coding
+  agents like Claude Code and Cursor can connect this way too, so either surface
+  works for them. See [MCP](mcp.md).
 - **REST** (`https://api.goodeye.dev/v1`): reach for it for direct integrations
   and services that call Goodeye programmatically. The public template catalog
   is readable over REST without an account. See [REST API](rest-api.md).

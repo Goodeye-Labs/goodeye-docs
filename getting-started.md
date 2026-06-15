@@ -216,7 +216,8 @@ calls the REST API instead:
 
 - **MCP**: connect chat and connector clients that speak the Model Context
   Protocol (Claude on the web, ChatGPT, Claude Desktop) to
-  `https://mcp.goodeye.dev/mcp` so the Goodeye tools appear natively. See
+  `https://mcp.goodeye.dev/mcp` so the Goodeye tools appear natively. Coding
+  agents like Claude Code and Cursor can connect over MCP as well. See
   [MCP](mcp.md).
 - **REST**: call `https://api.goodeye.dev/v1` directly from a service or
   integration, authenticating with a `good_live_` API key. The public template
