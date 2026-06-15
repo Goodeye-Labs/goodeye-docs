@@ -27,7 +27,7 @@ Instructions: Your referral code: K7MNP2QR
 To invite someone: share this code and ask them to install the Goodeye CLI, then run `goodeye login --referral-code K7MNP2QR` to sign in and claim their bonus credits.
 If they use Goodeye through an MCP client, they can connect their account and redeem the code with the redeem referral tool.
 Redeemed: 8
-Qualified: 3
+Activated: 3
 Credits earned: $15.00
 Slots remaining: 2
 ```
@@ -39,7 +39,7 @@ The response fields are:
 | `code` | Your unique shareable referral code |
 | `instructions` | A ready-to-paste snippet explaining how to redeem the code |
 | `redeemed_count` | Total number of people who redeemed your code |
-| `qualified_count` | Number of those who have activated and earned you a reward |
+| `activated_count` | Number of people you referred who have activated their account (and earned you a reward, up to your slot limit) |
 | `credits_earned_usd` | Total bonus credits you have earned from referrals |
 | `slots_remaining` | How many more referral rewards you can earn |
 
