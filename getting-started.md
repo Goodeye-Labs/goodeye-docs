@@ -109,14 +109,17 @@ Running templates needs no account. To fork a template, save a workflow of your
 own, or use natural-language search, create an account or sign in. There are two
 ways to authenticate.
 
-For an interactive browser sign-in (humans on a machine with a browser):
+For an interactive browser sign-in (humans on a machine with a browser), create a
+new account with `register` or sign in to an existing one with `login`:
 
 ```sh
-goodeye login
+goodeye register   # new account
+goodeye login      # existing account
 ```
 
-This opens a verification URL, you approve the sign-in, and credentials are saved
-locally to `~/.config/goodeye/credentials.json`.
+Either command opens a verification URL on the same hosted sign-in page, which
+creates the account for new users and signs in returning users. You approve in the
+browser and credentials are saved locally to `~/.config/goodeye/credentials.json`.
 
 For a non-interactive email-code flow (agents, automation, or terminals where
 prompts are awkward), register a new account or sign in to an existing one in two
