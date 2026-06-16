@@ -164,6 +164,7 @@ The response fields are:
 | `monthly_refill_usd` | Amount your monthly grant refills to |
 | `monthly_refill_at` | ISO timestamp of your next refill |
 | `purchased_remaining_usd` | Remaining from any one-off purchased credits |
+| `referral_remaining_usd` | Remaining from referral bonus credits |
 | `unpaid_balance_usd` | Overspend carried from a prior period (deducted from the next grant) |
 
 Run `goodeye usage` to see the actual dollar amounts for your tier. Amounts are not hardcoded in this document because they may change.
