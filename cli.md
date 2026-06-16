@@ -54,14 +54,15 @@ To skip the markers and round-trip the raw content, pass `--output PATH` (write 
 ### Interactive sign-in (for humans)
 
 ```sh
-goodeye login
+goodeye register   # create a new account
+goodeye login      # sign in to an existing account
 ```
 
-Opens a device-code browser flow and saves credentials locally on success.
+Both open a device-code browser flow and save credentials locally on success. They share the same hosted sign-in page, which creates the account for new users and signs in returning users, so either command works whether or not you already have an account.
 
 ### Non-interactive email-code flow (for agents and automation)
 
-Register a new account:
+Create a new account:
 
 ```sh
 goodeye register --email you@example.com
@@ -75,7 +76,7 @@ goodeye login --email you@example.com
 goodeye login-verify --email you@example.com --code 123456
 ```
 
-Successful `register-verify`, `login-verify`, and interactive `login` all save credentials to `~/.config/goodeye/credentials.json` (or `$XDG_CONFIG_HOME/goodeye/credentials.json`).
+Successful `register`, `login`, `register-verify`, and `login-verify` all save credentials to `~/.config/goodeye/credentials.json` (or `$XDG_CONFIG_HOME/goodeye/credentials.json`).
 
 ### Sign out
 
