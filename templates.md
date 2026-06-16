@@ -72,7 +72,7 @@ plus sibling files) before any database write:
 - An **advisory** check is a soft signal. If it raises a concern, the publish
   still succeeds but the version is marked `flagged`.
 
-If the safety runtime itself errors, the publish aborts with
+If the safety check itself cannot complete, the publish aborts with
 `safety_verification_unavailable` (503) rather than stamping an ambiguous status.
 
 The publish response includes a `safety_verification` object with the resolved

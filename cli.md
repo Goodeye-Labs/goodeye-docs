@@ -58,7 +58,7 @@ goodeye register   # create a new account
 goodeye login      # sign in to an existing account
 ```
 
-Both open a device-code browser flow and save credentials locally on success. They share the same hosted sign-in page, which creates the account for new users and signs in returning users, so either command works whether or not you already have an account.
+Both open a device-code browser flow and save credentials locally on success. They share the same hosted sign-in page, which creates the account for new users and signs in returning users, so either command works whether or not you already have an account. On that page you can continue with your Google account or with email.
 
 ### Non-interactive email-code flow (for agents and automation)
 

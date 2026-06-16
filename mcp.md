@@ -26,7 +26,7 @@ https://mcp.goodeye.dev/mcp
 
 There are two ways in.
 
-**OAuth (sign-in flow):** connect in your MCP client and sign in when prompted. With no credentials present, the transport returns a `401` with a `WWW-Authenticate` challenge that tells the client where to send you to authorize. Use this for interactive assistants like Claude.ai, Cursor, and VS Code.
+**OAuth (sign-in flow):** connect in your MCP client and it prompts you to sign in. On the hosted sign-in page you can continue with your Google account or with email, and your client is authorized once you approve. Use this for interactive assistants like Claude.ai, Cursor, and VS Code.
 
 **API key:** create a `good_live_` key with `goodeye auth create-key` (or `POST /v1/api-keys`), then pass it as a `Bearer` token in your MCP client config. Use this for automated agents and CI pipelines.
 
@@ -34,7 +34,7 @@ There are two ways in.
 Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
 ```
 
-Anonymous callers cannot use the MCP transport. Public template catalog browsing is available over the REST API without auth (see [REST API](rest-api.md)).
+Anonymous callers cannot use the MCP server. Public template catalog browsing is available over the REST API without auth (see [REST API](rest-api.md)).
 
 ## Client setup
 

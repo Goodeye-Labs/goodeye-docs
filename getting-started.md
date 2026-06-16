@@ -118,8 +118,9 @@ goodeye login      # existing account
 ```
 
 Either command opens a verification URL on the same hosted sign-in page, which
-creates the account for new users and signs in returning users. You approve in the
-browser and credentials are saved locally to `~/.config/goodeye/credentials.json`.
+creates the account for new users and signs in returning users. On that page you
+can continue with your Google account or with email. You approve in the browser
+and credentials are saved locally to `~/.config/goodeye/credentials.json`.
 
 For a non-interactive email-code flow (agents, automation, or terminals where
 prompts are awkward), register a new account or sign in to an existing one in two

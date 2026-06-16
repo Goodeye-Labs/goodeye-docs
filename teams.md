@@ -15,7 +15,7 @@ A team has:
 - An **owner** (the person who created it, or whoever last accepted an ownership transfer)
 - Zero or more **members**
 
-The owner always has implicit membership. They do not appear in the member table but do appear in `list-members` output via a synthetic row.
+The owner always has implicit membership. They are not added as a member, but they still appear in `list-members` output.
 
 You must have a claimed user handle before you can create a team. See [Accounts and billing](accounts-and-billing.md) for handle setup.
 
