@@ -241,8 +241,9 @@ indefinitely. Accepts `--json` to print the updated record.
 
 ## Error codes
 
-Uploading and managing images can return these errors. Each carries a stable
-`error` slug and a human-readable `message`.
+Uploading and managing images can return these errors. Most carry a stable
+`error` slug and a human-readable `message`; the one exception is noted in the
+table.
 
 | HTTP status | Slug | When it occurs |
 |-------------|------|----------------|
@@ -251,6 +252,7 @@ Uploading and managing images can return these errors. Each carries a stable
 | 413 | `file_too_large` | The uploaded file exceeds the per-file size limit |
 | 415 | `unsupported_image_type` | The bytes are not a PNG, JPEG, WebP, or GIF |
 | 422 | `quota_exceeded` | Storing the image would exceed your storage quota |
+| 422 | (no slug) | An update supplied both `ttl_seconds` and `permanent`, which are mutually exclusive. This case returns a plain `detail` message rather than the `{error, message}` envelope. |
 
 ## See also
 
