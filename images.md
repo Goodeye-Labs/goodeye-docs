@@ -15,6 +15,12 @@ You supply the image bytes and Goodeye stores them, returning a stable URL
 you can embed or share. The URL does not change when you update the image's
 metadata (visibility, TTL).
 
+The accepted formats are PNG, JPEG, WebP, and GIF. The format is determined
+by inspecting the image bytes, not the file name or any declared type, so
+renaming a file does not change how it is treated. Anything that is not one
+of those four raster formats (SVG, AVIF, PDF, and so on) is rejected with a
+`415 unsupported_image_type` error.
+
 **CLI.**
 
 ```sh
@@ -50,6 +56,35 @@ ttl_seconds=604800
 
 The response carries `{id, token, url, visibility, expires_at,
 size_bytes, content_type}`.
+
+## The serving URL
+
+The `url` in the response is the stable, embeddable link to the raw image
+bytes. It follows the pattern:
+
+```
+GET /v1/i/{token}.{ext}
+```
+
+The `{token}` is the unguessable identifier; the `.{ext}` suffix (for example
+`.png`) is cosmetic for embeddability and is ignored by the server. The
+content type served always comes from the stored image bytes, never from the
+extension you put in the URL.
+
+Behavior on a serving request:
+
+- **Public image**: served to anyone with the URL, including callers with no
+  credentials. Responses carry cache headers so browsers and CDNs can hold a
+  copy for a bounded window.
+- **Private image**: requires credentials for the owner. An anonymous request
+  returns `401 auth_required`; a request authenticated as someone other than
+  the owner returns `404 image_not_found` (the same as a missing image, so
+  ownership is not revealed).
+- **Expired image**: once an image's TTL has passed, its URL returns
+  `404 image_not_found`, effective immediately on the next request.
+
+Use the management `id` (not the serving `token`) for `get`, `update`, and
+`delete`.
 
 ## Public vs. private visibility
 
@@ -202,6 +237,19 @@ goodeye images set-ttl <image_id> permanent
 Pass a positive integer (seconds from now) to set a new expiry, or the
 literal word `permanent` to remove the expiry and keep the image
 indefinitely. Accepts `--json` to print the updated record.
+
+## Error codes
+
+Uploading and managing images can return these errors. Each carries a stable
+`error` slug and a human-readable `message`.
+
+| HTTP status | Slug | When it occurs |
+|-------------|------|----------------|
+| 401 | `auth_required` | No credentials on an upload, management, or private-image request |
+| 404 | `image_not_found` | The image does not exist, has expired, or is owned by someone else (existence is masked) |
+| 413 | `file_too_large` | The uploaded file exceeds the per-file size limit |
+| 415 | `unsupported_image_type` | The bytes are not a PNG, JPEG, WebP, or GIF |
+| 422 | `quota_exceeded` | Storing the image would exceed your storage quota |
 
 ## See also
 
