@@ -97,14 +97,25 @@ immediately purged; cleanup happens asynchronously.
 ## Durable URLs for generated images
 
 When you call `generate_image` (or `goodeye image-generators generate`), each
-output image is now automatically hosted and the response includes a durable
-`hosted_image_url` alongside the provider URL. The hosted URL stays valid
-after the provider session ends, so you can embed it in a workflow output, a
-template, or any other surface without worrying about the link expiring.
+output image is automatically hosted and the response includes a `hosted_images`
+list aligned 1:1 with the generated outputs (alongside the provider `image_urls`
+list, which is unchanged). Each entry in `hosted_images` is either an object or
+`null`:
 
-The hosted copy inherits the visibility and TTL rules above. You can update
-it with `goodeye images update` using the `image_id` returned in the
-generation response.
+- **Object** `{id, url, visibility, expires_at}`: the image was persisted
+  successfully. `url` is the durable hosted link that stays valid after the
+  provider session ends. `id` is the manageable image identifier.
+- **`null`**: that output could not be auto-persisted (for example, the provider
+  URL was not on the fetch allowlist or a transient error occurred); the
+  provider URL in `image_urls` is your fallback for that position.
+
+Authenticated generations are stored as **private** images with no expiry, so
+they persist until you delete them. Anonymous generations are stored as
+**public** images with a short TTL; the URL is accessible without credentials
+but expires automatically.
+
+You can update a hosted generated image with `goodeye images update` using the
+`id` from the corresponding `hosted_images` entry.
 
 ## List, get, update, delete
 
