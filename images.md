@@ -20,23 +20,21 @@ metadata (visibility, TTL).
 ```sh
 goodeye images upload path/to/image.png \
   --visibility public \
-  --ttl-seconds 604800
+  --ttl 604800
 ```
 
 Flags:
 
 - `--visibility public|private` (default: `private`): whether the URL is
   publicly readable without credentials.
-- `--ttl-seconds <n>`: seconds until the image expires and stops resolving.
+- `--ttl <n>`: seconds until the image expires and stops resolving.
   Omit to keep the image until you delete it or set a TTL later.
-- `--permanent`: store without any expiry (mutually exclusive with
-  `--ttl-seconds`).
 - `--json`: print the full response as JSON.
 
-The command prints the `image_id` and the stable `image_url`.
+The command prints the `id` and the stable `url`.
 
 **MCP tool.** `upload_image` accepts the image as a base64-encoded string
-alongside `visibility`, `ttl_seconds`, and `permanent`.
+alongside `visibility` and `ttl_seconds`.
 
 **REST.**
 
@@ -50,8 +48,8 @@ visibility=public
 ttl_seconds=604800
 ```
 
-The response carries `{image_id, image_url, visibility, expires_at,
-source, created_at}`.
+The response carries `{id, token, url, visibility, expires_at,
+size_bytes, content_type}`.
 
 ## Public vs. private visibility
 
@@ -87,12 +85,9 @@ have no TTL set (it stays until you delete it).
 
 ```sh
 # Extend to 30 days from now
-goodeye images update <image_id> --ttl-seconds 2592000
+goodeye images update <image_id> --ttl 2592000
 
-# Remove the expiry
-goodeye images update <image_id> --clear-ttl
-
-# Mark explicitly permanent
+# Remove the expiry and keep the image indefinitely
 goodeye images update <image_id> --permanent
 ```
 
@@ -119,7 +114,7 @@ consistent behavior.
 ### List
 
 Lists hosted images you own. Supports optional filters by `source`
-(`uploaded` or `generated`) and `visibility`, plus cursor pagination.
+(`upload` or `generated`) and `visibility`, plus cursor pagination.
 
 - CLI: `goodeye images list` (add `--source`, `--visibility`, `--json`)
 - MCP tool: `list_images`
@@ -141,7 +136,7 @@ Updates visibility and/or expiry on an image you own. All fields are
 optional; only the ones you pass change.
 
 - CLI: `goodeye images update <image_id>` (add `--visibility`,
-  `--ttl-seconds`, `--permanent`, `--clear-ttl`, `--json`)
+  `--ttl`, `--permanent`, `--json`)
 - MCP tool: `update_image`
 - REST: `PATCH /v1/images/{image_id}`
 
@@ -153,6 +148,49 @@ the underlying storage is reclaimed. There is no recovery path.
 - CLI: `goodeye images delete <image_id>` (`--yes` to skip the prompt)
 - MCP tool: `delete_image`
 - REST: `DELETE /v1/images/{image_id}`
+
+## Shortcut commands
+
+Three convenience commands wrap the most common `update` operations so you
+do not have to remember the full flag names.
+
+### share
+
+Make an image public in one step. Anyone with the URL can view it.
+
+```sh
+goodeye images share <image_id>
+```
+
+Equivalent to `goodeye images update <image_id> --visibility public`.
+Accepts `--json` to print the updated record.
+
+### unshare
+
+Restrict an image back to private access (owner only).
+
+```sh
+goodeye images unshare <image_id>
+```
+
+Equivalent to `goodeye images update <image_id> --visibility private`.
+Accepts `--json` to print the updated record.
+
+### set-ttl
+
+Set or clear the expiry on an image without specifying any other fields.
+
+```sh
+# Set a new TTL of 7 days
+goodeye images set-ttl <image_id> 604800
+
+# Remove the expiry entirely
+goodeye images set-ttl <image_id> permanent
+```
+
+Pass a positive integer (seconds from now) to set a new expiry, or the
+literal word `permanent` to remove the expiry and keep the image
+indefinitely. Accepts `--json` to print the updated record.
 
 ## See also
 
