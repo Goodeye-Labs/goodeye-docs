@@ -19,6 +19,8 @@ is: Outcome to KPI(s) to Task to Workflow plus Verifiers.
   functional, or semantic (an LLM judge calibrated with examples).
 - **Image generator**: a deployed, owner-scoped image generation capability a
   workflow can call.
+- **Hosted image**: an image stored by Goodeye with a stable URL that never
+  changes, including images produced by a generator.
 
 ## Documentation
 
@@ -37,6 +39,7 @@ assistants via Context7. Pages:
 | [Templates](templates.md) | Publish, fork, and manage public templates |
 | [Verifiers](verifiers.md) | Score agent output with structural, functional, and semantic checks |
 | [Image Generators](image-generators.md) | Deploy and run owner-scoped image generation |
+| [Images](images.md) | Upload, host, and manage images; get durable URLs for generated images |
 | [Teams](teams.md) | Collaborate with teams, grants, and invitations |
 | [Accounts and Billing](accounts-and-billing.md) | Handles, API keys, usage, tiers, and credits |
 | [Referrals](referrals.md) | Invite new users and earn bonus credits on both sides |
