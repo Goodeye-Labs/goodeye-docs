@@ -39,8 +39,8 @@ Flags:
 
 The command prints the `id` and the stable `url`.
 
-**MCP tool.** `upload_image` accepts the image as a base64-encoded string
-alongside `visibility` and `ttl_seconds`.
+**MCP tool.** `upload_image` accepts the image bytes as a base64-encoded
+string in the `data` parameter, alongside `visibility` and `ttl_seconds`.
 
 **REST.**
 
@@ -114,8 +114,9 @@ have no TTL set (it stays until you delete it).
 - **Set a TTL**: the image stops resolving after the given number of seconds
   from the moment the TTL is applied (not from upload time).
 - **Clear a TTL**: the image stays until you delete it or set a new TTL.
-- **Mark permanent**: records a permanent intent; has the same effect as no
-  TTL but makes intent explicit.
+- **Mark permanent**: clears any expiry so the image stays until you delete
+  it. This is a convenient way to remove a TTL outright; the result is the
+  same as an image that has no TTL set.
 - `ttl_seconds` and `permanent` are mutually exclusive on any single call.
 
 ```sh
