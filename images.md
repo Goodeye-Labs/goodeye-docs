@@ -128,7 +128,7 @@ goodeye images update <image_id> --permanent
 ```
 
 When an image expires, its URL stops resolving (404). The record is not
-immediately purged; cleanup happens asynchronously.
+immediately purged; the storage is reclaimed automatically later.
 
 ## Durable URLs for generated images
 
