@@ -381,7 +381,7 @@ POST   /v1/templates/{identifier}/versions/{v}/deprecate   # flag as deprecated 
 
 ### `POST /v1/templates/{identifier}/safety-check`
 
-Run platform safety checks on a template version. Auth optional; anonymous callers are billed against their per-IP grant. A field over the input size limit is truncated for the scan and flagged via `truncated` and `truncated_fields`; invalid input returns `validation_error` (400).
+Run platform safety checks on a template version. Auth optional; anonymous callers are billed against their per-IP grant. The scan reads the body, description, and outcome, capped at 250,000 characters per field and 500,000 characters across all three combined. When that cap is hit the fields are shortened in priority order body, then description, then outcome (the body keeps its share first), each shortened field is named in `truncated_fields`, and `truncated` is `true`; invalid input returns `validation_error` (400).
 
 ### `POST /v1/templates/{identifier}/archive`
 
