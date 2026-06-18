@@ -106,6 +106,21 @@ goodeye images update <image_id> --visibility private
 The same update command works via MCP (`update_image`) and REST
 (`PATCH /v1/images/{image_id}`).
 
+### Content screening on public images
+
+A public URL is readable by anyone, so Goodeye screens an image for
+disallowed content whenever you make it public: on a public upload and on a
+flip from private to public. Images that stay private are never screened.
+
+- If the screen finds disallowed content, the request is rejected with
+  `422 image_content_rejected` and the image is not made public.
+- If the screen cannot run because it is temporarily unavailable, the request
+  fails with `503 image_screening_unavailable` rather than publishing content
+  that was not screened. Retry shortly.
+
+A private image and private-only changes (setting a TTL, making an image
+private) are never affected.
+
 ## TTL and permanence
 
 An image can have an expiry time (a TTL), be explicitly permanent, or simply
@@ -252,7 +267,9 @@ table.
 | 413 | `file_too_large` | The uploaded file exceeds the per-file size limit |
 | 415 | `unsupported_image_type` | The bytes are not a PNG, JPEG, WebP, or GIF |
 | 422 | `quota_exceeded` | Storing the image would exceed your storage quota |
+| 422 | `image_content_rejected` | A public upload or a flip to public was screened and found to contain disallowed content; the image is not made public |
 | 422 | (no slug) | An update supplied both `ttl_seconds` and `permanent`, which are mutually exclusive. This case returns a plain `detail` message rather than the `{error, message}` envelope. |
+| 503 | `image_screening_unavailable` | A public upload or flip could not be screened because the screen was temporarily unavailable; the image was not made public. Retry shortly |
 
 ## See also
 
