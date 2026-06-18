@@ -99,7 +99,8 @@ version, which keeps a published template's generator snapshot deterministic.
 Binding names follow the same rule as verifiers (lowercase letters, digits, and
 hyphens), and the same update semantics apply: omitting image generators
 preserves the prior set, while `--clear-image-generators` sends an empty list to
-remove them all. See [Image generators](image-generators.md) for deploying them.
+remove them all. Only the workflow owner can change image generator references.
+See [Image generators](image-generators.md) for deploying them.
 
 ### Multi-file bundles (directory mode)
 
