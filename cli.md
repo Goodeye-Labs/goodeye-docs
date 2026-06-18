@@ -418,7 +418,7 @@ Flags a single version as deprecated with a message shown to anyone who forks th
 goodeye templates check-safety <identifier[@N]> [--version N] [--anonymous] [--json]
 ```
 
-Runs safety checks on a public template version. Pass `--anonymous` to run without credentials. Returns `clean`, `flagged`, or `blocked`. If a field is too long for the check, it is shortened for the scan and the output notes this.
+Runs safety checks on a public template version. Pass `--anonymous` to run without credentials. Returns `clean`, `flagged`, `blocked`, or `error`. If a field is too long for the check, it is shortened for the scan and the output notes this.
 
 ### `templates transfer-ownership`
 
