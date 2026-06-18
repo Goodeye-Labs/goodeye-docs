@@ -352,6 +352,11 @@ does not re-scan sibling files. The authoritative, durable trust signal is the
 `safety_verification_status` that publish computed over the whole bundle and
 stored on the version, which `get_template` surfaces.
 
+If a field is too long for the safety check, it is shortened for this scan
+instead of failing, and the response flags that it was shortened so you know the
+scan was partial. The authoritative verdict is still the safety status recorded
+when the version was published.
+
 ## Transferring ownership
 
 Transferring a template does not apply immediately. It creates an invitation
