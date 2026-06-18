@@ -381,7 +381,7 @@ POST   /v1/templates/{identifier}/versions/{v}/deprecate   # flag as deprecated 
 
 ### `POST /v1/templates/{identifier}/safety-check`
 
-Run platform safety checks on a template version. Auth optional; anonymous callers are billed against their per-IP grant.
+Run platform safety checks on a template version. Auth optional; anonymous callers are billed against their per-IP grant. A field over the input size limit is truncated for the scan and flagged via `truncated` and `truncated_fields`; invalid input returns `validation_error` (400).
 
 ### `POST /v1/templates/{identifier}/archive`
 
