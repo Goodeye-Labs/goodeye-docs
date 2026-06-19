@@ -57,10 +57,13 @@ goodeye templates publish incident-postmortem \
 At publish time, each semantic verifier the workflow references is frozen into an
 immutable snapshot stored on the template version. Forks materialize their own
 private copies from these snapshots, and published-template runs use the frozen
-config. Non-owners never see the underlying judge configuration: a template
-exposes only the metadata needed to call a verifier (its name, input contract,
-input fields, and version), not its calibration or judge settings. Sibling files
-from the workflow's bundle are snapshotted into the template version too.
+config. A published template's verifier definitions are public: every reader,
+including anonymous catalog readers, sees each verifier's full definition (its
+criterion, calibration examples, and judge config), not only the metadata needed
+to call it. This lets a reader understand exactly how the workflow is graded
+before forking it. Because the definitions go public, do not put secrets or
+private data in a verifier you publish (see the safety check below). Sibling
+files from the workflow's bundle are snapshotted into the template version too.
 
 ### Safety checks run before any write
 
@@ -71,6 +74,13 @@ plus sibling files) before any database write:
   `safety_verification_failed` (422) and nothing is written.
 - An **advisory** check is a soft signal. If it raises a concern, the publish
   still succeeds but the version is marked `flagged`.
+
+The same checks also cover the verifier definitions this publish makes public.
+A high-confidence secret (an API key, credential, or token) embedded in a
+verifier's criterion or calibration examples hard-blocks the publish; possible
+private data flags the version. When the template references verifiers, the
+publish response includes a `verifier_exposure_notice` restating that the
+definitions are now public.
 
 If the safety check itself cannot complete, the publish aborts with
 `safety_verification_unavailable` (503) rather than stamping an ambiguous status.
@@ -196,7 +206,8 @@ suffix.
 
 Anyone, including anonymous callers, can read the public catalog. The default
 response is the markdown body; pass `--json` for the full record, which includes
-the file manifest and the public verifier snapshots.
+the file manifest and the verifier snapshots in full (each verifier's criterion,
+calibration examples, and judge config).
 
 - **CLI:** `goodeye templates get <identifier>` (`--version`, `--output`, `--json`)
 - **MCP tool:** `get_template` (single files via `get_template_file`)

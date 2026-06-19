@@ -435,7 +435,8 @@ floor wins.
 
 When you grant a workflow, the semantic verifiers it references are granted to
 the same grantee automatically, scoped to that workflow: a `view` grant cascades
-run-only verifier access, while `edit` and `admin` cascade tune access. Changing
+read-and-run (exec) verifier access, while `edit` and `admin` cascade tune
+access. Changing
 the workflow's verifier references on a later save updates the cascaded grants to
 match, and revoking the workflow grant removes the cascaded verifier grants.
 
