@@ -172,8 +172,10 @@ workflow grant. Platform-managed verifiers never appear here.
 
 Returns one verifier version in full: criterion, input contract, input fields,
 calibration examples, judge config, and a `config_hash` for drift detection.
-Defaults to the current version; pin one with `--version`. Requires owner or
-tune access; anything you cannot tune returns 404.
+Defaults to the current version; pin one with `--version`. Any caller who can
+reach the verifier can read it: the owner, and workflow grantees at any role (a
+view/exec grantee can read it, not only run it). Anything you cannot reach
+returns 404.
 
 - CLI: `goodeye verifiers show <id-or-name> [--version N]`
 - MCP tool: `get_verifier`
@@ -259,9 +261,14 @@ semantic verifiers are referenced by ID rather than embedded, so a redeploy can
 ship a sharper criterion without rewriting the workflow.
 
 When you grant a workflow to another user or team, the semantic verifiers it
-references can cascade with the grant so the grantee's agent can run them too.
-See [Workflows](workflows.md) for grants, and [Templates](templates.md) for how
-public templates freeze a verifier snapshot at publish time.
+references cascade with the grant so the grantee's agent can run them and read
+their full definition (criterion and calibration examples), not just run them
+blind. A verifier you can reach is fully readable, so collaborators can see and
+improve the grader instead of tuning against a black box. Writing stays gated:
+deploying a new version needs edit/tune access, and revoking, deleting, or
+rewiring which verifiers a workflow references stays with the owner. See
+[Workflows](workflows.md) for grants, and [Templates](templates.md) for how
+public templates publish verifier definitions.
 
 ## Platform-managed (system) verifiers
 
