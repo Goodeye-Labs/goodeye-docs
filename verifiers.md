@@ -175,7 +175,10 @@ calibration examples, judge config, and a `config_hash` for drift detection.
 Defaults to the current version; pin one with `--version`. Any caller who can
 reach the verifier can read it: the owner, and workflow grantees at any role (a
 view/exec grantee can read it, not only run it). Anything you cannot reach
-returns 404.
+returns 404. Workflow grant roles map onto the verifier's two access levels: a
+workflow view or exec grant gives verifier read and run access, and tune
+(needed to deploy a new version) comes from an edit or admin workflow grant, so
+there is no separate verifier-level view tier.
 
 - CLI: `goodeye verifiers show <id-or-name> [--version N]`
 - MCP tool: `get_verifier`
