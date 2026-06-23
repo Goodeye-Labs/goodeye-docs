@@ -3,7 +3,7 @@
   "url": "https://context7.com/goodeye-labs/goodeye-docs",
   "public_key": "pk_KbLQ43UTXsEbvOvN0ox8b",
   "projectTitle": "Goodeye",
-  "description": "Outcome-aligned AI workflow registry: author workflows and verifiers, publish templates, generate images, and run them from CLI, MCP, or REST.",
+  "description": "Goodeye turns business outcomes into verified AI workflows that agents run reliably: author workflows and verifiers, publish templates, generate images, and run them from CLI, MCP, or REST.",
   "rules": [
     "Goodeye stores workflows (private to the owner) and shares them publicly as templates.",
     "An agent fetches a workflow or template body and executes it as a runbook, it does not summarize it.",

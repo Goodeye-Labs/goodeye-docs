@@ -6,11 +6,12 @@ the pieces you will work with. Read it first, then jump to
 
 ## What Goodeye is
 
-Goodeye is an outcome-aligned AI workflow registry. You start from a business
-outcome you care about, capture the work that moves it as a markdown runbook (a
-workflow), and pair that runbook with checks (verifiers) that score an AI
-agent's output against a measurable result. Workflows stay private to you until
-you choose to share one publicly as a template.
+Goodeye turns the business outcomes you care about into verified AI workflows
+that agents run reliably. You start from a business outcome, capture the work
+that moves it as a markdown runbook (a workflow), and pair that runbook with
+checks (verifiers) that score an AI agent's output against a measurable
+result. Workflows stay private to you until you choose to share one publicly
+as a template.
 
 The intended caller is an AI agent acting on your behalf. When an agent fetches
 a workflow or template body, it follows that body as your runbook: it executes
