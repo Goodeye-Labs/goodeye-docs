@@ -323,17 +323,6 @@ renumbered.
 - **MCP tool:** `delete_workflow_version`
 - **REST:** `DELETE /v1/workflows/{id_or_slug}/versions/{n}`
 
-## Checking safety
-
-Run the platform safety checks against a saved workflow version on demand. This
-writes no state; it bills two metered verifier runs and returns a `status` of
-`clean`, `flagged`, `blocked`, or `error`. Use it to preview what a
-[template publish](templates.md#publishing-a-version) would compute.
-
-- **CLI:** `goodeye workflows check-safety <id-or-name>` (`--version`, `--json`)
-- **MCP tool:** `check_workflow_safety`
-- **REST:** `POST /v1/workflows/{id_or_slug}/safety-check`
-
 ## Teaching a workflow
 
 Teaching improves an existing workflow from your feedback. Like design, it
@@ -382,27 +371,12 @@ with the provenance `source=description_optimization`.
 - **MCP tool:** `optimize_description`
 - **REST:** `POST /v1/workflows/{id_or_slug}/optimize-description`
 
-## Auditing a workflow
+## Auditing and checking safety
 
-An audit is an opinionated health check against a documented best-practice
-rubric. Like the other packs, it returns a prompt pack your agent runs locally.
-It inspects the workflow body and every directing sibling file, enforces at least
-one criterion with a platform LLM judge, and produces a priority-ranked report:
-each finding is tagged P0 (blocker), P1 (recommended), or P2 (polish), quotes the
-text to change, and states one concrete fix. Requires at least `view` access.
-
-The rubric covers both workflow design (a specific, measurable outcome,
-outcome-specific verifiers with explicit pass and fail conditions, a clear input
-and output contract) and skill authoring (actionable instructions, consistent
-terminology, a discoverable description). You choose which findings to fix; the
-audit applies only what you approve and never auto-saves, editing a local copy
-first when one exists and marking the saved version `source=audit`. You can also
-audit a local skill that is not on Goodeye yet, in which case the report
-recommends saving it.
-
-- **CLI:** `goodeye workflows audit <id-or-name>` (omit the id to audit a local skill)
-- **MCP tool:** `audit_workflow`
-- **REST:** `POST /v1/workflows/{id_or_slug}/audit`, or `GET /v1/audit/workflow-prompt` for a local skill
+To grade a workflow against the authoring rubric and apply targeted fixes, or to
+run a safety check on demand, see [Auditing workflows](auditing-workflows.md).
+The audit reports the same checks every public template displays, so you can
+improve a workflow before or after you publish it.
 
 ## Sharing with grants
 
@@ -491,6 +465,8 @@ fork still works and lineage reports the source as permanently deleted.
 
 ## See also
 
+- [Auditing workflows](auditing-workflows.md): grade a workflow against the
+  authoring checks, run an audit, and check safety on demand.
 - [Templates](templates.md): publish a workflow publicly, fork one back, and
   manage public lifecycle.
 - [Verifiers](verifiers.md): deploy the semantic checks a workflow references.

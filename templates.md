@@ -281,6 +281,11 @@ Owners and non-owners see different detail on the safety status. The
 reasoning behind a `flagged` version is shown only to the owner; non-owners see
 the status alone.
 
+Safety is one of four authoring checks shown on every public template, alongside
+Outcome, Runnable, and Well-formed. See
+[Auditing workflows](auditing-workflows.md) for what each check means and how a
+workflow earns it.
+
 ## Lifecycle: unpublish, archive, delete, deprecate
 
 These paths are deliberately distinct. Pick by intent.
@@ -347,26 +352,11 @@ Prefer archive when you want a reversible alternative.
 ## Running a safety check on demand
 
 You can re-run the platform safety checks against a published template version at
-any time. Auth is optional: pass `--anonymous` to run without sending an API key
-(anonymous spend bills against a small per-caller credit budget). Each call bills
-two metered verifier runs and returns a `status` of `clean`, `flagged`,
-`blocked`, or `error`. Unlike `get_template`, full reasoning is returned
-regardless of ownership, because the caller paid for the runs.
-
-- **CLI:** `goodeye templates check-safety <identifier>` (`--version`,
-  `--anonymous`, `--json`)
-- **MCP tool:** `check_template_safety`
-- **REST:** `POST /v1/templates/{template_ref}/safety-check`
-
-**Note:** this on-demand check covers the body, description, and outcome only; it
-does not re-scan sibling files. The authoritative, durable trust signal is the
-`safety_verification_status` that publish computed over the whole bundle and
-stored on the version, which `get_template` surfaces.
-
-If a field is too long for the safety check, it is shortened for this scan
-instead of failing, and the response flags that it was shortened so you know the
-scan was partial. The authoritative verdict is still the safety status recorded
-when the version was published.
+any time, with or without an account. See
+[Auditing workflows](auditing-workflows.md#checking-safety-on-demand) for the
+on-demand safety check (`goodeye templates check-safety`, `check_template_safety`,
+`POST /v1/templates/{template_ref}/safety-check`), what it covers, and how it
+relates to the durable `safety_verification_status` stored at publish.
 
 ## Transferring ownership
 
@@ -386,6 +376,8 @@ The recipient accepts with `goodeye invitations accept <id>` (or the
 
 - [Workflows](workflows.md): the private object you publish from and fork back
   into, including how to carry demo files in a multi-file bundle.
+- [Auditing workflows](auditing-workflows.md): the four authoring checks a
+  template displays and how to improve them.
 - [Verifiers](verifiers.md): the semantic checks a template snapshots.
 - [Accounts and Billing](accounts-and-billing.md): handles, usage, and credits.
 - [CLI](cli.md), [MCP](mcp.md), [REST API](rest-api.md): the three surfaces in
