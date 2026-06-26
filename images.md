@@ -76,10 +76,13 @@ Behavior on a serving request:
 - **Public image**: served to anyone with the URL, including callers with no
   credentials. Responses carry cache headers so browsers and CDNs can hold a
   copy for a bounded window.
-- **Private image**: requires credentials for the owner. An anonymous request
-  returns `401 auth_required`; a request authenticated as someone other than
-  the owner returns `404 image_not_found` (the same as a missing image, so
-  ownership is not revealed).
+- **Private image**: requires the owner's credentials, or a valid view link. A
+  view link appends the image's capability secret as a `?k=` query parameter
+  (`/v1/i/{token}.{ext}?k=<secret>`), so it opens in any browser and can be
+  forwarded to people you choose, while the bare URL stays locked. An anonymous
+  request with neither returns `401 auth_required`; a request authenticated as
+  someone other than the owner returns `404 image_not_found` (the same as a
+  missing image, so ownership is not revealed).
 - **Expired image**: once an image's TTL has passed, its URL returns
   `404 image_not_found`, effective immediately on the next request.
 
@@ -105,6 +108,23 @@ goodeye images update <image_id> --visibility private
 
 The same update command works via MCP (`update_image`) and REST
 (`PATCH /v1/images/{image_id}`).
+
+### Viewing and sharing a private image
+
+A private image still has a browser-viewable **view link**: a URL that carries
+the image's capability secret as a `?k=` query parameter. Anyone you hand that
+link to can open the image, while the bare URL (without the secret) stays
+locked, so you do not have to make an image public to let a few people see it.
+
+- `get_image` (CLI `goodeye images get <image_id>`, REST
+  `GET /v1/images/{image_id}`) returns the view link as the `url` field for a
+  private image you own. Listing images never includes the secret; fetch a
+  single image to get its view link.
+- To revoke links you shared earlier, rotate the secret: CLI
+  `goodeye images reset-link <image_id>` (or `goodeye images update <image_id>
+  --rotate-view-secret`), MCP `update_image` with `rotate_view_secret: true`, or
+  REST `PATCH /v1/images/{image_id}` with `{"rotate_view_secret": true}`. Every
+  previously shared link stops working and a fresh view link is issued.
 
 ### Content screening on public images
 
@@ -160,10 +180,13 @@ list, which is unchanged). Each entry in `hosted_images` is either an object or
   URL was not on the fetch allowlist or a transient error occurred); the
   provider URL in `image_urls` is your fallback for that position.
 
-Authenticated generations are stored as **private** images with no expiry, so
-they persist until you delete them. Anonymous generations are stored as
-**public** images with a short TTL; the URL is accessible without credentials
-but expires automatically.
+Authenticated generations are hosted as **public** images by default with no
+expiry, so the `url` opens in any browser and persists until you delete it. Pass
+`visibility=private` (CLI `--visibility private`) to keep an image private
+instead; its `url` is then a view link only you can open and forward (see
+"Viewing and sharing a private image" above). Anonymous generations are always
+stored as **public** images with a short TTL; the URL is accessible without
+credentials but expires automatically.
 
 You can update a hosted generated image with `goodeye images update` using the
 `id` from the corresponding `hosted_images` entry.
@@ -194,11 +217,13 @@ masking).
 
 ### Update
 
-Updates visibility and/or expiry on an image you own. All fields are
-optional; only the ones you pass change.
+Updates visibility, expiry, or the private view link on an image you own. All
+fields are optional; only the ones you pass change. Pass `--rotate-view-secret`
+(MCP/REST `rotate_view_secret: true`) to issue a fresh view link and revoke the
+links you shared earlier.
 
 - CLI: `goodeye images update <image_id>` (add `--visibility`,
-  `--ttl`, `--permanent`, `--json`)
+  `--ttl`, `--permanent`, `--rotate-view-secret`, `--json`)
 - MCP tool: `update_image`
 - REST: `PATCH /v1/images/{image_id}`
 
@@ -213,7 +238,7 @@ the underlying storage is reclaimed. There is no recovery path.
 
 ## Shortcut commands
 
-Three convenience commands wrap the most common `update` operations so you
+Four convenience commands wrap the most common `update` operations so you
 do not have to remember the full flag names.
 
 ### share
@@ -253,6 +278,18 @@ goodeye images set-ttl <image_id> permanent
 Pass a positive integer (seconds from now) to set a new expiry, or the
 literal word `permanent` to remove the expiry and keep the image
 indefinitely. Accepts `--json` to print the updated record.
+
+### reset-link
+
+Issue a fresh view link for a private image and revoke the links you shared
+earlier, in one step.
+
+```sh
+goodeye images reset-link <image_id>
+```
+
+Equivalent to `goodeye images update <image_id> --rotate-view-secret`. Prints
+the new view link. Accepts `--json` to print the updated record.
 
 ## Error codes
 
