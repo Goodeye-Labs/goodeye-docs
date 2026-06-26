@@ -139,8 +139,9 @@ request 1 to 4 images per call (`num_images`), and each image is billed
 separately.
 
 - CLI: `goodeye image-generators generate` (`--prompt`, `--generator`,
-  `--model`, `--reference-image-url`, `--num-images`, `--seed`, `--params-json`,
-  `--version`, `--anonymous`, `--workflow-id`, `--run-id`, `--json`)
+  `--model`, `--reference-image-url`, `--num-images`, `--seed`, `--visibility`,
+  `--params-json`, `--version`, `--anonymous`, `--workflow-id`, `--run-id`,
+  `--json`)
 - MCP tool: `generate_image`
 - REST: `POST /v1/image-generators/{generator_id}/runs`
 
@@ -148,7 +149,19 @@ The CLI prints image URLs to stdout, one per line (so the result pipes cleanly),
 with cost and run metadata on stderr or in `--json` mode. A successful call
 returns `{run_id, model_tier_or_model, image_url, image_urls, width, height,
 num_images, cost_usd, duration_ms, status, created_at, error_code,
-error_message}`.
+error_message, hosted_images}`. Each output is also auto-hosted on Goodeye and
+returned in `hosted_images`; see
+[Durable URLs for generated images](images.md).
+
+### Image visibility
+
+By default each generated image is hosted as a **public** image, so the `url`
+in its `hosted_images` entry opens in any browser. Set `visibility` to
+`private` (CLI `--visibility private`, MCP/REST `visibility: "private"`) to keep
+an image private instead; its `url` is then a view link only you can open and
+forward to people you choose, while the plain URL stays locked. Anonymous
+generations are always public. See
+[Viewing and sharing a private image](images.md) for the full view-link model.
 
 ### Call modes
 
@@ -204,10 +217,12 @@ Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
 
 ### Safety checker
 
-The provider safety checker is forced on for system tiers and for anonymous
-callers: those paths serve untrusted or unauthenticated input and cannot opt out
-of safety filtering. For your own deployed generators called with auth, your
-generator's default parameters apply.
+The provider safety checker is forced on for system tiers, anonymous callers,
+and any image hosted publicly (the default): those paths serve untrusted,
+unauthenticated, or world-readable output and cannot opt out of safety
+filtering. Only your own deployed generators called with auth and
+`visibility=private` keep control of the checker, where your generator's default
+parameters apply.
 
 ### The prompt is never stored
 
