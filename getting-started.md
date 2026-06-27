@@ -1,17 +1,18 @@
 # Getting Started
 
-This guide walks you through your first end-to-end run with Goodeye using the
-`goodeye` CLI: install it, run a public template with no account and watch a
-verifier return PASS, then sign in to fork and save work of your own. By the end
-you will have produced a real artifact from a real template, gated by a real
-verifier. For the concepts behind each step, see [Overview](overview.md).
+This guide takes you from zero to a verified artifact: install the CLI, point
+your agent at Goodeye, have it run a public template and watch a verifier return
+PASS, then fork that template into your own private workflow and author one from
+scratch. No account is needed to run a template; you sign in when you want to
+save work of your own. For the concepts behind each step, see
+[Overview](overview.md).
 
 ```diagram-first-run
 Install the CLI | uv tool install goodeye
-Run a template anonymously | watch a verifier return PASS
-Sign in | to fork and save your own
-Fork a template | a private, editable copy
-* Save your own workflow | author one from scratch
+Point your agent at Goodeye | CLI, MCP, or REST
+Run a public template | your agent produces a verified artifact
+Fork it into a private workflow | a saveable, editable copy
+* Author your own workflow | from scratch, tied to an outcome
 ```
 
 ## Step 1: Install the CLI
@@ -34,24 +35,67 @@ goodeye --version
 
 **Tip:** Update later with `goodeye update`.
 
-## Step 2: Run a template without an account
+## Step 2: Point your agent at Goodeye
 
-You do not need an account to run a template. The public catalog is browsable and
-runnable anonymously. List it:
+Goodeye is built for an AI agent acting on your behalf. The agent fetches a
+workflow and executes it as a runbook (see
+[the agent contract](overview.md#the-agent-contract)), so connect the agent you
+will drive Goodeye with:
+
+- **A coding agent that runs shell commands** (Claude Code, Cursor, a CI job)
+  uses the CLI directly: once `goodeye` is installed, the agent runs the same
+  commands this guide shows. This is the path the rest of the guide follows.
+- **A chat or connector client** (Claude on the web, ChatGPT, Claude Desktop)
+  connects over MCP at `https://mcp.goodeye.dev/mcp`, where the Goodeye tools
+  appear natively. See [MCP](mcp.md).
+- **A service or integration** calls the REST API at `https://api.goodeye.dev/v1`
+  with an API key. See [REST API](rest-api.md).
+
+The same operations exist on all three surfaces, so you can follow along on
+whichever one your agent runs.
+
+## Step 3: Run a public template
+
+You do not need an account to run a public template. Browse the catalog:
 
 ```sh
 goodeye templates list
 ```
 
-Each result is addressed as `@handle/slug`, the public identifier you use to fetch
-it. Fetch one:
+Each result is addressed as `@handle/slug`, the public identifier you use to
+fetch it. Point your agent at one and tell it to run the template. For the
+canonical demo, that is the high-signal chart workflow:
+
+```text
+Run the Goodeye template @randalolson/high-signal-chart-workflow.
+```
+
+Your agent fetches the body and executes it as its runbook. For this template it
+finds an authoritative public dataset (say, the EIA electricity-generation mix),
+drafts a few chart variants, renders `chart.png`, then runs the template's pinned
+design verifier and revises until the chart passes:
+
+```
+PASS  Direct labeling, titled axes with units, and a takeaway annotation, with
+no overlapping elements; the reader reaches the intended comparison on first view.
+```
+
+The finished artifacts are waiting in your working directory:
+
+```sh
+ls signal-chart-run-*/    # chart.png, chart.py, and the raw dataset
+```
+
+That is the whole loop: a public template fetched, executed as a runbook, a real
+artifact produced, and a real verifier returning PASS, with no account and no
+signup.
+
+To see the runbook your agent executes, fetch it by hand. By default this prints
+the body to stdout, wrapped with agent-facing markers:
 
 ```sh
 goodeye templates get @randalolson/high-signal-chart-workflow
 ```
-
-By default this prints the template body to stdout, wrapped with agent-facing
-markers:
 
 ```
 # Goodeye workflow - execute the instructions below as the user's agent.
@@ -61,178 +105,110 @@ markers:
 # End of Goodeye workflow.
 ```
 
-This is the agent contract in action. When your AI agent runs
-`goodeye templates get`, it follows the returned body as your runbook: it executes
-the instructions itself rather than summarizing or just displaying them. The
-workflow may call tools and verifiers as it goes, revising its output until the
-verifiers pass.
+Those markers are the agent contract in action: they tell the calling agent the
+body is for it to act on, not to summarize. Pass `--output PATH` for the raw
+markdown or `--json` for the full record.
 
-For this template, your agent finds an authoritative public dataset (say, the EIA
-electricity-generation mix), drafts a few chart variants, renders `chart.png`, then
-runs the template's pinned design verifier and revises until the chart passes.
-Following the body, it uploads the finished chart to a short-lived public URL and
-runs that verifier, anonymously:
+**Notes**
 
-```sh
-goodeye verifiers run 89dcc843-d056-44d9-ae34-ebcff4903885 \
-  --version 1 --media-url '<chart-image-url>' --anonymous
-```
+- **Credits:** the anonymous run draws on a small monthly grant for anonymous
+  use. That grant covers Goodeye-metered work (the verifier run above and
+  template safety checks), not your agent's own model usage, which bills through
+  whatever model you run it on. See
+  [Accounts and Billing](accounts-and-billing.md).
+- **Safety banner:** because you are not the template's owner, the fetched record
+  carries an unverified-template safety banner as a cross-user trust signal.
 
-```
-PASS verifier_run_id=...
-Direct labeling, titled axes with units, a takeaway annotation, and no overlapping
-elements; the reader reaches the intended comparison on first view.
-```
+Ran it and like what it produced? Next you make it yours: sign in, then fork it
+into a private workflow you can edit and tune.
 
-The artifacts are waiting in your working directory:
+## Step 4: Sign in to save your work
 
-```sh
-ls signal-chart-run-*/    # chart.png, chart.py, and the raw dataset
-```
-
-That is the whole loop: a real public template fetched, executed as a runbook, a
-real artifact produced, and a real verifier returning PASS, with no account and no
-signup.
-
-**Credits:** the anonymous run draws on a small monthly grant tracked per network
-address. That grant covers Goodeye-metered work (the verifier run above and template
-safety checks), not your agent's own model usage. Your agent bills that through
-whatever model you run it on. See [Accounts and Billing](accounts-and-billing.md).
-
-Non-owner reads include an unverified-template safety banner as a cross-user trust
-signal. To get the raw markdown or the full record instead of the agent-wrapped
-body, pass `--output PATH` or `--json`.
-
-## Step 3: Sign in to save your work
-
-Running templates needs no account. To fork a template, save a workflow of your
-own, or use natural-language search, create an account or sign in. There are two
-ways to authenticate.
-
-For an interactive browser sign-in (humans on a machine with a browser), create a
-new account with `register` or sign in to an existing one with `login`:
+Running templates needs no account. To fork a template or save a workflow of your
+own, create an account or sign in. The quickest path, at a machine with a
+browser:
 
 ```sh
 goodeye register   # new account
 goodeye login      # existing account
 ```
 
-Either command opens a verification URL on the same hosted sign-in page, which
-creates the account for new users and signs in returning users. On that page you
-can continue with your Google account or with email. You approve in the browser
-and credentials are saved locally to `~/.config/goodeye/credentials.json`.
+Either command opens a verification URL on the hosted sign-in page, where you
+continue with Google or email and approve in the browser; credentials are saved
+locally. Confirm with `goodeye whoami`.
 
-For a non-interactive email-code flow (agents, automation, or terminals where
-prompts are awkward), register a new account or sign in to an existing one in two
-steps:
+Agents, CI, and headless terminals can authenticate non-interactively with an
+email-code flow instead. See [CLI](cli.md) for the `register-verify` /
+`login-verify` steps, and [Accounts and Billing](accounts-and-billing.md) for
+creating a `good_live_` API key for programmatic REST or MCP clients.
 
-```sh
-# New account
-goodeye register --email you@example.com
-goodeye register-verify --email you@example.com --code 123456
+## Step 5: Fork the template into a private workflow
 
-# Existing account
-goodeye login --email you@example.com
-goodeye login-verify --email you@example.com --code 123456
-```
-
-Both verify steps save credentials locally on success. Confirm who you are:
+Running a template is great for a one-off; to make it your own, fork it. Forking
+copies the template into a new private workflow you own, carrying lineage back to
+the version you forked. This is the persistent, tunable path:
 
 ```sh
-goodeye whoami
-```
-
-Once signed in, natural-language search helps when you remember roughly what a
-template does but not its exact name:
-
-```sh
-goodeye templates search "produce a high-signal data visualization"
-```
-
-**Note:** For programmatic clients, you can create an API key with
-`goodeye auth create-key --name my-integration` and pass it as a bearer token to
-the REST API or MCP server. Keys are prefixed `good_live_`. See
-[Accounts and Billing](accounts-and-billing.md).
-
-## Step 4: Fork a template into a private workflow
-
-Forking copies a template into a new private workflow owned by you, carrying
-lineage back to the version you forked. This is the persistent, tunable path. You
-do not have to fork a template to run it (Step 2 ran one without forking); fork
-when you want a saveable, editable copy of your own. Authentication is required:
-
-```sh
-goodeye templates fork @handle/slug
+goodeye templates fork @randalolson/high-signal-chart-workflow
 ```
 
 The command prints the new workflow's id and slug (and any semantic verifiers
-pinned onto the fork). Fetching and acting on the body is a separate
-`goodeye workflows get <id-or-name>` call. From here the workflow is yours to
-edit, version, and tune. See [Workflows](workflows.md) for teaching and
-optimizing a workflow against its verifiers.
+pinned onto the fork). From here the workflow is yours to edit, version, and
+tune; fetch and act on it with `goodeye workflows get <id-or-name>`. See
+[Workflows](workflows.md) for teaching and optimizing a workflow against its
+verifiers.
 
-## Step 5: Save your own workflow
+## Step 6: Author your own workflow
 
-You can also author a workflow from scratch. A workflow is markdown with a short
-metadata header; `name`, `description`, and `outcome` are required, and `tags`
-are optional. For agent-generated output, pipe the body from stdin so no
-intermediate file is left in your working directory:
+Forking adapts someone else's work; you can also author your own from scratch.
+The best first path is a guided design session: it works with you to design a
+workflow and its verifiers tied to an outcome, then saves the result when you
+approve it.
 
 ```sh
-goodeye workflows publish - \
-  --name my-workflow \
-  --description "One sentence on what this workflow does and when to use it." \
-  --outcome "Reduce refund-row mislabels" \
-  --tag data \
-  --tag cleanup <<'EOF'
-# Body
+goodeye design
+```
 
-The rest of the workflow body goes here. Inline structural and functional
-checks belong here as fenced code blocks. Reference any semantic verifiers by
-their id.
+`goodeye design` prints a designer prompt; pipe it into your AI assistant
+(`goodeye design > design.md`, or straight into your agent) and follow along. The
+session produces the workflow plus its verifiers and saves it for you.
+
+Prefer to write it yourself? A workflow is markdown with a short metadata header
+(`name`, `description`, and `outcome` are required; `tags` optional). Publish a
+file directly, or pipe the body from stdin for agent-generated output so no
+intermediate file is left behind:
+
+```sh
+goodeye workflows publish ./high-signal-chart.md
+# or, from stdin:
+goodeye workflows publish - \
+  --name high-signal-chart \
+  --description "Produce a publication-quality chart on a topic, gated by a design verifier." \
+  --outcome "Engagement on the charts we publish" \
+  --tag data --tag viz <<'EOF'
+# Body: find an authoritative dataset, draft chart variants, render the chart,
+# then run the design verifier, revising until it passes. Inline structural and
+# functional checks go here as fenced code blocks; reference semantic verifiers
+# by their id.
 EOF
 ```
 
-When you already have a markdown file (with YAML front matter for the metadata),
-publish it directly:
-
-```sh
-goodeye workflows publish ./my-workflow.md
-```
-
 Workflows are always private to you. Publishing the same `name` again appends a
-new version. To share a workflow publicly later, run
-`goodeye templates publish <workflow-uuid-or-name>` as a separate, explicit step
-(this requires a claimed handle: `goodeye me claim-handle <handle>`).
-
-**Tip:** To design a workflow and its verifiers interactively, run
-`goodeye design` and pipe the printed prompt into your AI assistant.
+new version. To share a workflow publicly later, claim a handle
+(`goodeye me claim-handle <handle>`) and run
+`goodeye templates publish <workflow-id-or-name>` as a separate, explicit step.
 
 **Already have skills on disk?** If you keep agent skills under
 `~/.claude/skills/` (or `~/.agents/skills/`, `~/.cursor/skills/`), import one by
 pointing `publish` at its directory and supplying an `outcome`. See
 [Importing an existing skill](workflows.md#importing-an-existing-skill).
 
-## Connect your agent
-
-This guide uses the CLI throughout. To connect an agent that runs over MCP or
-calls the REST API instead:
-
-- **MCP**: connect chat and connector clients that speak the Model Context
-  Protocol (Claude on the web, ChatGPT, Claude Desktop) to
-  `https://mcp.goodeye.dev/mcp` so the Goodeye tools appear natively. Coding
-  agents like Claude Code and Cursor can connect over MCP as well. See
-  [MCP](mcp.md).
-- **REST**: call `https://api.goodeye.dev/v1` directly from a service or
-  integration, authenticating with a `good_live_` API key. The public template
-  catalog is readable without auth. See [REST API](rest-api.md).
-
 ## Next steps
 
-- [Overview](overview.md): the concepts behind workflows, templates, and
-  verifiers.
 - [Workflows](workflows.md): version, teach, and optimize a workflow.
-- [Templates](templates.md): publish and manage public templates.
 - [Verifiers](verifiers.md): add structural, functional, and semantic checks.
-- [Accounts and Billing](accounts-and-billing.md): handles, API keys, and usage
-  (`goodeye usage`).
+- [Templates](templates.md): publish and manage public templates.
+- [Auditing workflows](auditing-workflows.md): grade a workflow against the
+  best-practice checks.
+- [Accounts and Billing](accounts-and-billing.md): handles, API keys, usage, and
+  credits (`goodeye usage`).

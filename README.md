@@ -12,8 +12,9 @@ reachable from three peer surfaces: the CLI, an MCP server, and a REST API.
 Goodeye turns a stated business outcome into a deployed AI workflow. The chain
 is: Outcome to KPI(s) to Task to Workflow plus Verifiers.
 
-- **Workflow**: a markdown runbook stored privately in the registry, tagged with
-  the outcome it serves. An agent fetches the body and executes it as a runbook.
+- **Workflow**: a markdown runbook stored privately in your Goodeye account,
+  tagged with the outcome it serves. An agent fetches the body and executes it as
+  a runbook.
 - **Template**: the public form of a workflow, shared under your handle so other
   people and their agents can find, fetch, and fork it.
 - **Verifier**: a check the workflow runs on agent output. Structural,
@@ -33,17 +34,18 @@ assistants via Context7. Pages:
 |------|-------------|
 | [Overview](overview.md) | Core concepts and the Goodeye mental model |
 | [Getting Started](getting-started.md) | Install the CLI, sign in, fetch and run your first template |
-| [CLI](cli.md) | Command reference for the `goodeye` CLI |
-| [MCP](mcp.md) | Connect AI assistants via the Model Context Protocol |
-| [REST API](rest-api.md) | Use Goodeye from the `/v1` REST API |
 | [Workflows](workflows.md) | Author, version, teach, optimize, and share workflows |
-| [Templates](templates.md) | Publish, fork, and manage public templates |
 | [Verifiers](verifiers.md) | Score agent output with structural, functional, and semantic checks |
+| [Templates](templates.md) | Publish, fork, and manage public templates |
+| [Auditing workflows](auditing-workflows.md) | Grade a workflow against the best-practice checks |
 | [Image Generators](image-generators.md) | Deploy and run owner-scoped image generation |
 | [Images](images.md) | Upload, host, and manage images; get durable URLs for generated images |
 | [Teams](teams.md) | Collaborate with teams, grants, and invitations |
 | [Accounts and Billing](accounts-and-billing.md) | Handles, API keys, usage, tiers, and credits |
 | [Referrals](referrals.md) | Invite new users and earn bonus credits on both sides |
+| [CLI](cli.md) | Command reference for the `goodeye` CLI |
+| [MCP](mcp.md) | Connect AI assistants via the Model Context Protocol |
+| [REST API](rest-api.md) | Use Goodeye from the `/v1` REST API |
 
 ## Quick links
 

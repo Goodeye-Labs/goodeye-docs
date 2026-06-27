@@ -28,17 +28,7 @@ Before a user has an API key, two endpoints let clients register and log in.
 
 ### `GET /.well-known/goodeye-client-config`
 
-No auth required. Returns the default bundle ignore list (applied when pushing a workflow directory) and the configuration the CLI uses to begin an interactive sign-in. This is the first call the CLI makes on a fresh install. For programmatic access, authenticate with an API key (see below) rather than the interactive sign-in flow.
-
-```http
-GET /.well-known/goodeye-client-config
-```
-
-```json
-{
-  "ignore_defaults": ["*.pyc", ".DS_Store", "..."]
-}
-```
+CLI bootstrap config (no auth required); programmatic clients should authenticate with an API key.
 
 ### Registration and login (email code flow)
 
@@ -71,7 +61,7 @@ Use `POST /v1/login` and `POST /v1/login/verify` for returning accounts (same fl
 
 ### OAuth token exchange
 
-MCP clients that completed an OAuth sign-in call `POST /v1/auth/exchange` to receive a host-scoped CLI key. This is handled automatically by the CLI; direct callers generally do not need it.
+`POST /v1/auth/exchange` is handled automatically by the CLI after an OAuth sign-in; direct API callers do not need it.
 
 ## Pagination
 
@@ -80,11 +70,11 @@ List endpoints return a cursor-paginated response:
 ```json
 {
   "items": [...],
-  "next_cursor": "eyJjIjoiMjAyNC0wMS0wMVQwMDowMDowMFoiLCJpIjoiYWJjIn0"
+  "next_cursor": "<opaque-cursor>"
 }
 ```
 
-Pass `next_cursor` as the `cursor` query parameter on the next request. When `next_cursor` is `null`, you are on the last page. Most list endpoints also accept a `limit` parameter.
+Pass `next_cursor` as the `cursor` query parameter on the next request. Treat the cursor as opaque: do not parse or construct it. When `next_cursor` is `null`, you are on the last page. Most list endpoints also accept a `limit` parameter.
 
 ## Error model
 
@@ -141,7 +131,7 @@ Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
 
 ```json
 {
-  "id": "usr_...",
+  "id": "9f8c1e2a-3b4d-4c5e-8f6a-1b2c3d4e5f60",
   "email": "you@example.com",
   "handle": "yourhandle",
   "handle_claimed_at": "2024-06-01T12:00:00Z"
@@ -211,9 +201,19 @@ Content-Type: application/json
 
 List your keys (metadata only, no secrets).
 
-### `DELETE /v1/api-keys/{key_id}`
+### `DELETE /v1/api-keys/{key_id_or_name}`
 
-Revoke a key. Returns `204 No Content`. A second delete returns `404`.
+Revoke a key by id or name. Returns `204 No Content`. A second delete returns
+`404`.
+
+## Referrals
+
+```
+GET  /v1/referrals/me        # your referral code, redemptions, and credits earned
+POST /v1/referrals/redeem    # redeem another user's code for bonus credits
+```
+
+Redeem body: `{"code": "..."}`. Both require authentication. See [Referrals](referrals.md).
 
 ## Workflows
 
@@ -238,7 +238,7 @@ Content-Type: application/json
 
 ```json
 {
-  "workflow_id": "wf_...",
+  "workflow_id": "89dcc843-d056-44d9-ae34-ebcff4903885",
   "version": 1,
   "version_token": "...",
   "name": "Weekly report",
@@ -265,7 +265,7 @@ Fetch a specific version directly.
 
 ### `GET /v1/workflows/{id_or_slug}/files`
 
-Fetch files from a workflow bundle. Use `?path=relative/path.md` for a single file or `?paths=a.md&paths=b.md` for a batch.
+Fetch files from a workflow bundle. Use `?path=relative/path.md` for a single file or `?paths=a.md&paths=b.md` for a batch. On a single-file fetch, `format=raw` returns the file's raw bytes instead of a JSON envelope, and `sha256=` content-addresses the fetch.
 
 ### `POST /v1/workflows/{id_or_slug}/archive`
 
@@ -297,7 +297,7 @@ Tune the workflow's trigger description for accuracy (description-only). Optiona
 
 ### `POST /v1/workflows/{id_or_slug}/audit`
 
-Audit a workflow against a best-practice rubric. Returns a priority-ranked report (P0, P1, P2) with concrete fixes and runs at least one platform LLM-judge criterion. Requires at least `view` access.
+Return the audit pack for a workflow: a prompt pack your agent runs locally to assess the workflow against a best-practice rubric and produce a priority-ranked report (P0, P1, P2) with concrete fixes. No server-side LLM call, so the endpoint itself draws no credits. Requires at least `view` access.
 
 ### `GET /v1/audit/workflow-prompt`
 
@@ -344,7 +344,7 @@ Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
 Content-Type: application/json
 
 {
-  "workflow_id": "wf_...",
+  "workflow_id": "89dcc843-d056-44d9-ae34-ebcff4903885",
   "release_notes": "Initial release"
 }
 ```
@@ -369,7 +369,7 @@ Fetch a template. `identifier` is a UUID or `@handle/slug` (optionally `@handle/
 
 ### `GET /v1/templates/{identifier}/files`
 
-Fetch a single file from a template version's file tree. Query param: `path`.
+Fetch a single file from a template version's file tree. Query params: `path` (required), `format` (`raw` returns the file's raw bytes instead of a JSON envelope), `sha256` (content-address the fetch so a republished or removed file no longer resolves at a stale address).
 
 ### Version management
 
@@ -381,7 +381,7 @@ POST   /v1/templates/{identifier}/versions/{v}/deprecate   # flag as deprecated 
 
 ### `POST /v1/templates/{identifier}/safety-check`
 
-Run platform safety checks on a template version. Auth optional; anonymous callers are billed against their per-IP grant. The scan reads the body, description, and outcome. If a field is too long to scan in full it is shortened for this check rather than failing: `truncated` is then `true` and `truncated_fields` names the shortened fields, so you know the verdict is partial. Invalid input returns `validation_error` (400).
+Run platform safety checks on a template version. Auth optional; anonymous callers are billed against their anonymous credit grant. The scan reads the body, description, and outcome. If a field is too long to scan in full it is shortened for this check rather than failing: `truncated` is then `true` and `truncated_fields` names the shortened fields, so you know the verdict is partial. Invalid input returns `validation_error` (400).
 
 ### `POST /v1/templates/{identifier}/archive`
 
@@ -403,7 +403,7 @@ Transfer ownership to another user. Returns an invitation; the recipient must ac
 
 ### `POST /v1/verifiers`
 
-Deploy a semantic verifier (create or new version).
+Deploy a semantic verifier (create or new version). Required fields: `name`, `description`, `criterion`, `input_contract`. `input_fields` is required for `text` and `text_image` contracts; `few_shot_examples` and `model_settings` are optional.
 
 ```http
 POST /v1/verifiers
@@ -412,12 +412,14 @@ Content-Type: application/json
 
 {
   "name": "response-clarity",
-  "criterion": "The response is clear, direct, and free of unnecessary qualifiers.",
+  "description": "Scores whether an answer is clear, direct, and free of hedging.",
+  "criterion": "Return passed=true when the response is clear, direct, and free of unnecessary qualifiers.",
+  "input_contract": "text",
   "input_fields": ["user_query", "agent_response"],
-  "examples": [
+  "few_shot_examples": [
     {
       "inputs": {"user_query": "What is 2+2?", "agent_response": "4"},
-      "expected": true,
+      "passed": true,
       "reasoning": "Direct and complete."
     }
   ]
@@ -426,7 +428,7 @@ Content-Type: application/json
 
 ```json
 {
-  "verifier_id": "vrf_...",
+  "verifier_id": "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
   "name": "response-clarity",
   "version": 1,
   "version_token": "...",
@@ -449,7 +451,7 @@ Get a verifier version including criterion, calibration examples, and contract. 
 Execute a verifier judgment.
 
 ```http
-POST /v1/verifiers/vrf_.../runs
+POST /v1/verifiers/1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d/runs
 Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
 Content-Type: application/json
 
@@ -463,8 +465,8 @@ Content-Type: application/json
 
 ```json
 {
-  "verifier_run_id": "vrn_...",
-  "verifier_id": "vrf_...",
+  "verifier_run_id": "7f3e9c1b-2d4a-4e8f-9a6b-5c0d1e2f3a4b",
+  "verifier_id": "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
   "version": 1,
   "status": "complete",
   "passed": false,
@@ -523,6 +525,31 @@ Revoke an image generator.
 
 Permanently erase an image generator and all its run records.
 
+## Images
+
+Hosted images with stable URLs (including images produced by a generator). Images are private by default; public images serve to anyone with the URL. Management routes require authentication; the byte-serve route is public.
+
+```
+POST   /v1/images                 # upload (multipart: file, visibility, ttl_seconds); returns 201
+GET    /v1/images                 # list your images (filters: source, visibility; limit, cursor)
+GET    /v1/images/{image_id}      # fetch one image record
+PATCH  /v1/images/{image_id}      # update visibility, expiry, or view link
+DELETE /v1/images/{image_id}      # permanently delete; returns 204
+GET    /v1/i/{token}.{ext}        # public byte-serve (also HEAD); raw image bytes by token
+```
+
+Upload accepts PNG, JPEG, WebP, and GIF. `PATCH` body fields: `visibility`, `ttl_seconds`, `permanent` (mutually exclusive with `ttl_seconds`; clears the expiry), and `rotate_view_secret` (issue a fresh private view link and revoke links shared earlier). On `/v1/i/{token}.{ext}`, the extension is cosmetic; private images require the owner or a valid view-link secret.
+
+Image-specific errors:
+
+| HTTP status | Slug | When it occurs |
+|-------------|------|----------------|
+| 413 | `file_too_large` | Image file exceeds the maximum allowed size |
+| 413 | `image_dimensions_exceeded` | Image resolution exceeds the maximum allowed pixels |
+| 415 | `unsupported_image_type` | File is not a PNG, JPEG, WebP, or GIF |
+| 422 | `image_content_rejected` | A public image was screened as disallowed content |
+| 503 | `image_screening_unavailable` | Content screen unavailable; the image was not made public (retry) |
+
 ## Teams
 
 All team endpoints require authentication.
@@ -533,7 +560,7 @@ GET    /v1/teams                                   # list teams (filter: mine|me
 DELETE /v1/teams/{team_id}                         # delete a team
 GET    /v1/teams/{team_id}/members                 # list members
 POST   /v1/teams/{team_id}/members                 # add a member (returns invitation)
-DELETE /v1/teams/{team_id}/members/{user_id}       # remove a member
+DELETE /v1/teams/{team_id}/members/{user_identifier} # remove a member
 POST   /v1/teams/{team_id}/transfer-ownership      # transfer ownership (returns invitation)
 ```
 
@@ -575,7 +602,9 @@ Returns `{"status": "ok"}`. Available on every host without auth.
 - [Templates](templates.md)
 - [Verifiers](verifiers.md)
 - [Image generators](image-generators.md)
+- [Images](images.md)
 - [Teams](teams.md)
+- [Referrals](referrals.md)
 - [MCP](mcp.md)
 - [CLI](cli.md)
 - [Accounts and billing](accounts-and-billing.md)

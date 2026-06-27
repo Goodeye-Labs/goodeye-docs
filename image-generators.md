@@ -7,8 +7,8 @@ outcome you defined.
 
 This page covers deploying and managing your own generators, the three ways to
 call image generation, and how anonymous and billing behavior works. For where
-generators fit alongside the rest of the registry, see [Overview](overview.md);
-for the runbooks that call them, see [Workflows](workflows.md).
+generators fit alongside everything else, see [Overview](overview.md); for the
+runbooks that call them, see [Workflows](workflows.md).
 
 ## What a generator is
 
@@ -26,9 +26,9 @@ are immutable.
 
 ## Deploy a generator
 
-Deploying creates the generator on first call and appends a new version on every
-later call under the same name. A generator name is unique per owner: lowercase
-letters, digits, and hyphens, up to 128 characters.
+A generator name is unique per owner: lowercase letters, digits, and hyphens,
+up to 128 characters. The first deploy creates it; later deploys under the same
+name append versions.
 
 **Pricing is validated at deploy time.** The model you pass must resolve to a
 known image endpoint with an authoritative per-image price. A model that cannot
@@ -67,16 +67,15 @@ Content-Type: application/json
 }
 ```
 
-The response carries `{generator_id, name, current_version, version,
-version_token, status, provider, model, generation_contract, config_hash}`.
+The response carries the `generator_id`, the new `version`, and a
+`version_token`; see [REST API](rest-api.md) for the full field list.
 
 ### Versioning and the version token
 
-The first deploy of a name must omit `expected_version_token`. Every later deploy
-under that name must include the latest token (from the previous deploy response,
-`list`, or `show`). A token mismatch returns a conflict (409) with the current
-token, so two callers cannot clobber each other. A successful re-deploy appends a
-new version and rotates the token.
+Re-deploying a generator uses the same version-token guard as workflows: every
+deploy after the first must pass the latest `version_token`, and a mismatch is
+rejected with a conflict (409) so two callers cannot clobber each other. See
+[Workflows](workflows.md) for the concept.
 
 **Note:** Deploying a new generator whose `name` matches an active
 platform-managed generator is rejected with a conflict (409). System tier names
@@ -95,9 +94,9 @@ never appear here.
 
 ### Show
 
-Returns one generator version in full: model, contract, default parameters, and
-a `config_hash` for drift detection. Defaults to the current version; pin one
-with `--version`. Owner-only; a generator you do not own returns 404.
+Returns one generator version in full: model, contract, and default parameters.
+Defaults to the current version; pin one with `--version`. Owner-only; a
+generator you do not own returns 404.
 
 - CLI: `goodeye image-generators show <id> [--version N]`
 - MCP tool: `get_image_generator`
@@ -119,16 +118,16 @@ Permanently and immediately erases a generator you own: the generator, all its
 versions, and all run records. There is no recovery path. Prefer revoke if you
 only want to deactivate it while keeping the audit trail.
 
-A serving gate refuses deletion (409) when any live published template version
-carries a snapshot that references the generator. Unpublish the relevant template
-version(s) first, then retry.
+A serving gate refuses deletion (409) when a live published template version
+still references the generator. Unpublish the relevant template version(s)
+first, then retry.
 
 - CLI: `goodeye image-generators delete <id>` (`--yes` to skip the prompt)
 - MCP tool: `delete_image_generator`
 - REST: `DELETE /v1/image-generators/{generator_id}/permanent`
 
 **Note:** Revoke and delete are owner-only. Pointing at someone else's generator
-returns 404 (existence masking).
+returns 404.
 
 ## Generate an image
 
@@ -147,25 +146,28 @@ separately.
 
 The CLI prints image URLs to stdout, one per line (so the result pipes cleanly),
 with cost and run metadata on stderr or in `--json` mode. A successful call
-returns `{run_id, model_tier_or_model, image_url, image_urls, width, height,
-num_images, cost_usd, duration_ms, status, created_at, error_code,
-error_message, hosted_images}`. Each output is also auto-hosted on Goodeye and
-returned in `hosted_images`; see
-[Durable URLs for generated images](images.md).
+returns the run id, the generated `image_urls`, per-image cost, and a
+`hosted_images` list; see [REST API](rest-api.md) for the full field list. Each
+output is also auto-hosted on Goodeye, so its hosted URL stays valid after the
+provider session ends; see [Image hosting](images.md).
 
 ### Image visibility
 
-By default each generated image is hosted as a **public** image, so the `url`
-in its `hosted_images` entry opens in any browser. Set `visibility` to
-`private` (CLI `--visibility private`, MCP/REST `visibility: "private"`) to keep
-an image private instead; its `url` is then a view link only you can open and
-forward to people you choose, while the plain URL stays locked. Anonymous
-generations are always public. See
-[Viewing and sharing a private image](images.md) for the full view-link model.
+Each generated image is hosted as a **public** image by default; set
+`visibility` to `private` (CLI `--visibility private`, MCP/REST
+`visibility: "private"`) to keep it private with a shareable view link instead.
+Anonymous generations are always public. See [Image hosting](images.md) for how
+hosting, visibility, and view links work.
 
 ### Call modes
 
 There are three ways to choose what generates the image:
+
+| Call mode | How you reference it | From a published template | Anonymous |
+|---|---|---|---|
+| System tier | `system:<tier>` (e.g. `system:image-standard`) | Yes | Yes |
+| Deployed generator | `<uuid>` or `<uuid>@<version>` | Yes, if the template references it | Yes, same case |
+| Ephemeral model | `--model <slug>` (or `model` in the body) | No | No |
 
 1. **A system tier.** Pass a `system:<tier>` reference (for example,
    `system:image-standard`) to use a platform-managed quality tier. Tiers are
@@ -187,18 +189,17 @@ There are three ways to choose what generates the image:
    ```sh
    goodeye image-generators generate \
      --generator 6f1c0a2e-...@2 \
-     --prompt "A minimalist product hero shot on a white background"
+     --prompt "A product hero shot lit from the left, white background"
    ```
 
 3. **An ephemeral `model=` slug.** Pass `--model <slug>` for an authenticated
    one-off against a concrete model identifier, with no deployed generator. The
-   contract is inferred from whether you supply a reference image. This mode is
-   not usable from published templates and not available to anonymous callers.
+   contract is inferred from whether you supply a reference image.
 
    ```sh
    goodeye image-generators generate \
      --model provider-org/model-name \
-     --prompt "A minimalist product hero shot on a white background"
+     --prompt "A flat-lay product shot on a neutral background"
    ```
 
 `--generator` and `--model` are mutually exclusive: supply one or the other.
@@ -212,7 +213,7 @@ POST /v1/image-generators/system:image-standard/runs
 Content-Type: application/json
 Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
 
-{"prompt": "A minimalist product hero shot on a white background", "num_images": 1}
+{"prompt": "A product hero shot, soft studio lighting", "num_images": 1}
 ```
 
 ### Safety checker
@@ -230,34 +231,24 @@ A generation prompt is never persisted. Only a one-way hash of the prompt is kep
 on the run record for correlation, and the provider credential is never logged or
 returned. Generated image URLs are returned to you and recorded on the run row.
 
-## Anonymous generation
+## Anonymous generation and billing
 
 Anonymous image generation is available over REST only; the MCP surface always
-requires auth. An anonymous caller may invoke a system tier, or a deployed
-generator UUID whose `(generator_id, generator_version)` appears in a live
-published template snapshot. This is the path a published template uses to
-generate images for anyone who fetches it. The ephemeral `model=` slug path is
-never available anonymously.
-
-From the CLI, pass `--anonymous` (which requires a system tier or a generator
-UUID that appears in a published template). Anonymous spend draws on a small
-per-caller credit grant, the same ledger that meters authenticated runs.
-
-## Billing and the budget gate
+requires auth. An anonymous caller may invoke a system tier or a deployed
+generator that a live published template references (the path a published
+template uses to generate images for anyone who fetches it); the ephemeral
+`model=` slug path is never available anonymously. From the CLI, pass
+`--anonymous`.
 
 Every generation, yours or anonymous, draws on your credit balance, and each
-image in a multi-image call is billed separately. Billing-gate errors propagate
-before any image is produced:
-
-- 402 `budget_exhausted` when the credit balance is spent.
-- 402 `anonymous_daily_cap` when the shared daily limit on anonymous usage is reached (anonymous callers only; resets at UTC midnight).
-- 403 `account_suspended` when the account is suspended.
-
-Provider and timeout errors are different: they return a completed call with
-`status="error"` and an `error_code` of `provider_error`, `runtime_error`, or
-`timeout` (the CLI exits 1 in that case). Check granted, used, and remaining
-credit with `goodeye usage` (or `GET /v1/me/usage`). See
-[Accounts and billing](accounts-and-billing.md) for tiers and grants.
+image in a multi-image call is billed separately; anonymous spend uses the same
+credit balance that meters authenticated runs. A spent balance, a suspended
+account, or the anonymous limit blocks the call before any image is produced;
+see [Accounts and billing](accounts-and-billing.md) for tiers, grants, and the
+exact errors. Provider and timeout failures are different: they return a
+completed call with `status="error"` and an `error_code` of `provider_error`,
+`runtime_error`, or `timeout` (the CLI exits 1). Check remaining credit with
+`goodeye usage` (or `GET /v1/me/usage`).
 
 ## See also
 

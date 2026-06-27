@@ -76,7 +76,7 @@ goodeye login --email you@example.com
 goodeye login-verify --email you@example.com --code 123456
 ```
 
-Successful `register`, `login`, `register-verify`, and `login-verify` all save credentials to `~/.config/goodeye/credentials.json` (or `$XDG_CONFIG_HOME/goodeye/credentials.json`).
+Successful `register`, `login`, `register-verify`, and `login-verify` all save credentials to `~/.config/goodeye/credentials.json` (or `$XDG_CONFIG_HOME/goodeye/credentials.json`). All four accept an optional `--referral-code <code>` to redeem a referral bonus during sign-in.
 
 ### Sign out
 
@@ -132,7 +132,9 @@ JSON list output is wrapped in an object:
 - Unpaginated lists: `{"items": [...]}`.
 - Search commands: `{"items": [...], "query": "...", "limit": N, "search_mode": "..."}`.
 
-Paginated commands (`workflows list`, `templates list`, `verifiers list`, `image-generators list`, `auth list-keys`, `invitations list`) default to `--limit 25`. Use `--cursor TOKEN` to page forward, or `--all` to follow all cursors and return a combined result.
+Paginated commands (`workflows list`, `templates list`, `verifiers list`, `image-generators list`, `images list`, `auth list-keys`) default to `--limit 25`. Use `--cursor TOKEN` to page forward, or `--all` to follow all cursors and return a combined result.
+
+`invitations list` is also paginated (`--limit`, `--cursor`), but it uses the server's default page size and does not support `--all`.
 
 `teams list`, `teams members`, and `workflows grants` are unpaginated and do not expose `--limit`, `--cursor`, or `--all`.
 
@@ -140,7 +142,7 @@ Paginated commands (`workflows list`, `templates list`, `verifiers list`, `image
 
 ## `workflows`
 
-Manages your private registry of workflows. See [workflows.md](workflows.md) for a deeper look at workflow bodies and front matter.
+Create, version, share, and run your private workflows. See [workflows.md](workflows.md) for a deeper look at workflow bodies and front matter.
 
 ### `workflows list`
 
@@ -262,7 +264,7 @@ Fetches the audit pack for a workflow, or for a local skill when you omit the id
 goodeye workflows check-safety <id-or-name[@N]> [--version N] [--json]
 ```
 
-Runs safety checks on a workflow version. Returns `clean`, `flagged`, or `blocked`. Each call consumes two metered verifier runs.
+Runs safety checks on a workflow version. Returns `clean`, `flagged`, `blocked`, or `error`. Each call counts as two verifier runs against your credits.
 
 ### `workflows transfer-ownership`
 
@@ -293,41 +295,21 @@ Pulls every configured sync target and then reports status. Equivalent to `sync 
 | `sync target add <DIR>` | Configure a local directory to mirror workflows into. Pass `--preset claude`, `--preset agents`, or `--preset cursor` instead of a path for known locations. |
 | `sync target list` | List configured sync targets. |
 | `sync target remove <DIR>` | Remove a configured sync target. |
-| `sync pull [SLUG...]` | Pull workflows from the registry to local directories. |
-| `sync push [SLUG...]` | Upload locally edited workflows back to the registry. |
-| `sync status` | Report drift between the registry and local directories without writing anything. |
+| `sync pull [SLUG...]` | Pull your workflows from Goodeye to local directories. |
+| `sync push [SLUG...]` | Upload locally edited workflows back to Goodeye. |
+| `sync status` | Report drift between Goodeye and local directories without writing anything. |
 | `sync auto on [--interval <seconds>]` | Enable the automatic background pull (opt-in; default interval 3600 s). |
 | `sync auto off` | Disable the automatic background pull. |
 | `sync auto` | Print the current auto-pull setting and last run time. |
 
 **`--scope`** on `sync target add` controls which workflows land in that directory: `owned` (default), `all` (owned plus shared), or `selected` (only slugs or globs supplied with `--only`).
 
-### `workflows sync auto`
-
-```sh
-goodeye workflows sync auto on [--interval <seconds>]
-goodeye workflows sync auto off
-goodeye workflows sync auto
-```
-
-Manages the opt-in automatic background pull. When enabled, the CLI pulls the
-safe set (new and updated workflows) in the background after your command
-completes. It never overwrites local edits, never deletes local directories, and
-never pushes.
-
-- `on` enables auto-pull. Pass `--interval <seconds>` to set the minimum gap
-  between automatic pulls (default: 3600, which is one hour).
-- `off` disables it.
-- With no subcommand, prints the current setting (on/off, interval, last run
-  time).
-
-The automatic pull applies to all configured sync targets and is suppressed in
-CI environments, for `--json` output, for `--help`/`--version` and the bare
-invocation, and while you are running a `workflows sync` command yourself, so it
-never shadows a manual sync. Workflows with local edits or conflicts
-are reported but never clobbered; workflows deleted on the registry are reported
-but never removed locally. See [Syncing a bundle locally](workflows.md#syncing-a-bundle-locally)
-for the full behavior.
+The opt-in `sync auto` background pull (turn on with `sync auto on`, default
+interval one hour) pulls only new and updated workflows after a command
+completes: it never overwrites local edits, deletes local files, or pushes, and
+local conflicts are reported but never clobbered. It is suppressed in CI, for
+machine-readable output, and during a manual sync. See
+[Syncing a bundle locally](workflows.md#syncing-a-bundle-locally) for depth.
 
 ---
 
@@ -362,13 +344,21 @@ Fetches a public template by UUID, `@handle/slug`, or `@handle/slug@vN`. No auth
 
 **Tip:** if a handle was renamed and the old URL now redirects, the CLI prints a note to stderr so downstream processes that captured stdout are not affected.
 
+### `templates get-file`
+
+```sh
+goodeye templates get-file <identifier> <path> --output PATH [--sha256 HASH]
+```
+
+Writes one attached file from a template (for example a demo preview image) to a local path as raw bytes; nothing is printed to stdout. No authentication required. Pass `--sha256` to content-address the fetch so a republished or removed file no longer resolves at a stale address.
+
 ### `templates publish`
 
 ```sh
 goodeye templates publish <workflow-uuid-or-name> [--release-notes TEXT]
 ```
 
-Publishes a private workflow as a new public template version. The first publish creates the template (slug is reused from the workflow); subsequent calls append a monotonic version. Requires a claimed handle (run `goodeye me claim-handle` first). Every publish runs automated safety checks. If the block verifier fails, the command exits with code 2 and does not publish.
+Publishes a private workflow as a new public template version. The first publish creates the template (slug is reused from the workflow); subsequent calls add the next version number. Requires a claimed handle (run `goodeye me claim-handle` first). Every publish runs automated safety checks. If the block verifier fails, the command exits with code 2 and does not publish.
 
 ### `templates fork`
 
@@ -579,6 +569,33 @@ goodeye image-generators delete <generator_id> [--yes]
 
 ---
 
+## `images`
+
+Uploads and manages hosted images with stable URLs (including images produced by a generator). Images are private by default; public images are reachable by URL without credentials. All subcommands require authentication. See [images.md](images.md) for usage patterns.
+
+```sh
+goodeye images upload <file> [--visibility public|private] [--ttl SECONDS] [--json]
+goodeye images list [--source upload|generated] [--visibility public|private] \
+  [--limit N] [--cursor TOKEN] [--all] [--json|--table]
+goodeye images get <image-id> [--json]
+goodeye images update <image-id> [--visibility public|private] \
+  [--ttl SECONDS|--permanent] [--rotate-view-secret] [--json]
+goodeye images delete <image-id> [--yes]
+```
+
+Uploads default to `private` and to no expiry; pass `--ttl SECONDS` to set a lifetime. A private image is reachable through a private view link you can forward; the plain URL stays locked.
+
+Four shortcuts wrap `images update` for common edits:
+
+| Shortcut | Effect |
+|---|---|
+| `images share <image-id>` | Make the image public. |
+| `images unshare <image-id>` | Make the image private again. |
+| `images set-ttl <image-id> <seconds\|permanent>` | Set a new expiry, or `permanent` to remove it. |
+| `images reset-link <image-id>` | Issue a fresh private view link and revoke links shared earlier. |
+
+---
+
 ## `teams`
 
 Manages teams and membership. Teams can be used as grantees for shared workflows. See [teams.md](teams.md) for team-based access patterns.
@@ -637,6 +654,17 @@ Shows your current tier, available credits, monthly refill amount and date, and 
 
 ---
 
+## `referrals`
+
+```sh
+goodeye referrals status [--json]   # show your code, redemptions, and credits earned
+goodeye referrals redeem <code>     # redeem someone else's code for bonus credits
+```
+
+Both require authentication. You can also pass `--referral-code <code>` to `register` or `login` (and their `-verify` steps) to redeem during sign-in. See [referrals.md](referrals.md).
+
+---
+
 ## `design`
 
 ```sh
@@ -644,7 +672,7 @@ goodeye design          # print the workflow-designer prompt to stdout
 goodeye design --json   # print the full response object as JSON
 ```
 
-Pipe the printed prompt into your AI assistant to start designing a workflow with built-in verifiers.
+Pipe the printed prompt into your AI assistant to start designing a workflow with built-in verifiers. Requires sign-in: the command errors without credentials.
 
 **Note:** the designer prompt is the recommended starting point for new workflows. After the design session, save the result with `goodeye workflows publish -`.
 
@@ -666,7 +694,9 @@ Pipe the printed prompt into your AI assistant to start designing a workflow wit
 - [Templates](templates.md)
 - [Verifiers](verifiers.md)
 - [Image generators](image-generators.md)
+- [Images](images.md)
 - [Teams](teams.md)
 - [Accounts and billing](accounts-and-billing.md)
+- [Referrals](referrals.md)
 - [REST API reference](rest-api.md)
 - [MCP integration](mcp.md)
