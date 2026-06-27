@@ -297,7 +297,7 @@ Tune the workflow's trigger description for accuracy (description-only). Optiona
 
 ### `POST /v1/workflows/{id_or_slug}/audit`
 
-Audit a workflow against a best-practice rubric. Returns a priority-ranked report (P0, P1, P2) with concrete fixes and runs at least one platform LLM-judge criterion. Requires at least `view` access.
+Return the audit pack for a workflow: a prompt pack your agent runs locally to assess the workflow against a best-practice rubric and produce a priority-ranked report (P0, P1, P2) with concrete fixes. No server-side LLM call, so the endpoint itself draws no credits. Requires at least `view` access.
 
 ### `GET /v1/audit/workflow-prompt`
 
