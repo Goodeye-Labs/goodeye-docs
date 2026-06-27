@@ -254,10 +254,9 @@ archived workflows.
 - **MCP tool:** `delete_workflow`
 - **REST:** `DELETE /v1/workflows/{id_or_slug}`
 
-Deleted content is removed from every product surface immediately; backup copies
-age out later under the standard retention window (see
-[Accounts and Billing](accounts-and-billing.md)). Prefer archive when you want a
-reversible alternative.
+Deleted content is removed from every product surface immediately; encrypted
+backup copies age out later under the platform's standard retention window (up to
+three months). Prefer archive when you want a reversible alternative.
 
 ### Delete a single version
 

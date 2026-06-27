@@ -289,10 +289,9 @@ template intact), unpublish it first, then:
 - **MCP tool:** `delete_template_version`
 - **REST:** `DELETE /v1/templates/{template_ref}/versions/{v}/permanent`
 
-Deleted content is removed from every product surface immediately; backup copies age
-out later under the standard retention window (see
-[Accounts and Billing](accounts-and-billing.md)). Prefer archive when you want a
-reversible alternative.
+Deleted content is removed from every product surface immediately; encrypted backup
+copies age out later under the platform's standard retention window (up to three
+months). Prefer archive when you want a reversible alternative.
 
 ## Running a safety check on demand
 

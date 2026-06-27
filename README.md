@@ -35,9 +35,9 @@ assistants via Context7. Pages:
 | [Overview](overview.md) | Core concepts and the Goodeye mental model |
 | [Getting Started](getting-started.md) | Install the CLI, sign in, fetch and run your first template |
 | [Workflows](workflows.md) | Author, version, teach, optimize, and share workflows |
-| [Auditing workflows](auditing-workflows.md) | Grade a workflow against the best-practice checks |
-| [Templates](templates.md) | Publish, fork, and manage public templates |
 | [Verifiers](verifiers.md) | Score agent output with structural, functional, and semantic checks |
+| [Templates](templates.md) | Publish, fork, and manage public templates |
+| [Auditing workflows](auditing-workflows.md) | Grade a workflow against the best-practice checks |
 | [Image Generators](image-generators.md) | Deploy and run owner-scoped image generation |
 | [Images](images.md) | Upload, host, and manage images; get durable URLs for generated images |
 | [Teams](teams.md) | Collaborate with teams, grants, and invitations |

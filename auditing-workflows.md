@@ -68,12 +68,12 @@ change, and states one concrete fix. Requires at least `view` access.
 
 You choose which findings to fix; the audit applies only what you approve and
 never auto-saves, editing a local copy first when one exists. You can also audit
-a local workflow file not yet saved to Goodeye, in which case the report
+a local skill not yet saved to Goodeye, in which case the report
 recommends saving it.
 
-- **CLI:** `goodeye workflows audit <id-or-name>` (omit the id to audit a local workflow file)
+- **CLI:** `goodeye workflows audit <id-or-name>` (omit the id to audit a local skill)
 - **MCP tool:** `audit_workflow`
-- **REST:** `POST /v1/workflows/{id_or_slug}/audit`, or `GET /v1/audit/workflow-prompt` for a local workflow file
+- **REST:** `POST /v1/workflows/{id_or_slug}/audit`, or `GET /v1/audit/workflow-prompt` for a local skill
 
 The audit is the place to improve a workflow before or after you publish it.
 
