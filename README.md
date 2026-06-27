@@ -37,6 +37,7 @@ assistants via Context7. Pages:
 | [MCP](mcp.md) | Connect AI assistants via the Model Context Protocol |
 | [REST API](rest-api.md) | Use Goodeye from the `/v1` REST API |
 | [Workflows](workflows.md) | Author, version, teach, optimize, and share workflows |
+| [Auditing workflows](auditing-workflows.md) | Grade a workflow against the best-practice checks |
 | [Templates](templates.md) | Publish, fork, and manage public templates |
 | [Verifiers](verifiers.md) | Score agent output with structural, functional, and semantic checks |
 | [Image Generators](image-generators.md) | Deploy and run owner-scoped image generation |

@@ -10,9 +10,11 @@ Everything Goodeye does is reachable over MCP. Once connected, your AI assistant
 - Publish, search, fork, and verify templates
 - Deploy and run semantic verifiers
 - Deploy and invoke image generators
+- Upload and manage hosted images
 - Manage teams, invitations, and grants
 - Mint and revoke API keys
 - Check your current usage and credits
+- View and redeem referral codes
 
 **Agent contract:** when your assistant calls `get_workflow` or `get_template` and receives a body back, it executes that body as your runbook. It follows the instructions itself rather than summarizing or just displaying them.
 
@@ -275,6 +277,16 @@ Any authenticated caller gets every tool. The groups below follow the main resou
 | `revoke_image_generator` | Deactivate an image generator. |
 | `delete_image_generator` | Permanently erase an image generator and all its run records. |
 
+### Images
+
+| Tool | What it does |
+|------|--------------|
+| `upload_image` | Upload an image and get a hosted URL. |
+| `list_images` | List your hosted images. |
+| `get_image` | Fetch one hosted image. |
+| `update_image` | Change visibility, expiry, or view link. |
+| `delete_image` | Permanently delete a hosted image. |
+
 ### Teams and invitations
 
 | Tool | What it does |
@@ -301,6 +313,8 @@ Any authenticated caller gets every tool. The groups below follow the main resou
 | `list_api_keys` | List your API keys (metadata only, secrets never returned again). |
 | `revoke_api_key` | Revoke an API key. |
 | `get_usage` | Get your current-period usage summary (granted, used, remaining). |
+| `get_referral_status` | Get your referral code, redemptions, and credits earned. |
+| `redeem_referral_code` | Redeem another user's referral code for bonus credits. |
 
 ## Troubleshooting
 
@@ -329,6 +343,8 @@ Any authenticated caller gets every tool. The groups below follow the main resou
 - [Workflows](workflows.md)
 - [Templates](templates.md)
 - [Verifiers](verifiers.md)
+- [Images](images.md)
+- [Referrals](referrals.md)
 - [REST API](rest-api.md)
 - [CLI](cli.md)
 - [Accounts and billing](accounts-and-billing.md)

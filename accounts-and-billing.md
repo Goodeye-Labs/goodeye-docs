@@ -163,9 +163,8 @@ The response fields are:
 | `monthly_remaining_usd` | Remaining from your current monthly grant |
 | `monthly_refill_usd` | Amount your monthly grant refills to |
 | `monthly_refill_at` | ISO timestamp of your next refill |
-| `purchased_remaining_usd` | Remaining from any one-off purchased credits |
 | `referral_remaining_usd` | Remaining from referral bonus credits |
-| `unpaid_balance_usd` | Overspend carried from a prior period (deducted from the next grant) |
+| `unpaid_balance_usd` | Overspend that reduces your next refill |
 
 Run `goodeye usage` to see the actual dollar amounts for your tier. Amounts are not hardcoded in this document because they may change.
 
@@ -176,17 +175,25 @@ Run `goodeye usage` to see the actual dollar amounts for your tier. Amounts are 
 | `hobby` | Default tier for new accounts. Includes a monthly credit grant for personal and exploratory use. |
 | `pro` | Higher monthly credit grant, suitable for production workflows. Contact us to upgrade. |
 
-Anonymous callers (no auth) who reach public REST endpoints that consume credits have their own small monthly grant, tracked per network address. That is what lets someone run a verifier against a published template without signing in. Like the authenticated tiers, the grant pays for Goodeye-metered work (verifier runs and template safety checks), not the model usage an agent incurs while executing a workflow body. Your agent bills that through whatever model you run it on. Total anonymous usage is also bounded by a platform-wide daily limit; once it is reached, anonymous credit-consuming calls return `402 anonymous_daily_cap` until the limit resets at UTC midnight. Signing in gives you your own credits.
+Anonymous callers (no auth) who reach public REST endpoints that consume credits draw on a small shared monthly allowance. That is what lets someone run a verifier against a published template without signing in. Like the authenticated tiers, the allowance pays for Goodeye-metered work (verifier runs and template safety checks), not the model usage an agent incurs while executing a workflow body; your agent bills that through whatever model you run it on. When the shared anonymous allowance is used up, those calls return `402 anonymous_daily_cap` until it refreshes. Signing in gives you your own credits.
 
 ### Billing errors
 
 | HTTP status | Error slug | Meaning |
 |---|---|---|
-| `402` | `budget_exhausted` | Your available credit balance is zero. Wait for your next monthly refill or contact us to discuss a credit top-up. |
-| `402` | `anonymous_daily_cap` | The shared daily limit on anonymous usage has been reached. Sign in for your own credits, or try again after the limit resets at UTC midnight. |
+| `402` | `budget_exhausted` | Your available credit balance is zero. Wait for your next monthly refill. |
+| `402` | `anonymous_daily_cap` | The shared allowance for anonymous usage has been reached. Sign in for your own credits, or try again later. |
 | `403` | `account_suspended` | Your account has been suspended. Contact support. |
 
 When your budget is exhausted, LLM-powered operations (verifier runs, workflow optimization, design sessions) return `402`. Other operations (saving workflows, listing templates, managing teams) are not credit-gated and continue to work.
+
+## Limits
+
+Metered features are gated by your credit balance, not by fixed request counts: when the balance reaches zero, credit-gated operations return `402 budget_exhausted` and resume at your next refill, and anonymous usage is bounded by a shared allowance that returns `402 anonymous_daily_cap` when used up. The one fixed-count limit is on handle renames (see [Renaming your handle](#renaming-your-handle)).
+
+## Versioning and deprecation
+
+When a shipped surface (an MCP tool, a REST route, or a CLI command) changes in a way that would break existing callers, the old behavior keeps working for at least one release and the change is announced: REST responses carry `Deprecation` and `Sunset` headers, MCP tool responses include a `deprecation_warning`, and the CLI prints a deprecation line to stderr. Purely additive changes (a new field, a new optional flag, a new command) ship without ceremony.
 
 ## See also
 

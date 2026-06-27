@@ -1,6 +1,6 @@
 # Teams
 
-Teams let you share workflows with a group rather than granting access one person at a time. You create a team with a handle, add members via invitations, and then grant workflows to `@teamhandle`. Every team member gains the access level you specified on the grant.
+Teams let you share workflows with a whole group at once, so a new teammate can run the workflows they need the moment they join instead of waiting for a one-off grant. You create a team with a handle, add members via invitations, and then grant workflows to `@teamhandle`. Every current and future member gains the access level you specified on the grant.
 
 ```diagram-grants
 head: Workflow owner | holds a private workflow
@@ -71,7 +71,7 @@ Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
 
 MCP tool: `delete_team`
 
-Only the owner can delete a team. Deleting releases the handle into a 90-day reservation window, after which anyone can claim it.
+Only the owner can delete a team. Deleting frees the team handle, which becomes claimable again after a hold period (see [Accounts and billing](accounts-and-billing.md#handles)).
 
 ## Managing members
 
@@ -111,23 +111,7 @@ Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
 
 MCP tool: `add_team_member`
 
-You can identify the recipient by UUID, email address, or handle (with or without the `@` prefix). The response is an **invitation envelope**:
-
-```json
-{
-  "invitation_id": "...",
-  "kind": "team_membership",
-  "expires_at": "2026-07-11T00:00:00+00:00"
-}
-```
-
-Tell the recipient to run:
-
-```sh
-goodeye invitations accept <invitation_id>
-```
-
-The membership is not active until they do. See [Invitations](#invitations) for details.
+You can identify the recipient by UUID, email address, or handle (with or without the `@` prefix). The response is an [invitation envelope](#invitations); tell the recipient to run `goodeye invitations accept <invitation_id>`. The membership is not active until they do.
 
 ### Removing a member
 
@@ -200,73 +184,28 @@ When an operation creates a pending invitation, the response looks like this:
 }
 ```
 
-The `kind` field is one of `team_membership` or `team_ownership` for team operations (or `workflow_ownership` / `template_ownership` for resource transfers).
+The `kind` field is `team_membership` or `team_ownership`.
 
-### Listing invitations
+### Accepting or declining
 
-```sh
-goodeye invitations list                        # invitations you received (default)
-goodeye invitations list --filter sent          # invitations you sent
-goodeye invitations list --filter all --state all
-```
-
-```http
-GET /v1/invitations
-GET /v1/invitations?filter=sent
-GET /v1/invitations?filter=all&state=all
-Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
-```
-
-MCP tool: `list_invitations`
-
-The `filter` parameter accepts `received` (default), `sent`, or `all`. The `state` parameter accepts `pending` (default) or `all`.
-
-### Accepting an invitation
+Only the recipient can accept or decline. Accepting applies the underlying action immediately (membership is created, or ownership changes hands); declining changes nothing.
 
 ```sh
-goodeye invitations accept 550e8400-e29b-41d4-a716-446655440000
+goodeye invitations accept <invitation_id>
+goodeye invitations decline <invitation_id>
 ```
 
 ```http
 POST /v1/invitations/{invitation_id}/accept
-Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
-```
-
-MCP tool: `accept_invitation`
-
-Only the recipient can accept. Accepting applies the underlying action immediately: membership is created, or ownership changes hands.
-
-### Declining an invitation
-
-```sh
-goodeye invitations decline 550e8400-e29b-41d4-a716-446655440000
-```
-
-```http
 POST /v1/invitations/{invitation_id}/decline
 Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
 ```
 
-MCP tool: `decline_invitation`
+MCP tools: `accept_invitation`, `decline_invitation`.
 
-Only the recipient can decline. Nothing changes for the team or workflow.
+### Listing, cancelling, and expiry
 
-### Cancelling an invitation
-
-```sh
-goodeye invitations cancel 550e8400-e29b-41d4-a716-446655440000
-```
-
-```http
-POST /v1/invitations/{invitation_id}/cancel
-Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
-```
-
-MCP tool: `cancel_invitation`
-
-Only the proposer (the person who created the invitation) can cancel it. The recipient will no longer be able to accept.
-
-**Note:** Invitations expire automatically after a platform-defined window. A second `add-member` or `transfer-ownership` call after expiry creates a fresh invitation.
+List invitations with `goodeye invitations list` (MCP `list_invitations`, REST `GET /v1/invitations`); `--filter` accepts `received` (default), `sent`, or `all`, and `--state` accepts `pending` (default) or `all`. Only the proposer can cancel a pending invitation (`goodeye invitations cancel <invitation_id>`, MCP `cancel_invitation`), which stops the recipient from accepting. Invitations expire automatically after a platform-defined window; a second `add-member` or `transfer-ownership` call after expiry creates a fresh one.
 
 ## See also
 

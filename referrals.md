@@ -4,7 +4,7 @@ Invite new users to Goodeye and both sides earn bonus credits. The program is tw
 
 ## Your referral code
 
-Every account has one shareable referral code. It is created the first time you view your referral status. Share it anywhere: a message, a post, a README, wherever new users might see it.
+Every account has one shareable referral code, created the first time you view your referral status. Paste it and a short note anywhere new users might see it: a Slack message, a social post, a README, an email. There is no built-in email-invite step; anyone who redeems the code becomes your referral automatically.
 
 ### Viewing your code and stats
 
@@ -23,9 +23,13 @@ Example output:
 
 ```
 Your referral code: K7MNP2QR
-Instructions: Your referral code: K7MNP2QR
-To invite someone: share this code and ask them to install the Goodeye CLI, then run `goodeye login --referral-code K7MNP2QR` to sign in and claim their bonus credits.
-If they use Goodeye through an MCP client, they can connect their account and redeem the code with the redeem referral tool.
+
+Instructions:
+  Share this code and ask the new user to install the Goodeye CLI, then run
+  `goodeye login --referral-code K7MNP2QR` to sign in and claim their bonus
+  credits. If they use Goodeye through an MCP client, they can connect their
+  account and redeem the code with the redeem referral tool.
+
 Redeemed: 8
 Activated: 3
 Credits earned: $15.00
@@ -42,10 +46,6 @@ The response fields are:
 | `activated_count` | Number of people you referred who have activated their account (and earned you a reward, up to your slot limit) |
 | `credits_earned_usd` | Total bonus credits you have earned from referrals |
 | `slots_remaining` | How many more referral rewards you can earn |
-
-## Sharing your code
-
-Paste your code and a short note anywhere new users might see it: a Slack message, a social post, a README, an email. There is no built-in email-invite step. Anyone who redeems the code becomes your referral automatically.
 
 ## Redeeming a code
 
@@ -69,22 +69,16 @@ MCP tool: `redeem_referral_code` (connect your account first, then call it)
 
 ### Redeeming during sign-in or registration
 
-Pass `--referral-code` to the sign-in or registration commands and the code is redeemed automatically right after you authenticate:
+Pass `--referral-code` on `register`, `login`, or the verify step, and the code is redeemed automatically once your credentials are saved:
 
 ```sh
-# Interactive sign-in (browser/device-code flow)
+goodeye register --referral-code <code>
 goodeye login --referral-code <code>
-
-# Non-interactive email-code sign-in: pass the code on the verify step
 goodeye login-verify --email <email> --code <code> --referral-code <code>
-
-# Email-code registration: verify step
 goodeye register-verify --email <email> --code <code> --referral-code <code>
 ```
 
-`--referral-code` is accepted on `login`, `login-verify`, and `register-verify`, and the code is redeemed only after credentials are saved. The two-step `goodeye login --email` flow does not redeem on the first step: it just sends the email and exits, so pass `--referral-code` on the following `login-verify` step instead.
-
-If the code cannot be applied (for example, you have already redeemed one), the sign-in still completes and the CLI tells you why the code was not applied.
+The flag is accepted on `register`, `login`, `login-verify`, and `register-verify`. The two-step `goodeye login --email` flow does not redeem on the first step (it just sends the email and exits), so pass `--referral-code` on the following `login-verify` step instead. If the code cannot be applied (for example, you have already redeemed one), the sign-in still completes and the CLI tells you why.
 
 ### Eligibility
 
@@ -98,22 +92,18 @@ A redemption is accepted when all of the following are true:
 
 ## What activation means
 
-Your bonus credits land as soon as you redeem a valid code. The inviter's reward is separate: it unlocks when you (the referred user) activate your account.
-
-Activation means your account meets both of these conditions:
+Your bonus credits land as soon as you redeem a valid code. The inviter's reward is separate: it unlocks once you (the referred user) activate your account, which means both of these are true:
 
 - You own at least one private workflow.
 - You have run a verifier or generated an image.
 
-There is no time limit on activation: a referral stays pending until the referred user activates, however long that takes.
+There is no time limit: a referral stays pending until the referred user activates, however long that takes.
 
 ## Bonus credits and expiry
 
-Bonus credits appear in your available balance alongside your monthly grant and are spent the same way, with no special restrictions. They expire one year after they are granted.
+Bonus credits appear in your available balance alongside your monthly grant and are spent the same way, with no special restrictions. They expire one year after they are granted. See [Accounts and billing](accounts-and-billing.md) for how your balance works.
 
-The inviter's reward lands shortly after the referred user activates. A background process reconciles pending referrals, so it can take a few minutes to appear. Each inviter can earn rewards for a limited number of referrals (shown as "slots remaining" in `goodeye referrals status`).
-
-Run `goodeye referrals status` to see your total credits earned from referrals and how many reward slots you have left. The exact bonus for a single redemption is shown to the redeemer when they redeem a code (as credits granted). Amounts are not hardcoded in this document because they may change.
+The inviter's reward lands shortly after the referred user activates; it can take a few minutes to appear. Each inviter can earn rewards for a limited number of referrals, shown as "slots remaining" in `goodeye referrals status`. Exact amounts are not listed here because they may change: the redeemer sees the bonus granted when they redeem, and `goodeye referrals status` shows your total earned and slots left.
 
 ## Errors
 
