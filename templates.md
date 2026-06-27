@@ -229,6 +229,13 @@ workflow earns it.
 
 These paths are deliberately distinct. Pick by intent.
 
+| Action | Scope | Reversible | Hidden from catalog | Existing forks |
+|---|---|---|---|---|
+| Unpublish version | One version | Yes, re-publish | When no live version remains | Keep working |
+| Deprecate version | One version | Yes, update message | No, stays listed | Keep working, with a warning |
+| Archive template | Whole template | Yes, unarchive | Yes | Keep working |
+| Delete template | Whole template | No | Yes, erased | Keep their own copy; lineage shows deleted |
+
 ### Unpublish a version (hide one version)
 
 Soft-unpublishes a single template version. Forks already pinned to that version

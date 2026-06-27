@@ -27,10 +27,9 @@ runbook (a workflow), and pair that runbook with checks (verifiers) that score a
 AI agent's output against a measurable result. The agent runs the workflow, the
 verifiers judge, and the agent revises until the output passes.
 
-The intended caller is an AI agent acting on your behalf. When an agent fetches a
-workflow or template body, it follows that body as your runbook: it executes the
-instructions itself rather than summarizing or just displaying them. That is the
-agent contract, and most of Goodeye is built around it.
+The intended caller is an AI agent acting on your behalf, and it runs a workflow
+rather than just reading it. That behavior is the agent contract, and most of
+Goodeye is built around it (see [The agent contract](#the-agent-contract) below).
 
 Goodeye reaches you on three peer surfaces (a CLI, an MCP server, and a REST
 API), so the same capability is available wherever your agent runs.
@@ -80,6 +79,13 @@ loop: Fails, revise and re-run until verifiers pass
 
 ## Workflow (private) vs template (public)
 
+| Aspect | Workflow (private) | Template (public) |
+|---|---|---|
+| Visibility | Private; shared only by grant | Public in the catalog |
+| Mutability | Editable in place | Immutable snapshot |
+| New version | On each save | On each publish |
+| Who can read | Owner and grantees | Anyone, fully public |
+
 A **workflow** is the private stored object: a markdown runbook with a `name`, a
 one-line `description`, a declared `outcome`, and optional `tags`. Workflows are
 private to you by default. You can share one privately with named users or teams
@@ -126,6 +132,14 @@ Saving a workflow is the start, not the finish. Because every workflow is tied t
 a measurable outcome and gated by verifiers, you can improve it against real
 results over time:
 
+```diagram-steering-loop
+Design and save | author the workflow and its verifiers
+^ Teach and optimize | fold in real-run feedback, tune against the verifiers
+Audit against the checks | met, or gaps to fix
+exit: Checks met, ship and publish
+loop: Gaps found, teach and optimize again
+```
+
 - **Design** a workflow and its verifiers interactively, then save it.
 - **Teach** it by running it on real inputs and folding your reactions back in.
 - **Optimize** it automatically against its own verifier outcomes.
@@ -147,19 +161,11 @@ MCP | Your agent speaks MCP | chat and connector clients | mcp.goodeye.dev/mcp
 REST | You integrate in code | services and pipelines | api.goodeye.dev/v1
 ```
 
-- **CLI** (`goodeye ...`): when your agent can run shell commands (a coding agent
-  like Claude Code or Cursor, a CI job) or when you are driving Goodeye by hand.
-  See [CLI](cli.md).
-- **MCP** (`https://mcp.goodeye.dev/mcp`): when your agent is a chat or connector
-  client that speaks the Model Context Protocol (Claude on the web, ChatGPT,
-  Claude Desktop). The tools appear natively in the assistant. Coding agents can
-  connect this way too. See [MCP](mcp.md).
-- **REST** (`https://api.goodeye.dev/v1`): for direct integrations and services
-  that call Goodeye programmatically. The public template catalog is readable
-  over REST without an account. See [REST API](rest-api.md).
-
 The same operations exist on all three, so you can start in one surface and move
-to another without losing capability.
+to another without losing capability. The public template catalog is also
+readable over REST without an account. [Getting Started](getting-started.md)
+walks through connecting each surface, and [CLI](cli.md), [MCP](mcp.md), and
+[REST API](rest-api.md) are the per-surface references.
 
 ## Where to go next
 

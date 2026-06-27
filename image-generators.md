@@ -127,7 +127,7 @@ first, then retry.
 - REST: `DELETE /v1/image-generators/{generator_id}/permanent`
 
 **Note:** Revoke and delete are owner-only. Pointing at someone else's generator
-returns 404 (existence masking).
+returns 404.
 
 ## Generate an image
 
@@ -163,6 +163,12 @@ hosting, visibility, and view links work.
 
 There are three ways to choose what generates the image:
 
+| Call mode | How you reference it | From a published template | Anonymous |
+|---|---|---|---|
+| System tier | `system:<tier>` (e.g. `system:image-standard`) | Yes | Yes |
+| Deployed generator | `<uuid>` or `<uuid>@<version>` | Yes, if the template references it | Yes, same case |
+| Ephemeral model | `--model <slug>` (or `model` in the body) | No | No |
+
 1. **A system tier.** Pass a `system:<tier>` reference (for example,
    `system:image-standard`) to use a platform-managed quality tier. Tiers are
    run-only: they are not listed, fetched, revoked, or deployed, and a system
@@ -188,8 +194,7 @@ There are three ways to choose what generates the image:
 
 3. **An ephemeral `model=` slug.** Pass `--model <slug>` for an authenticated
    one-off against a concrete model identifier, with no deployed generator. The
-   contract is inferred from whether you supply a reference image. This mode is
-   not usable from published templates and not available to anonymous callers.
+   contract is inferred from whether you supply a reference image.
 
    ```sh
    goodeye image-generators generate \

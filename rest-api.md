@@ -201,9 +201,10 @@ Content-Type: application/json
 
 List your keys (metadata only, no secrets).
 
-### `DELETE /v1/api-keys/{key_id}`
+### `DELETE /v1/api-keys/{key_id_or_name}`
 
-Revoke a key. Returns `204 No Content`. A second delete returns `404`.
+Revoke a key by id or name. Returns `204 No Content`. A second delete returns
+`404`.
 
 ## Referrals
 
@@ -559,7 +560,7 @@ GET    /v1/teams                                   # list teams (filter: mine|me
 DELETE /v1/teams/{team_id}                         # delete a team
 GET    /v1/teams/{team_id}/members                 # list members
 POST   /v1/teams/{team_id}/members                 # add a member (returns invitation)
-DELETE /v1/teams/{team_id}/members/{user_id}       # remove a member
+DELETE /v1/teams/{team_id}/members/{user_identifier} # remove a member
 POST   /v1/teams/{team_id}/transfer-ownership      # transfer ownership (returns invitation)
 ```
 

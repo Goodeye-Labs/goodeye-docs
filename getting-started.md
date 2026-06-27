@@ -66,7 +66,9 @@ Each result is addressed as `@handle/slug`, the public identifier you use to
 fetch it. Point your agent at one and tell it to run the template. For the
 canonical demo, that is the high-signal chart workflow:
 
-> Run the Goodeye template `@randalolson/high-signal-chart-workflow`.
+```text
+Run the Goodeye template @randalolson/high-signal-chart-workflow.
+```
 
 Your agent fetches the body and executes it as its runbook. For this template it
 finds an authoritative public dataset (say, the EIA electricity-generation mix),
@@ -117,54 +119,28 @@ markdown or `--json` for the full record.
 - **Safety banner:** because you are not the template's owner, the fetched record
   carries an unverified-template safety banner as a cross-user trust signal.
 
+Ran it and like what it produced? Next you make it yours: sign in, then fork it
+into a private workflow you can edit and tune.
+
 ## Step 4: Sign in to save your work
 
-Running templates needs no account. To fork a template, save a workflow of your
-own, or use natural-language search, create an account or sign in. There are two
-ways to authenticate.
-
-For an interactive browser sign-in (you are at a machine with a browser), create
-a new account with `register` or sign in to an existing one with `login`:
+Running templates needs no account. To fork a template or save a workflow of your
+own, create an account or sign in. The quickest path, at a machine with a
+browser:
 
 ```sh
 goodeye register   # new account
 goodeye login      # existing account
 ```
 
-Either command opens a verification URL on the hosted sign-in page, where you can
-continue with Google or with email. You approve in the browser and credentials
-are saved locally.
+Either command opens a verification URL on the hosted sign-in page, where you
+continue with Google or email and approve in the browser; credentials are saved
+locally. Confirm with `goodeye whoami`.
 
-For a non-interactive email-code flow (agents, automation, or terminals where
-prompts are awkward), use the two-step verify flow:
-
-```sh
-# New account
-goodeye register --email you@example.com
-goodeye register-verify --email you@example.com --code 123456
-
-# Existing account
-goodeye login --email you@example.com
-goodeye login-verify --email you@example.com --code 123456
-```
-
-Confirm who you are:
-
-```sh
-goodeye whoami
-```
-
-Once signed in, natural-language search helps when you remember roughly what a
-template does but not its exact name:
-
-```sh
-goodeye templates search "produce a high-signal data visualization"
-```
-
-**Note:** For programmatic clients, create an API key with
-`goodeye auth create-key --name my-integration` and pass it as a bearer token to
-the REST API or MCP server. Keys are prefixed `good_live_`. See
-[Accounts and Billing](accounts-and-billing.md).
+Agents, CI, and headless terminals can authenticate non-interactively with an
+email-code flow instead. See [CLI](cli.md) for the `register-verify` /
+`login-verify` steps, and [Accounts and Billing](accounts-and-billing.md) for
+creating a `good_live_` API key for programmatic REST or MCP clients.
 
 ## Step 5: Fork the template into a private workflow
 
@@ -184,41 +160,43 @@ verifiers.
 
 ## Step 6: Author your own workflow
 
-Forking adapts someone else's work; you can also author a workflow from scratch.
-A workflow is markdown with a short metadata header: `name`, `description`, and
-`outcome` are required, and `tags` are optional. For agent-generated output, pipe
-the body from stdin so no intermediate file is left behind:
+Forking adapts someone else's work; you can also author your own from scratch.
+The best first path is a guided design session: it works with you to design a
+workflow and its verifiers tied to an outcome, then saves the result when you
+approve it.
 
 ```sh
+goodeye design
+```
+
+`goodeye design` prints a designer prompt; pipe it into your AI assistant
+(`goodeye design > design.md`, or straight into your agent) and follow along. The
+session produces the workflow plus its verifiers and saves it for you.
+
+Prefer to write it yourself? A workflow is markdown with a short metadata header
+(`name`, `description`, and `outcome` are required; `tags` optional). Publish a
+file directly, or pipe the body from stdin for agent-generated output so no
+intermediate file is left behind:
+
+```sh
+goodeye workflows publish ./high-signal-chart.md
+# or, from stdin:
 goodeye workflows publish - \
   --name high-signal-chart \
   --description "Produce a publication-quality chart on a topic, gated by a design verifier." \
   --outcome "Engagement on the charts we publish" \
-  --tag data \
-  --tag viz <<'EOF'
-# Body
-
-The runbook goes here: find an authoritative dataset, draft chart variants,
-render the chart, then run the design verifier, revising until it passes. Inline
-structural and functional checks belong here as fenced code blocks; reference any
-semantic verifiers by their id.
+  --tag data --tag viz <<'EOF'
+# Body: find an authoritative dataset, draft chart variants, render the chart,
+# then run the design verifier, revising until it passes. Inline structural and
+# functional checks go here as fenced code blocks; reference semantic verifiers
+# by their id.
 EOF
-```
-
-When you already have a markdown file (with YAML front matter for the metadata),
-publish it directly:
-
-```sh
-goodeye workflows publish ./high-signal-chart.md
 ```
 
 Workflows are always private to you. Publishing the same `name` again appends a
 new version. To share a workflow publicly later, claim a handle
 (`goodeye me claim-handle <handle>`) and run
 `goodeye templates publish <workflow-id-or-name>` as a separate, explicit step.
-
-**Tip:** To design a workflow and its verifiers interactively, sign in and run
-`goodeye design`, then pipe the printed prompt into your AI assistant.
 
 **Already have skills on disk?** If you keep agent skills under
 `~/.claude/skills/` (or `~/.agents/skills/`, `~/.cursor/skills/`), import one by

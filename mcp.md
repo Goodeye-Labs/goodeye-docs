@@ -335,7 +335,7 @@ Any authenticated caller gets every tool. The groups below follow the main resou
 ### Budget or account errors
 
 - `budget_exhausted` (402): your monthly credit grant is spent. Run `goodeye usage` or `GET /v1/me/usage` to check your balance. See [Accounts and billing](accounts-and-billing.md).
-- `account_suspended` (403): contact hello@goodeyelabs.com
+- `account_suspended` (403): contact [hello@goodeyelabs.com](mailto:hello@goodeyelabs.com)
 
 ## See also
 

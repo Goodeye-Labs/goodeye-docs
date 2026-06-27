@@ -75,7 +75,7 @@ The same update command works via MCP (`update_image`) and REST
 - **Private**: requires the owner's credentials or a shareable view link (see
   below). An anonymous request with neither returns `401 auth_required`; a
   request authenticated as someone other than the owner returns
-  `404 image_not_found` (existence is masked).
+  `404 image_not_found`.
 - **Expired**: once an image's TTL has passed, its URL stops working
   (`404 image_not_found`).
 
@@ -170,17 +170,10 @@ consistent behavior.
 
 ## Shortcut commands
 
-Four convenience commands wrap the most common `update` operations:
-
-| Command | Equivalent to |
-|---|---|
-| `goodeye images share <image_id>` | `update <image_id> --visibility public` |
-| `goodeye images unshare <image_id>` | `update <image_id> --visibility private` |
-| `goodeye images set-ttl <image_id> <seconds>` | `update <image_id> --ttl <seconds>` |
-| `goodeye images set-ttl <image_id> permanent` | `update <image_id> --permanent` |
-| `goodeye images reset-link <image_id>` | `update <image_id> --rotate-view-secret` |
-
-Each accepts `--json` to print the updated record.
+Convenience wrappers exist for the most common updates: `goodeye images share`,
+`goodeye images unshare`, `goodeye images set-ttl`, and
+`goodeye images reset-link`. See [CLI](cli.md) for the full list and the
+`update` flags each maps to.
 
 ## Error codes
 
@@ -190,7 +183,7 @@ Uploading and managing images can return these errors. Each carries a stable
 | HTTP status | Slug | When it occurs |
 |-------------|------|----------------|
 | 401 | `auth_required` | No credentials on an upload, management, or private-image request |
-| 404 | `image_not_found` | The image does not exist, has expired, or is owned by someone else (existence is masked) |
+| 404 | `image_not_found` | The image does not exist, has expired, or is owned by someone else |
 | 413 | `file_too_large` | The uploaded file exceeds the per-file size limit |
 | 415 | `unsupported_image_type` | The bytes are not a PNG, JPEG, WebP, or GIF |
 | 422 | `quota_exceeded` | Storing the image would exceed your storage quota |

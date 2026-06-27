@@ -15,6 +15,14 @@ Every public template shows four named checks: **Safety**, **Outcome**,
 **Runnable**, and **Well-formed**. Together they give a reader an honest,
 at-a-glance signal of how well a template's workflow is authored.
 
+```diagram-authoring-checks
+head: Authoring checks | how a template's workflow is written, shown to every reader
+Safety | screened at publish | clean, flagged, or not checked | gate
+* Outcome | declares and verifies a measurable result | the Goodeye difference | earned
+Runnable | clear, ordered steps | defined inputs and outputs | earned
+Well-formed | discoverable, cleanly authored | structurally complete | earned
+```
+
 - **Safety** is the safety screen that runs before a template is published. See
   [Templates](templates.md#the-unverified-template-banner) for the safety states
   (clean, flagged, and not safety-checked) a reader sees and what they mean.
@@ -59,9 +67,9 @@ tagged P0 (blocker), P1 (recommended), or P2 (polish), quotes the text to
 change, and states one concrete fix. Requires at least `view` access.
 
 You choose which findings to fix; the audit applies only what you approve and
-never auto-saves, editing a local copy first when one exists and marking the
-saved version `source=audit`. You can also audit a local workflow file not yet
-saved to Goodeye, in which case the report recommends saving it.
+never auto-saves, editing a local copy first when one exists. You can also audit
+a local workflow file not yet saved to Goodeye, in which case the report
+recommends saving it.
 
 - **CLI:** `goodeye workflows audit <id-or-name>` (omit the id to audit a local workflow file)
 - **MCP tool:** `audit_workflow`

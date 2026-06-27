@@ -295,9 +295,9 @@ Pulls every configured sync target and then reports status. Equivalent to `sync 
 | `sync target add <DIR>` | Configure a local directory to mirror workflows into. Pass `--preset claude`, `--preset agents`, or `--preset cursor` instead of a path for known locations. |
 | `sync target list` | List configured sync targets. |
 | `sync target remove <DIR>` | Remove a configured sync target. |
-| `sync pull [SLUG...]` | Pull workflows from the registry to local directories. |
-| `sync push [SLUG...]` | Upload locally edited workflows back to the registry. |
-| `sync status` | Report drift between the registry and local directories without writing anything. |
+| `sync pull [SLUG...]` | Pull your workflows from Goodeye to local directories. |
+| `sync push [SLUG...]` | Upload locally edited workflows back to Goodeye. |
+| `sync status` | Report drift between Goodeye and local directories without writing anything. |
 | `sync auto on [--interval <seconds>]` | Enable the automatic background pull (opt-in; default interval 3600 s). |
 | `sync auto off` | Disable the automatic background pull. |
 | `sync auto` | Print the current auto-pull setting and last run time. |

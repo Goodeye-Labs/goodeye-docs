@@ -76,6 +76,12 @@ When you deploy a semantic verifier you define three things:
   - `image`: a single image only, no text fields (the chart-design check in the
     high-signal chart workflow is an `image` verifier).
 
+| Contract | input_fields | Image required | Example |
+|---|---|---|---|
+| `text` | One or more named text fields | No | Claim cites its source |
+| `text_image` | Named text fields plus one image | Yes | Caption matches the image |
+| `image` | None | Yes | Chart-design check |
+
 The contract you choose determines what `run_verifier` accepts. For `text` and
 `text_image` you declare `input_fields` (the named text inputs); for `image` you
 leave them empty. A run must supply exactly those fields, no more and no fewer, and
@@ -136,8 +142,8 @@ response shape).
 
 Versions are immutable once written: to change a criterion or its calibration,
 deploy a new version, and old versions keep running for anyone who pinned them.
-Each deploy is guarded by a `version_token`, the same optimistic-concurrency check
-used when saving a workflow (see [Updating safely](workflows.md#updating-safely)):
+Each deploy is guarded by a `version_token`, the same guard used when saving a
+workflow (see [Updating safely](workflows.md#updating-safely)):
 the first deploy of a name omits the token, every later deploy includes the latest
 one, and a mismatch returns a `conflict` (409) so two callers cannot clobber each
 other.
@@ -228,7 +234,7 @@ retry.
 - **REST:** `DELETE /v1/verifiers/{verifier_id}/permanent`
 
 **Note:** Revoke and delete are owner-only and accept your own verifiers only.
-Pointing at someone else's verifier returns 404 (existence masking).
+Pointing at someone else's verifier returns 404.
 
 ## How workflows reference verifiers
 

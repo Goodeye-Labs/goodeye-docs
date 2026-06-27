@@ -179,29 +179,13 @@ distinct from the lexical filtering on `list`.
 
 ## Syncing a bundle locally
 
-Sync mirrors your workflows into local directories (`<target>/<slug>/SKILL.md`
-plus sibling files) and reconciles drift in both directions. It is CLI-only and
-requires authentication.
+Sync mirrors your workflows into local directories as `<target>/<slug>/SKILL.md`
+plus sibling files and reconciles drift in both directions. It is CLI-only and
+requires authentication. The subcommands are `sync target add`, `sync pull`,
+`sync status`, `sync push`, and `sync auto`.
 
-- **Add a target:** `goodeye workflows sync target add <path>` (or `--preset
-  claude|agents|cursor`, with `--scope owned|all|selected`).
-- **Pull to disk:** `goodeye workflows sync pull` (`--force` overwrites local
-  edits; `--yes` skips the prompt before removing a workflow deleted upstream).
-- **Check drift:** `goodeye workflows sync status`.
-- **Push local edits back:** `goodeye workflows sync push`. Each push is
-  optimistic-locked; a workflow that moved upstream is reported as a conflict and
-  left untouched (reconcile with `pull` first), and a `view`-only workflow is never
-  uploaded.
-
-Running `goodeye workflows sync` with no subcommand pulls every target, then
-prints status.
-
-**Automatic pull (opt-in):** keep targets fresh without a manual pull. When on,
-the CLI pulls new and updated workflows in the background after your command
-finishes; it never pushes, never clobbers local edits, and never removes a
-directory (those stay manual and explicit). Toggle with
-`goodeye workflows sync auto on` (`--interval <seconds>`, default 3600),
-`... auto off`, or `... auto` to see the current setting.
+See [CLI](cli.md) for the full sync reference, including the opt-in automatic
+background pull.
 
 ## Improving a workflow
 
@@ -294,6 +278,14 @@ roles, in increasing order of capability:
 - **view**: read the workflow, run it, and audit it.
 - **edit**: also save new versions and teach or optimize.
 - **admin**: also manage grants.
+
+| Capability | view | edit | admin |
+|---|---|---|---|
+| Read, run, and audit the workflow | Yes | Yes | Yes |
+| Read and run its semantic verifiers | Yes | Yes | Yes |
+| Save new versions; teach and optimize | - | Yes | Yes |
+| Deploy new verifier versions | - | Yes | Yes |
+| Manage grants on the workflow | - | - | Yes |
 
 Grant access:
 
