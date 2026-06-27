@@ -185,6 +185,7 @@ Uploading and managing images can return these errors. Each carries a stable
 | 401 | `auth_required` | No credentials on an upload, management, or private-image request |
 | 404 | `image_not_found` | The image does not exist, has expired, or is owned by someone else |
 | 413 | `file_too_large` | The uploaded file exceeds the per-file size limit |
+| 413 | `image_dimensions_exceeded` | The image resolution exceeds the maximum allowed pixels |
 | 415 | `unsupported_image_type` | The bytes are not a PNG, JPEG, WebP, or GIF |
 | 422 | `quota_exceeded` | Storing the image would exceed your storage quota |
 | 422 | `image_content_rejected` | A public upload or a flip to public was screened and found to contain disallowed content; the image is not made public |
