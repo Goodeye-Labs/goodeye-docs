@@ -77,6 +77,22 @@ exit: Passes, ship the result
 loop: Fails, revise and re-run until verifiers pass
 ```
 
+Before starting a run, the agent briefly tells you, in its own words, what the
+workflow produces and what checks the output must pass before you see the result.
+For a template, it also notes that you can inspect or fork it. The run then starts
+without waiting for your approval.
+
+After the run, the agent gives a short summary of how the output was checked: each
+verifier it invoked, its actual outcome (pass or fail with the reasoning from the
+check), and whether any check failed, was retried, or did not run. If the workflow
+has no automated check for a given aspect of the output, the agent says so plainly
+rather than implying a check happened.
+
+These two beats are passive: they are informational, not approval gates. The agent
+keeps both summaries concise and defers to you if you have asked for brevity. For
+templates, the verification rundown is additive to the
+[unverified-template safety banner](templates.md#the-unverified-template-banner).
+
 ## Workflow (private) vs template (public)
 
 | Aspect | Workflow (private) | Template (public) |

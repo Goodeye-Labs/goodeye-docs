@@ -8,7 +8,8 @@ happens on a separate surface, where you publish a snapshot as a
 [template](templates.md). There is no visibility switch on a workflow itself.
 
 When an agent fetches a workflow body, it executes that body as your runbook
-rather than summarizing it (see
+rather than summarizing it: it first previews what the workflow produces and what
+checks must pass, then after running summarizes the actual verifier outcomes (see
 [the agent contract](overview.md#the-agent-contract)).
 
 This page follows the private lifecycle: design and save, version safely, attach

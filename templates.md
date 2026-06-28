@@ -13,9 +13,10 @@ Fork | a saveable private copy, with lineage back
 ```
 
 When an agent fetches a template body, it executes that body as the user's
-runbook. Non-owner reads carry a safety banner (see
-[The unverified-template banner](#the-unverified-template-banner)). See
-[Overview](overview.md) for the full model.
+runbook, first previewing what the template produces and noting you can inspect
+or fork it (see [the agent contract](overview.md#the-agent-contract)). Non-owner
+reads also carry a safety banner (see
+[The unverified-template banner](#the-unverified-template-banner)).
 
 ## Publishing identity: your handle
 
