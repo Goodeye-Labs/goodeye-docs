@@ -1,8 +1,8 @@
 # Goodeye Documentation
 
-Official documentation for [Goodeye](https://goodeye.dev), which turns the
-business outcomes you care about into verified AI workflows that agents run
-reliably. You author workflows as markdown runbooks tagged with the
+Official documentation for [Goodeye](https://goodeye.dev), which makes an AI
+agent meet your standard before you ever see the output, even on work too
+subjective for a test. You author workflows as markdown runbooks tagged with the
 business outcome they serve, pair them with verifiers that score an AI agent
 against a measurable result, and share them publicly as templates. Everything is
 reachable from three peer surfaces: the CLI, an MCP server, and a REST API.

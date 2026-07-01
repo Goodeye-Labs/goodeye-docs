@@ -1,9 +1,10 @@
 # Overview
 
-Goodeye turns the business outcomes you care about into verified AI workflows
-that agents run reliably. This page is the mental model: the problem Goodeye
-solves, the chain it builds, and the pieces you will work with. Read it first,
-then jump to [Getting Started](getting-started.md) for a hands-on first run.
+Goodeye makes an AI agent meet your standard before you ever see the output,
+even on work too subjective for a test. This page is the mental model: the
+problem Goodeye solves, the chain it builds, and the pieces you will work with.
+Read it first, then jump to [Getting Started](getting-started.md) for a hands-on
+first run.
 
 ## The problem
 
