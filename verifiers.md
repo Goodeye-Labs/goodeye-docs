@@ -117,7 +117,7 @@ The deploy payload is a single JSON object:
       "reasoning": "The second sentence has no support in the source."
     }
   ],
-  "model_settings": {"model": "anthropic/claude-sonnet-4-6", "reasoning_effort": "medium"}
+  "model_settings": {"model": "openai/gpt-5.4-mini", "reasoning_effort": "medium"}
 }
 ```
 
