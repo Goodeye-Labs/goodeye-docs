@@ -39,7 +39,8 @@ the output (valid JSON, all required keys present, the right number of rows).
 
 Tests, bounds, and computed checks: unit tests pass, a number lands inside a
 range, a regular expression matches, a hash compares equal. Like structural
-checks, functional checks are deterministic and live inline in the workflow body.
+checks, functional checks are deterministic and live inline in the workflow body,
+or as a script the workflow ships and invokes (the ideal for anything nontrivial).
 
 Use a functional check when a pass or fail is decidable by running code against
 the output (a test suite, a numeric tolerance, a checksum).

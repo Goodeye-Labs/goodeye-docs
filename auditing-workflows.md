@@ -20,7 +20,7 @@ head: Authoring checks | how a template's workflow is written, shown to every re
 Safety | screened at publish | clean, flagged, or not checked | gate
 * Outcome | declares and verifies a measurable result | the Goodeye difference | earned
 Runnable | clear, ordered steps | defined inputs and outputs | earned
-Well-formed | discoverable, cleanly authored | structurally complete | earned
+Well-formed | discoverable and coherent | terms and references cohere | earned
 ```
 
 - **Safety** is the safety screen that runs before a template is published. See
@@ -32,8 +32,8 @@ Well-formed | discoverable, cleanly authored | structurally complete | earned
   for it.
 - **Runnable** means the workflow has clear, ordered instructions and a defined
   input and output contract an agent can follow.
-- **Well-formed** means the workflow is discoverable, structurally complete, and
-  cleanly authored.
+- **Well-formed** means the workflow is discoverable and coherent: a clear
+  trigger description, consistent terminology, and references that hold together.
 
 ## Check states
 
