@@ -141,12 +141,55 @@ Available: $3.21
 Amounts are not hardcoded in this document because they may change; run
 `goodeye usage` for the actual figures on your account.
 
+If you are on Pro, `goodeye usage` also shows your subscription status and
+the date your access renews, or, if you have cancelled, the date your Pro
+access ends.
+
 ### Tiers
 
 | Tier | Description |
 |---|---|
 | `hobby` | Default tier for new accounts. A monthly credit grant for personal and exploratory use. |
-| `pro` | A higher monthly credit grant, suitable for production workflows. [Contact us](mailto:hello@goodeyelabs.com) to upgrade. |
+| `pro` | A paid subscription (20 USD per month, billed through Stripe) with a higher monthly credit grant than Hobby, suitable for production workflows. Upgrade yourself any time; see [Upgrading to Pro](#upgrading-to-pro). |
+
+### Upgrading to Pro
+
+Pro is a paid subscription: 20 USD per month, billed through Stripe, with a
+higher monthly credit grant than Hobby.
+
+- **CLI:** `goodeye subscription upgrade`
+- **MCP tool:** `upgrade_to_pro`
+- **REST:** `POST /v1/billing/checkout`
+
+Any of these returns a secure Stripe-hosted checkout link. Open it and enter
+your payment method once; Pro activates automatically as soon as the payment
+clears. You can also just ask your AI agent to upgrade you to Pro: the same
+capability is available over MCP and the REST API, so an agent acting on your
+behalf can complete the upgrade without you leaving the conversation.
+
+Unused Pro credit does not roll over. Each renewal replaces your Pro monthly
+grant rather than adding to whatever was left over from the prior period.
+
+### Cancelling or downgrading
+
+- **CLI:** `goodeye subscription cancel`
+- **MCP tool:** `cancel_subscription`
+- **REST:** `POST /v1/billing/subscription/cancel`
+
+Cancellation takes effect at the end of your current paid period, not
+immediately: you keep Pro access and your Pro credits until then, and your
+account returns to Hobby once the period ends. There is no refund or
+proration for the remaining time on a period you already paid for.
+
+### Updating your card or viewing invoices
+
+- **CLI:** `goodeye subscription portal`
+- **MCP tool:** `create_billing_portal_session`
+- **REST:** `POST /v1/billing/portal`
+
+This opens the Stripe-hosted billing portal, where you can update your
+payment method, view your invoice history, and recover from a failed
+payment.
 
 ### Anonymous usage
 
@@ -164,9 +207,12 @@ Signing in gives you your own credits.
 
 | HTTP status | Error slug | Meaning |
 |---|---|---|
+| `400` | `billing_not_enabled` | Self-service subscription billing is not enabled on this deployment. |
 | `402` | `budget_exhausted` | Your available credit balance is zero. Wait for your next monthly refill. |
 | `402` | `anonymous_daily_cap` | The shared daily ceiling for all anonymous usage has been reached. Sign in for your own credits, or try again after the next day. |
 | `403` | `account_suspended` | Your account has been suspended. [Contact us](mailto:hello@goodeyelabs.com). |
+| `409` | `already_subscribed` | You already have an active Pro subscription. Manage it from the [billing portal](#updating-your-card-or-viewing-invoices) instead of starting a new checkout. |
+| `409` | `no_active_subscription` | There is no active subscription to cancel. |
 
 Metered features are gated by your credit balance, not by fixed request counts:
 when the balance reaches zero those operations return `402` and resume at your
