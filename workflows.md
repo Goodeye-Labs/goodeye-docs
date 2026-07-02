@@ -293,7 +293,8 @@ Grant access:
 - **REST:** `POST /v1/workflows/{id_or_slug}/grants`
 
 The grantee is a user or team UUID, an email, or a `@handle`. You cannot grant
-above your own role. Grants are rate-limited per day per granter.
+above your own role. Grants are rate-limited per day per granter. The grantee is
+emailed with a link to the workflow.
 
 ### Version-floor scoping
 
