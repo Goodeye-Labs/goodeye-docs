@@ -124,7 +124,8 @@ see [Workflows](workflows.md#sharing-with-grants).
 
 Every mutating team operation that affects another user goes through an
 invitation: both adding a member and transferring ownership return an invitation
-envelope that the recipient must explicitly accept.
+envelope that the recipient must explicitly accept. The recipient is also emailed
+when the invitation is created, with a link to accept it.
 
 When an operation creates a pending invitation, the response carries an
 `invitation_id`, a `kind` (`team_membership` or `team_ownership`), and an
