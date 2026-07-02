@@ -172,7 +172,7 @@ grant rather than adding to whatever was left over from the prior period.
 
 ### Cancelling or downgrading
 
-- **CLI:** `goodeye subscription cancel` (alias: `goodeye downgrade`)
+- **CLI:** `goodeye subscription cancel`
 - **MCP tool:** `cancel_subscription`
 - **REST:** `POST /v1/billing/subscription/cancel`
 
