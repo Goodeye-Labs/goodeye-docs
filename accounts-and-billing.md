@@ -209,8 +209,9 @@ automatically buys more credits whenever your balance drops below a
 threshold, up to a monthly cap. This needs a card on file already, so make a
 manual credit purchase first or add a card from the billing portal. You set
 an amount; the threshold defaults to that amount and the monthly cap
-defaults to four times it, and both are overridable. Your `goodeye usage`
-summary shows your automatic top-up status once it is configured.
+defaults to four times it, and both are overridable. Run `goodeye billing
+auto-topup show` to see your current terms and this month's spend toward the
+cap.
 
 - **CLI:** `goodeye billing auto-topup show|set|off`
 - **MCP tool:** `get_auto_top_up` / `configure_auto_top_up` / `disable_auto_top_up`
