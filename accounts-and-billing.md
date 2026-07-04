@@ -157,7 +157,7 @@ access ends.
 Pro is a paid subscription: 20 USD per month, billed through Stripe, with a
 higher monthly credit grant than Hobby.
 
-- **CLI:** `goodeye subscription upgrade`
+- **CLI:** `goodeye billing plan upgrade`
 - **MCP tool:** `upgrade_to_pro`
 - **REST:** `POST /v1/billing/checkout`
 
@@ -172,7 +172,7 @@ grant rather than adding to whatever was left over from the prior period.
 
 ### Cancelling or downgrading
 
-- **CLI:** `goodeye subscription cancel`
+- **CLI:** `goodeye billing plan cancel`
 - **MCP tool:** `cancel_subscription`
 - **REST:** `POST /v1/billing/subscription/cancel`
 
@@ -183,13 +183,39 @@ proration for the remaining time on a period you already paid for.
 
 ### Updating your card or viewing invoices
 
-- **CLI:** `goodeye subscription portal`
+- **CLI:** `goodeye billing portal`
 - **MCP tool:** `create_billing_portal_session`
 - **REST:** `POST /v1/billing/portal`
 
 This opens the Stripe-hosted billing portal, where you can update your
 payment method, view your invoice history, and recover from a failed
 payment.
+
+### Buying extra credits
+
+Buy additional credits any time, on top of your monthly grant, in whole US
+dollars from 5 to 500. If you already have a card on file the purchase is
+charged immediately and the credits land right away; otherwise you get a
+one-time checkout link that also saves your card for next time.
+
+- **CLI:** `goodeye billing buy-credits --amount N`
+- **MCP tool:** `purchase_credits`
+- **REST:** `POST /v1/billing/credits/purchase`
+
+### Automatic top-up
+
+Keep your balance from ever hitting zero: once configured, Goodeye
+automatically buys more credits whenever your balance drops below a
+threshold, up to a monthly cap. This needs a card on file already, so make a
+manual credit purchase first or add a card from the billing portal. You set
+an amount; the threshold defaults to that amount and the monthly cap
+defaults to four times it, and both are overridable. Run `goodeye billing
+auto-topup show` to see your current terms and this month's spend toward the
+cap.
+
+- **CLI:** `goodeye billing auto-topup show|set|off`
+- **MCP tool:** `get_auto_top_up` / `configure_auto_top_up` / `disable_auto_top_up`
+- **REST:** `GET|PUT|DELETE /v1/billing/auto-top-up`
 
 ### Anonymous usage
 
