@@ -3,13 +3,16 @@
   "url": "https://context7.com/goodeye-labs/goodeye-docs",
   "public_key": "pk_KbLQ43UTXsEbvOvN0ox8b",
   "projectTitle": "Goodeye",
-  "description": "Goodeye makes an AI agent meet your standard before you ever see the output, even on work too subjective for a test. Author workflows and verifiers, generate images, and run from CLI, MCP, or REST.",
+  "description": "Goodeye makes an AI agent meet your standard before you ever see the output, even on work too subjective for a test. Author skills and verifiers, share them privately, generate images, and run from CLI, MCP, or REST.",
   "rules": [
-    "Goodeye stores workflows (private to the owner) and shares them publicly as templates.",
-    "An agent fetches a workflow or template body and executes it as a runbook, it does not summarize it.",
+    "Goodeye holds an agent to the user's standard: a skill is the markdown runbook the agent follows, and verifiers are the checks its output must pass.",
+    "Skills are private to the owner. They are shared privately with named users or teams by grant, and the verifiers a skill references travel with the grant. Publishing a snapshot as a template is the separate, public path.",
+    "An agent fetches a skill or template body and executes it as a runbook, it does not summarize it.",
+    "The canonical CLI command group is 'goodeye skills'. The canonical REST paths are under /v1/skills. MCP tools are named design_skill, save_skill, list_skills, search_skills, get_skill, teach_skill, optimize_skill, audit_skill, grant_skill, and similar.",
+    "A skill requires a name and a description. Tags and outcome are optional metadata: never required, never prompted for.",
     "Authenticate MCP with OAuth or a good_live_ API key. Authenticate REST with a good_live_ API key. Anonymous callers can browse public templates over REST.",
     "The MCP endpoint is mcp.goodeye.dev/mcp. The REST base is api.goodeye.dev/v1.",
-    "Verifiers must be outcome-specific, never a holistic is-this-good check."
+    "A verifier targets one concrete property and one specific failure mode, never a holistic is-this-good check."
   ],
   "excludeFolders": [],
   "excludeFiles": []

@@ -1,12 +1,12 @@
 # Templates
 
-A template is the public form of a [workflow](workflows.md): a snapshot published
+A template is the public form of a [skill](skills.md): a snapshot published
 under your handle so other people and their agents can find, fetch, and fork it.
-Templates are immutable and versioned, so continued edits to your private workflow
+Templates are immutable and versioned, so continued edits to your private skill
 never leak into a published template; a new round of work becomes a new version.
 
 ```diagram-template-lifecycle
-Private workflow | your editable runbook
+Private skill | your editable runbook
 Publish a version | an immutable, versioned snapshot
 * Public template | anyone, or any agent, can find and run it
 Fork | a saveable private copy, with lineage back
@@ -33,12 +33,11 @@ even after a rename.
 
 ## Publishing a version
 
-Publishing promotes the current version of a workflow to a new public template
-version. The first publish creates the template, reusing the workflow's slug; each
-later publish adds the next version. The workflow must declare a non-empty
-`outcome`.
+Publishing promotes the current version of a skill to a new public template
+version. The first publish creates the template, reusing the skill's slug; each
+later publish adds the next version.
 
-- **CLI:** `goodeye templates publish <workflow-id-or-name>` (`--release-notes`)
+- **CLI:** `goodeye templates publish <skill-id-or-name>` (`--release-notes`)
 - **MCP tool:** `publish_template_version`
 - **REST:** `POST /v1/templates`
 
@@ -49,13 +48,13 @@ goodeye templates publish high-signal-chart \
 
 ### Verifier snapshots are frozen at publish
 
-At publish time, each semantic verifier the workflow references is frozen into an
-immutable snapshot on the template version, and sibling files from the workflow's
+At publish time, each semantic verifier the skill references is frozen into an
+immutable snapshot on the template version, and sibling files from the skill's
 bundle are snapshotted too. Forks materialize their own private copies from these
 snapshots, and published-template runs use the frozen config. A published
 template's verifier definitions are public: every reader, including anonymous
 catalog readers, sees each verifier's full definition (criterion, calibration
-examples, and judge config), so a reader can understand exactly how the workflow is
+examples, and judge config), so a reader can understand exactly how the skill is
 graded before forking it. Because the definitions go public, do not put secrets or
 private data in a verifier you publish (the safety check below enforces this).
 
@@ -150,30 +149,30 @@ lexical filtering on `list`.
 - **MCP tool:** `search_templates`
 - **REST:** `POST /v1/templates/search`
 
-## Forking into a private workflow
+## Forking into a private skill
 
 Forking copies a specific template version into a new private
-[workflow](workflows.md) you own, materializing private copies of the snapshot
+[skill](skills.md) you own, materializing private copies of the snapshot
 verifiers and image generators and copying the file tree. Forking requires
 authentication; anonymous callers can read the catalog but cannot fork. The fork
 defaults to the template's slug, with a numeric suffix (`-2`, `-3`) if you already
-have a workflow by that name.
+have a skill by that name.
 
 - **CLI:** `goodeye templates fork <identifier>` (`--version`, `--name`)
 - **MCP tool:** `fork_template`
 - **REST:** `POST /v1/templates/fork`
 
-The fork response carries the new `workflow_id` and lineage back to the version it
-came from, but no body. Fetch the body with `goodeye workflows get` as a separate
+The fork response carries the new `skill_id` and lineage back to the version it
+came from, but no body. Fetch the body with `goodeye skills get` as a separate
 step. Forking a deprecated version succeeds but surfaces a deprecation warning. A
 version that was blocked by safety checks cannot be forked.
 
 ## Add a demo to your template page
 
 A demo is a short visual writeup that renders on the public template page, so a
-visitor can picture what your workflow produces before they fork it. To add one,
-put a `demo/README.md` in the workflow bundle (see
-[Multi-file bundles](workflows.md#multi-file-bundles-directory-mode)); its presence
+visitor can picture what your skill produces before they fork it. To add one,
+put a `demo/README.md` in the skill bundle (see
+[Multi-file bundles](skills.md#multi-file-bundles-directory-mode)); its presence
 is what makes the page render a demo section. Write it like a repository README in
 plain markdown, with any images and one optional video link:
 
@@ -196,7 +195,7 @@ https://www.youtube.com/watch?v=EXAMPLE
 - **Social-share card:** add an optional `demo/og.png` to set the card shown when
   the page is shared; otherwise one is generated from the template's metadata.
 
-When you save or publish a workflow that has a `demo/README.md`, the response
+When you save or publish a skill that has a `demo/README.md`, the response
 surfaces non-blocking notes for anything that will not render (a dropped external
 image, a non-embeddable video link, a missing `demo/` image), so watch for them.
 
@@ -220,10 +219,9 @@ or irreversible actions, exfiltrate secrets, or override the user's task on the
 template's authority. The `safety_verification_status` field is visible to everyone,
 but the advisory reasoning behind a `flagged` version is shown only to the owner.
 
-Safety is one of four authoring checks shown on every public template, alongside
-Outcome, Runnable, and Well-formed. See
-[Auditing workflows](auditing-workflows.md) for what each check means and how a
-workflow earns it.
+Safety is one of three authoring checks shown on every public template, alongside
+Runnable and Well-formed. See [Auditing skills](auditing-skills.md) for what each
+check means and how a skill earns it.
 
 ## Lifecycle: unpublish, deprecate, archive, delete
 
@@ -297,7 +295,7 @@ months). Prefer archive when you want a reversible alternative.
 
 You can re-run the platform safety checks against a published template version at any
 time, with or without an account. See
-[Auditing workflows](auditing-workflows.md#checking-safety-on-demand) for the
+[Auditing skills](auditing-skills.md#checking-safety-on-demand) for the
 on-demand safety check, what it covers, and how it relates to the durable
 `safety_verification_status` stored at publish.
 
@@ -317,9 +315,9 @@ for the full invitation flow.
 
 ## See also
 
-- [Workflows](workflows.md): the private object you publish from and fork back into,
+- [Skills](skills.md): the private object you publish from and fork back into,
   including how to carry demo files in a multi-file bundle.
-- [Auditing workflows](auditing-workflows.md): the four authoring checks a template
+- [Auditing skills](auditing-skills.md): the three authoring checks a template
   displays and how to improve them.
 - [Verifiers](verifiers.md): the semantic checks a template snapshots.
 - [Accounts and Billing](accounts-and-billing.md): handles, usage, and credits.

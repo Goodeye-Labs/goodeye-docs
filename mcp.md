@@ -1,12 +1,12 @@
 # MCP Integration
 
-Connect an MCP-compatible AI assistant to Goodeye and it can manage your workflows, publish templates, run verifiers, and generate images from natural language.
+Connect an MCP-compatible AI assistant to Goodeye and it can manage your skills, publish templates, run verifiers, and generate images from natural language.
 
 ## Overview
 
 Everything Goodeye does is reachable over MCP. Once connected, your AI assistant can:
 
-- Design, save, fetch, and manage workflows
+- Design, save, fetch, and manage skills
 - Publish, search, fork, and verify templates
 - Deploy and run semantic verifiers
 - Deploy and invoke image generators
@@ -16,7 +16,7 @@ Everything Goodeye does is reachable over MCP. Once connected, your AI assistant
 - Check your current usage and credits
 - View and redeem referral codes
 
-**Agent contract:** when your assistant calls `get_workflow` or `get_template` and receives a body back, it executes that body as your runbook. It follows the instructions itself rather than summarizing or just displaying them.
+**Agent contract:** when your assistant calls `get_skill` or `get_template` and receives a body back, it executes that body as your runbook. It follows the instructions itself rather than summarizing or just displaying them.
 
 ## The endpoint
 
@@ -207,38 +207,38 @@ To use an API key:
 
 Any authenticated caller gets every tool. The groups below follow the main resource areas.
 
-### Workflows
+### Skills
 
 | Tool | What it does |
 |------|--------------|
-| `design_workflow` | Start a guided workflow + verifier design session. Returns the workflow designer prompt pack. |
-| `save_workflow` | Create or update a workflow. Accepts multi-file bundles. |
-| `list_workflows` | List workflows you own or have been granted access to. |
-| `search_workflows` | Natural language search across your workflows. |
-| `get_workflow` | Fetch a workflow by id or slug. The agent executes the returned body as a runbook. |
-| `get_workflow_file` | Fetch a single file from a workflow's file bundle. |
-| `get_workflow_files` | Fetch multiple files from a workflow bundle in one call. |
-| `archive_workflow` | Reversibly hide a workflow (slug stays occupied). |
-| `unarchive_workflow` | Restore an archived workflow. |
-| `delete_workflow` | Permanently erase a workflow. No recovery. |
-| `delete_workflow_version` | Permanently erase a single non-current workflow version. |
-| `teach_workflow` | Teach an existing workflow with new examples. |
-| `optimize_workflow` | Run an agent-driven iteration loop to improve a workflow. |
-| `optimize_description` | Tune a workflow's trigger description for accuracy (description-only). |
-| `audit_workflow` | Audit a workflow or local skill against a best-practice rubric; returns a priority-ranked report with concrete fixes. |
-| `check_workflow_safety` | Run platform safety checks on a workflow version. |
-| `grant_workflow` | Share a workflow with another user or team. |
-| `revoke_workflow_grant` | Remove an access grant. |
-| `list_workflow_grants` | List who has access to a workflow. |
-| `leave_shared_workflow` | Leave a workflow someone else shared with you. |
-| `transfer_workflow_ownership` | Transfer ownership to another user (returns an invitation). |
-| `lookup_fork_lineage` | Trace a workflow back to its template source. |
+| `design_skill` | Start a guided skill and verifier design session. Returns the skill designer prompt pack. |
+| `save_skill` | Create or update a skill. Accepts multi-file bundles. |
+| `list_skills` | List skills you own or have been granted access to. |
+| `search_skills` | Natural language search across your skills. |
+| `get_skill` | Fetch a skill by id or slug. The agent executes the returned body as a runbook. |
+| `get_skill_file` | Fetch a single file from a skill's file bundle. |
+| `get_skill_files` | Fetch multiple files from a skill bundle in one call. |
+| `archive_skill` | Reversibly hide a skill (slug stays occupied). |
+| `unarchive_skill` | Restore an archived skill. |
+| `delete_skill` | Permanently erase a skill. No recovery. |
+| `delete_skill_version` | Permanently erase a single non-current skill version. |
+| `teach_skill` | Teach an existing skill with new examples. |
+| `optimize_skill` | Run an agent-driven iteration loop to improve a skill. |
+| `optimize_description` | Tune a skill's trigger description for accuracy (description-only). |
+| `audit_skill` | Audit a hosted skill, or a skill file on disk, against the authoring checks; returns a priority-ranked report with concrete fixes. |
+| `check_skill_safety` | Run platform safety checks on a skill version. |
+| `grant_skill` | Share a skill with another user or team. |
+| `revoke_skill_grant` | Remove an access grant. |
+| `list_skill_grants` | List who has access to a skill. |
+| `leave_shared_skill` | Leave a skill someone else shared with you. |
+| `transfer_skill_ownership` | Transfer ownership to another user (returns an invitation). |
+| `lookup_fork_lineage` | Trace a skill back to its template source. |
 
 ### Templates
 
 | Tool | What it does |
 |------|--------------|
-| `publish_template_version` | Publish a workflow as a new public template version. Runs safety checks first. |
+| `publish_template_version` | Publish a skill as a new public template version. Runs safety checks first. |
 | `unpublish_template_version` | Hide a published template version. |
 | `deprecate_template_version` | Flag a version as deprecated without hiding it. |
 | `delete_template_version` | Permanently erase an unpublished template version. |
@@ -249,7 +249,7 @@ Any authenticated caller gets every tool. The groups below follow the main resou
 | `search_templates` | Natural language search across public templates. |
 | `get_template` | Fetch a template by UUID or `@handle/slug`. The agent executes the returned body as a runbook. |
 | `get_template_file` | Fetch a single file from a template version's file tree. |
-| `fork_template` | Copy a public template into a private workflow. |
+| `fork_template` | Copy a public template into a private skill. |
 | `check_template_safety` | Run platform safety checks on a published template version. |
 | `transfer_template_ownership` | Transfer template ownership to another user. |
 
@@ -321,7 +321,7 @@ Any authenticated caller gets every tool. The groups below follow the main resou
 ### "Authentication required" or 401 errors
 
 - Try disconnecting and reconnecting Goodeye in your client settings
-- Make sure you are signing in with the same account that owns your workflows and keys
+- Make sure you are signing in with the same account that owns your skills and keys
 - If using an API key, verify the key is active and the `Authorization` header is formatted correctly: `Bearer good_live_...`
 
 ### Tools not appearing
@@ -340,7 +340,7 @@ Any authenticated caller gets every tool. The groups below follow the main resou
 ## See also
 
 - [Getting started](getting-started.md)
-- [Workflows](workflows.md)
+- [Skills](skills.md)
 - [Templates](templates.md)
 - [Verifiers](verifiers.md)
 - [Images](images.md)

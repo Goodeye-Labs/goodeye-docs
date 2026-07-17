@@ -1,13 +1,13 @@
 # Teams
 
-Teams let you share workflows with a whole group at once, so a new teammate can
-run the workflows they need the moment they join instead of waiting for a one-off
-grant. You create a team with a handle, add members through invitations, and then
-grant a workflow to `@teamhandle`. Every current and future member gains the
-access level you set on the grant.
+Teams let you share skills with a whole group at once, so a new teammate can run
+the skills they need the moment they join instead of waiting for a one-off grant.
+You create a team with a handle, add members through invitations, and then grant a
+skill to `@teamhandle`. Every current and future member gains the access level you
+set on the grant, and the verifiers the skill references travel with it.
 
 ```diagram-grants
-head: Workflow owner | holds a private workflow
+head: Skill owner | holds a private skill
 A user | grant: view or edit
 A team | grant: every member inherits the role
 ```
@@ -100,16 +100,16 @@ the previous owner automatically becomes a member of the team.
 - **MCP tool:** `transfer_team_ownership`
 - **REST:** `POST /v1/teams/{team_id_or_handle}/transfer-ownership`
 
-## Granting a workflow to a team
+## Granting a skill to a team
 
-Once your team exists, share a workflow with the entire team in one step. All
-current and future members can fetch that workflow at the granted role. The
+Once your team exists, share a skill with the entire team in one step. All
+current and future members can fetch that skill at the granted role. The
 `grantee` is the team's `@handle`, and the role is one of `view`, `edit`, or
 `admin`.
 
-- **CLI:** `goodeye workflows grant my-workflow @my-team view`
-- **MCP tool:** `grant_workflow`
-- **REST:** `POST /v1/workflows/{id_or_slug}/grants`
+- **CLI:** `goodeye skills grant my-skill @my-team view`
+- **MCP tool:** `grant_skill`
+- **REST:** `POST /v1/skills/{id_or_slug}/grants`
 
 The REST body names the grantee with `grantee_email_or_at_team_handle`:
 
@@ -118,7 +118,7 @@ The REST body names the grantee with `grantee_email_or_at_team_handle`:
 ```
 
 For the full description of roles, version floors, and cascaded verifier grants,
-see [Workflows](workflows.md#sharing-with-grants).
+see [Skills](skills.md#sharing-with-grants).
 
 ## Invitations
 
@@ -166,7 +166,7 @@ after expiry simply creates a fresh one.
 
 ## See also
 
-- [Workflows](workflows.md) for grant roles, version floors, and revoking access.
+- [Skills](skills.md) for grant roles, version floors, and revoking access.
 - [Accounts and Billing](accounts-and-billing.md) for handles, API keys, and
   usage.
 - [Templates](templates.md) for public sharing via published template versions.

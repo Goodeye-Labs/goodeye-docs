@@ -4,7 +4,7 @@ Invite new users to Goodeye and both sides earn bonus credits.
 
 ```diagram-referral-flow
 New user redeems your code | their bonus credits land right away
-New user builds | owns a workflow, runs a verifier or makes an image
+New user builds | owns a skill, runs a verifier or makes an image
 * New user activates | your reward unlocks
 You earn bonus credits | added to your balance
 ```
@@ -99,7 +99,7 @@ Your bonus credits land as soon as you redeem a valid code. The inviter's reward
 is separate: it unlocks once you (the referred user) activate your account, which
 means both of these are true:
 
-- You own at least one private workflow.
+- You own at least one private skill.
 - You have run a verifier or generated an image.
 
 There is no time limit: a referral stays pending until the referred user
