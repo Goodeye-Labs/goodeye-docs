@@ -15,11 +15,6 @@ This page follows the private lifecycle: design and save, version safely, attach
 verifiers and image generators, fetch and sync, improve against real runs, and
 share through grants.
 
-**Renamed from workflow.** The stored object used to be called a workflow. If you
-have existing automation, the old `goodeye workflows` commands and the
-`/v1/workflows` REST paths keep working as deprecated aliases through 2026-10-01;
-switch to `goodeye skills` and `/v1/skills` before then.
-
 ## Designing a skill
 
 A guided design session produces a skill plus its verifiers. Like every guided
