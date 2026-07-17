@@ -221,7 +221,7 @@ Skills are private to their owner. Use [templates](templates.md) to share public
 
 ### `POST /v1/skills`
 
-Create or update a skill. Required fields: `name`, `body`. Optional: `description`, `tags`, `outcome`, `slug`, `files` (multi-file bundle).
+Create or update a skill. Required fields: `name`, `body`, `description`. Optional: `tags`, `outcome`, `slug`, `files` (multi-file bundle).
 
 ```http
 POST /v1/skills
