@@ -2,27 +2,29 @@
 
 Official documentation for [Goodeye](https://goodeye.dev), which makes an AI
 agent meet your standard before you ever see the output, even on work too
-subjective for a test. You author workflows as markdown runbooks tagged with the
-business outcome they serve, pair them with verifiers that score an AI agent
-against a measurable result, and share them publicly as templates. Everything is
-reachable from three peer surfaces: the CLI, an MCP server, and a REST API.
+subjective for a test. You author skills as markdown runbooks, pair them with
+verifiers that judge what an AI agent produces, and share both privately with the
+people and teams you choose. Everything is reachable from three peer surfaces:
+the CLI, an MCP server, and a REST API.
 
 ## What is Goodeye?
 
-Goodeye turns a stated business outcome into a deployed AI workflow. The chain
-is: Outcome to KPI(s) to Task to Workflow plus Verifiers.
+Goodeye holds an AI agent to your standard while it works. You write the runbook,
+you write the checks, and nothing reaches you until the checks pass.
 
-- **Workflow**: a markdown runbook stored privately in your Goodeye account,
-  tagged with the outcome it serves. An agent fetches the body and executes it as
-  a runbook.
-- **Template**: the public form of a workflow, shared under your handle so other
+- **Skill**: a markdown runbook stored privately in your Goodeye account. An agent
+  fetches the body and executes it as a runbook.
+- **Verifier**: a check the skill runs on agent output. Structural, functional,
+  or semantic (an LLM judge calibrated with examples).
+- **Template**: the public form of a skill, shared under your handle so other
   people and their agents can find, fetch, and fork it.
-- **Verifier**: a check the workflow runs on agent output. Structural,
-  functional, or semantic (an LLM judge calibrated with examples).
 - **Image generator**: a deployed, owner-scoped image generation capability a
-  workflow can call.
+  skill can call.
 - **Hosted image**: an image stored by Goodeye with a stable URL that never
   changes, including images produced by a generator.
+
+Skills stay private. You share one with named users or teams through a grant, and
+the verifiers it references travel with it.
 
 ## Documentation
 
@@ -34,10 +36,10 @@ assistants via Context7. Pages:
 |------|-------------|
 | [Overview](overview.md) | Core concepts and the Goodeye mental model |
 | [Getting Started](getting-started.md) | Install the CLI, sign in, fetch and run your first template |
-| [Workflows](workflows.md) | Author, version, teach, optimize, and share workflows |
-| [Verifiers](verifiers.md) | Score agent output with structural, functional, and semantic checks |
+| [Skills](skills.md) | Author, version, teach, optimize, and share skills |
+| [Verifiers](verifiers.md) | Judge agent output with structural, functional, and semantic checks |
 | [Templates](templates.md) | Publish, fork, and manage public templates |
-| [Auditing workflows](auditing-workflows.md) | Grade a workflow against the best-practice checks |
+| [Auditing skills](auditing-skills.md) | Grade a skill against the authoring checks |
 | [Image Generators](image-generators.md) | Deploy and run owner-scoped image generation |
 | [Images](images.md) | Upload, host, and manage images; get durable URLs for generated images |
 | [Teams](teams.md) | Collaborate with teams, grants, and invitations |
@@ -58,8 +60,8 @@ assistants via Context7. Pages:
 ## Using with AI assistants
 
 Goodeye is built for AI agents acting on a user's behalf. When an agent fetches
-a workflow or template body, it follows that body as the user's runbook: it
-executes the instructions rather than summarizing them.
+a skill or template body, it follows that body as the user's runbook: it executes
+the instructions rather than summarizing them.
 
 These docs are indexed by [Context7](https://context7.com) so AI coding
 assistants can pull accurate, up-to-date Goodeye usage instructions instead of

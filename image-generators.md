@@ -1,14 +1,14 @@
 # Image generators
 
 An image generator is a deployed, owner-scoped image-generation capability that a
-workflow can call. You deploy one once with a fixed model and default parameters,
-then reference it by ID from a workflow so the agent can produce images on the
-outcome you defined.
+skill can call. You deploy one once with a fixed model and default parameters,
+then reference it by ID from a skill so the agent can produce images that meet the
+standard you defined.
 
 This page covers deploying and managing your own generators, the three ways to
 call image generation, and how anonymous and billing behavior works. For where
 generators fit alongside everything else, see [Overview](overview.md); for the
-runbooks that call them, see [Workflows](workflows.md).
+runbooks that call them, see [Skills](skills.md).
 
 ## What a generator is
 
@@ -72,10 +72,10 @@ The response carries the `generator_id`, the new `version`, and a
 
 ### Versioning and the version token
 
-Re-deploying a generator uses the same version-token guard as workflows: every
+Re-deploying a generator uses the same version-token guard as skills: every
 deploy after the first must pass the latest `version_token`, and a mismatch is
 rejected with a conflict (409) so two callers cannot clobber each other. See
-[Workflows](workflows.md) for the concept.
+[Skills](skills.md) for the concept.
 
 **Note:** Deploying a new generator whose `name` matches an active
 platform-managed generator is rejected with a conflict (409). System tier names
@@ -139,7 +139,7 @@ separately.
 
 - CLI: `goodeye image-generators generate` (`--prompt`, `--generator`,
   `--model`, `--reference-image-url`, `--num-images`, `--seed`, `--visibility`,
-  `--params-json`, `--version`, `--anonymous`, `--workflow-id`, `--run-id`,
+  `--params-json`, `--version`, `--anonymous`, `--skill-id`, `--run-id`,
   `--json`)
 - MCP tool: `generate_image`
 - REST: `POST /v1/image-generators/{generator_id}/runs`
@@ -184,7 +184,7 @@ There are three ways to choose what generates the image:
 2. **A deployed generator by UUID.** Pass `--generator <uuid>` (or
    `--generator <uuid>@<version>` to pin a version) to use one of your deployed
    generators with its configured model and defaults. This is the mode a
-   workflow uses to call a generator you own.
+   skill uses to call a generator you own.
 
    ```sh
    goodeye image-generators generate \
@@ -253,7 +253,7 @@ completed call with `status="error"` and an `error_code` of `provider_error`,
 ## See also
 
 - [Overview](overview.md)
-- [Workflows](workflows.md)
+- [Skills](skills.md)
 - [Templates](templates.md)
 - [Verifiers](verifiers.md)
 - [CLI reference](cli.md)

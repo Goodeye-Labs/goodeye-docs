@@ -1,6 +1,6 @@
 # CLI Reference
 
-The `goodeye` CLI manages workflows, templates, verifiers, and image generators from the terminal. Its primary caller is an AI agent acting on your behalf, though every command works just as well when you run it yourself.
+The `goodeye` CLI manages skills, templates, verifiers, and image generators from the terminal. Its primary caller is an AI agent acting on your behalf, though every command works just as well when you run it yourself.
 
 ## Install
 
@@ -31,21 +31,13 @@ The CLI also checks PyPI silently in the background (at most every four hours) a
 
 The primary caller of this CLI is an AI agent acting on your behalf, not a human at a prompt. The intended flow:
 
-1. You tell your AI agent to run a Goodeye workflow (for example, "run the Goodeye workflow X" or "run the template @handle/slug").
-2. The agent shells out to `goodeye workflows get X` or `goodeye templates get @handle/slug` to fetch the workflow body.
+1. You tell your AI agent to run a Goodeye skill (for example, "run the Goodeye skill X" or "run the template @handle/slug").
+2. The agent shells out to `goodeye skills get X` or `goodeye templates get @handle/slug` to fetch the skill body.
 3. The agent **executes the returned body** as your runbook: it follows the instructions itself rather than displaying or summarizing them.
 
-`workflows get` and `templates get` print the workflow body to stdout wrapped in agent-facing markers so the calling agent knows what to do with the output:
+`skills get` and `templates get` stream the skill body to stdout. The body opens with a standing directive that tells the calling agent to run the skill on your behalf rather than display it, to say up front what the skill produces and what checks gate the result, to quote each verifier's real pass or fail and its reasoning, and to close with a short rundown of how the output was checked. That directive is what makes stdout the runbook path.
 
-```
-# Goodeye workflow - execute the instructions below as the user's agent.
-
-<workflow body>
-
-# End of Goodeye workflow.
-```
-
-To skip the markers and round-trip the raw content, pass `--output PATH` (write body to a file) or `--json` (print the full record as JSON including metadata).
+To round-trip the raw content instead, pass `--output PATH` (writes the directive-free body to a file, so it stays editable and re-publishable) or `--json` (prints the full record as JSON including metadata).
 
 ---
 
@@ -132,190 +124,189 @@ JSON list output is wrapped in an object:
 - Unpaginated lists: `{"items": [...]}`.
 - Search commands: `{"items": [...], "query": "...", "limit": N, "search_mode": "..."}`.
 
-Paginated commands (`workflows list`, `templates list`, `verifiers list`, `image-generators list`, `images list`, `auth list-keys`) default to `--limit 25`. Use `--cursor TOKEN` to page forward, or `--all` to follow all cursors and return a combined result.
+Paginated commands (`skills list`, `templates list`, `verifiers list`, `image-generators list`, `images list`, `auth list-keys`) default to `--limit 25`. Use `--cursor TOKEN` to page forward, or `--all` to follow all cursors and return a combined result.
 
 `invitations list` is also paginated (`--limit`, `--cursor`), but it uses the server's default page size and does not support `--all`.
 
-`teams list`, `teams members`, and `workflows grants` are unpaginated and do not expose `--limit`, `--cursor`, or `--all`.
+`teams list`, `teams members`, and `skills grants` are unpaginated and do not expose `--limit`, `--cursor`, or `--all`.
 
 ---
 
-## `workflows`
+## `skills`
 
-Create, version, share, and run your private workflows. See [workflows.md](workflows.md) for a deeper look at workflow bodies and front matter.
+Create, version, share, and run your private skills. See [skills.md](skills.md) for a deeper look at skill bodies and front matter.
 
-### `workflows list`
+### `skills list`
 
 ```sh
-goodeye workflows list [--filter mine|shared-with-me|all] [--tag TAG] \
+goodeye skills list [--filter mine|shared-with-me|all] [--tag TAG] \
   [--search QUERY] [--limit N] [--cursor TOKEN] [--all] \
   [--include-archived] [--json|--table]
 ```
 
-Lists workflows you own or that have been shared with you via grants. `--include-archived` also returns your own archived workflows (with an "Archived at" column in table mode).
+Lists skills you own or that have been shared with you via grants. `--include-archived` also returns your own archived skills (with an "Archived at" column in table mode).
 
-### `workflows search`
+### `skills search`
 
 ```sh
-goodeye workflows search "query text" [--filter mine|all|shared-with-me] \
+goodeye skills search "query text" [--filter mine|all|shared-with-me] \
   [--tag TAG] [--limit N] [--json|--table]
 ```
 
-Ranked natural-language search over your workflows. Use this when you remember roughly what a workflow does but not its name. Defaults to `--limit 5` (max 10).
+Ranked natural-language search over your skills. Use this when you remember roughly what a skill does but not its name. Defaults to `--limit 5` (max 10).
 
-### `workflows get`
+### `skills get`
 
 ```sh
-goodeye workflows get <id-or-name> [--version N] [--output PATH] [--json]
+goodeye skills get <id-or-name> [--version N] [--output PATH] [--json]
 ```
 
-Fetches the workflow body. By default prints markdown to stdout wrapped in agent-facing markers (see [Agent execution contract](#agent-execution-contract) above). Pass `--json` to print the full record as JSON. Pass `--output PATH` to write the body to a file without markers. Authentication is required: workflows are private.
+Fetches the skill body. By default prints markdown to stdout, opening with the standing run directive (see [Agent execution contract](#agent-execution-contract) above). Pass `--json` to print the full record as JSON. Pass `--output PATH` to write the directive-free body to a file. Authentication is required: skills are private.
 
-### `workflows publish`
+### `skills publish`
 
 ```sh
-goodeye workflows publish <file.md|-> [--name NAME] [--description TEXT] \
+goodeye skills publish <file.md|-> [--name NAME] [--description TEXT] \
   [--outcome TEXT] [--tag TAG] [--expected-version-token TOKEN] \
   [--source manual|teach|optimization|description_optimization|audit] [--verifier NAME=UUID[@VERSION]] \
   [--clear-verifiers] [--image-generator NAME=REF[@VERSION]] [--clear-image-generators] [--clear-files]
 ```
 
-Saves a workflow from a markdown file, a directory containing `SKILL.md`, or stdin (use `-` for stdin, which is preferred for generated output). Metadata comes from command-line flags, YAML front matter in the markdown, or both: flags override front matter. `name`, `description`, and `outcome` are required. Repeat `--tag` to attach multiple tags.
+Saves a skill from a markdown file, a directory containing `SKILL.md`, or stdin (use `-` for stdin, which is preferred for generated output). Metadata comes from command-line flags, YAML front matter in the markdown, or both: flags override front matter. `name` and `description` are required; `--tag` and `--outcome` are optional. Repeat `--tag` to attach multiple tags.
 
 Front matter format:
 
 ```markdown
 ---
-name: my-workflow
-description: One sentence on what this workflow does and when to use it.
-outcome: Reduce refund-row mislabels.
+name: my-skill
+description: One sentence on what this skill does and when to use it.
 tags: [data, cleanup]
 ---
 ```
 
-If a workflow with the same name already exists under your account, a new version is appended. Pass `--expected-version-token TOKEN` (from the previous response or `workflows list`) to confirm the parent version and prevent accidental overwrites.
+If a skill with the same name already exists under your account, a new version is appended. Pass `--expected-version-token TOKEN` (from the previous response or `skills list`) to confirm the parent version and prevent accidental overwrites.
 
-Workflows are always private. To share one publicly, run `goodeye templates publish` as a separate step.
+Skills are always private. To share one publicly, run `goodeye templates publish` as a separate step.
 
-### `workflows archive` / `workflows unarchive`
+### `skills archive` / `skills unarchive`
 
 ```sh
-goodeye workflows archive <id-or-name> [--yes]   # reversible hide
-goodeye workflows unarchive <id-or-name>           # restore
+goodeye skills archive <id-or-name> [--yes]   # reversible hide
+goodeye skills unarchive <id-or-name>           # restore
 ```
 
-Archiving hides the workflow from list results and grants but keeps all versions and files intact. Use `archive` instead of `delete` when you want a reversible alternative.
+Archiving hides the skill from list results and grants but keeps all versions and files intact. Use `archive` instead of `delete` when you want a reversible alternative.
 
-### `workflows delete` / `workflows delete-version`
+### `skills delete` / `skills delete-version`
 
 ```sh
-goodeye workflows delete <id-or-name> [--yes]
-goodeye workflows delete-version <id-or-name> <version> [--yes]
+goodeye skills delete <id-or-name> [--yes]
+goodeye skills delete-version <id-or-name> <version> [--yes]
 ```
 
-**Permanent and immediate.** `delete` removes the workflow, all its versions, all attached files, and all access grants. `delete-version` removes a single non-current version and its files. There is no recovery path through any product surface.
+**Permanent and immediate.** `delete` removes the skill, all its versions, all attached files, and all access grants. `delete-version` removes a single non-current version and its files. There is no recovery path through any product surface.
 
-### `workflows grant` / `workflows revoke-grant` / `workflows grants` / `workflows leave`
+### `skills grant` / `skills revoke-grant` / `skills grants` / `skills leave`
 
 ```sh
-goodeye workflows grant <id-or-name> <grantee> view|edit|admin [--include-history]
-goodeye workflows revoke-grant <id-or-name> <grantee>
-goodeye workflows grants <id-or-name> [--json|--table]
-goodeye workflows leave <id-or-name> [--yes]
+goodeye skills grant <id-or-name> <grantee> view|edit|admin [--include-history]
+goodeye skills revoke-grant <id-or-name> <grantee>
+goodeye skills grants <id-or-name> [--json|--table]
+goodeye skills leave <id-or-name> [--yes]
 ```
 
-Share a workflow with a user (by email or handle) or a team (by handle). By default the grantee sees the version current at share time and later. Pass `--include-history` to share the full version history. `grants` lists all current grants. `leave` removes your own direct grant from a workflow someone else shared with you.
+Share a skill with a user (by email or handle) or a team (by handle). By default the grantee sees the version current at share time and later. Pass `--include-history` to share the full version history. `grants` lists all current grants. `leave` removes your own direct grant from a skill someone else shared with you.
 
-### `workflows teach`
+### `skills teach`
 
 ```sh
-goodeye workflows teach <id-or-name>
+goodeye skills teach <id-or-name>
 ```
 
-Fetches the teach pack for an existing workflow and prints it to stdout for the calling agent to follow. Use to refine an existing workflow through an interactive teach session, then persist the result with `workflows publish ... --source teach`.
+Fetches the teach pack for an existing skill and prints it to stdout for the calling agent to follow. Use to refine an existing skill through an interactive teach session, then persist the result with `skills publish ... --source teach`.
 
-### `workflows optimize`
+### `skills optimize`
 
 ```sh
-goodeye workflows optimize <id-or-name> [--max-iterations N]
+goodeye skills optimize <id-or-name> [--max-iterations N]
 ```
 
-Fetches the optimize pack for an existing workflow (defaults to 20 iterations, max 1000). The pack drives an optimization loop; the caller saves the result explicitly with `workflows publish ... --source optimization` after user approval.
+Fetches the optimize pack for an existing skill (defaults to 20 iterations, max 1000). The pack drives an optimization loop; the caller saves the result explicitly with `skills publish ... --source optimization` after user approval.
 
-### `workflows optimize-description`
+### `skills optimize-description`
 
 ```sh
-goodeye workflows optimize-description <id-or-name> [--max-iterations N]
+goodeye skills optimize-description <id-or-name> [--max-iterations N]
 ```
 
-Fetches the description-optimize pack for an existing workflow (defaults to 10 iterations, max 1000). The pack tunes the workflow's `description`, the text that decides when it fires, for trigger accuracy. It changes only the description; the caller saves the result explicitly with `workflows publish ... --source description_optimization` after user approval.
+Fetches the description-optimize pack for an existing skill (defaults to 10 iterations, max 1000). The pack tunes the skill's `description`, the text that decides when it fires, for trigger accuracy. It changes only the description; the caller saves the result explicitly with `skills publish ... --source description_optimization` after user approval.
 
-### `workflows audit`
+### `skills audit`
 
 ```sh
-goodeye workflows audit [<id-or-name>]
+goodeye skills audit [<id-or-name>]
 ```
 
-Fetches the audit pack for a workflow, or for a local skill when you omit the id. The pack inspects the workflow against a best-practice rubric and returns a priority-ranked report (P0, P1, P2) with a concrete fix for each finding, enforcing at least one criterion with a platform LLM judge. You apply only the fixes you approve; they are saved explicitly with `workflows publish ... --source audit`, editing a local copy first when one exists.
+Fetches the audit pack for a hosted skill, or for a skill file on disk when you omit the id. The pack inspects the skill against the authoring checks and returns a priority-ranked report (P0, P1, P2) with a concrete fix for each finding, enforcing at least one criterion with a platform LLM judge. You apply only the fixes you approve; they are saved explicitly with `skills publish ... --source audit`, editing a local copy first when one exists.
 
-### `workflows check-safety`
+### `skills check-safety`
 
 ```sh
-goodeye workflows check-safety <id-or-name[@N]> [--version N] [--json]
+goodeye skills check-safety <id-or-name[@N]> [--version N] [--json]
 ```
 
-Runs safety checks on a workflow version. Returns `clean`, `flagged`, `blocked`, or `error`. Each call counts as two verifier runs against your credits.
+Runs safety checks on a skill version. Returns `clean`, `flagged`, `blocked`, or `error`. Each call counts as two verifier runs against your credits.
 
-### `workflows transfer-ownership`
+### `skills transfer-ownership`
 
 ```sh
-goodeye workflows transfer-ownership <id-or-name> <new-owner>
+goodeye skills transfer-ownership <id-or-name> <new-owner>
 ```
 
 Initiates an ownership transfer. Returns an invitation the recipient must accept with `goodeye invitations accept <id>`.
 
-### `workflows lineage`
+### `skills lineage`
 
 ```sh
-goodeye workflows lineage <id-or-name> [--json]
+goodeye skills lineage <id-or-name> [--json]
 ```
 
-Shows a workflow's fork lineage: the parent template, pinned version, and whether the source was archived, permanently deleted, or had its version deprecated.
+Shows a skill's fork lineage: the parent template, pinned version, and whether the source was archived, permanently deleted, or had its version deprecated.
 
-### `workflows sync`
+### `skills sync`
 
 ```sh
-goodeye workflows sync [--target DIR] [--force] [--yes] [--json|--table]
+goodeye skills sync [--target DIR] [--force] [--yes] [--json|--table]
 ```
 
 Pulls every configured sync target and then reports status. Equivalent to `sync pull` followed by `sync status`. Subcommands:
 
 | Subcommand | Purpose |
 |---|---|
-| `sync target add <DIR>` | Configure a local directory to mirror workflows into. Pass `--preset claude`, `--preset agents`, or `--preset cursor` instead of a path for known locations. |
+| `sync target add <DIR>` | Configure a local directory to mirror your hosted skills into. Pass `--preset claude`, `--preset agents`, or `--preset cursor` instead of a path for known locations. |
 | `sync target list` | List configured sync targets. |
 | `sync target remove <DIR>` | Remove a configured sync target. |
-| `sync pull [SLUG...]` | Pull your workflows from Goodeye to local directories. |
-| `sync push [SLUG...]` | Upload locally edited workflows back to Goodeye. |
-| `sync status` | Report drift between Goodeye and local directories without writing anything. |
+| `sync pull [SLUG...]` | Write your hosted skills down to skill directories on disk. |
+| `sync push [SLUG...]` | Upload a skill file you edited on disk back to its hosted skill. |
+| `sync status` | Report drift between your hosted skills and the skill files on disk without writing anything. |
 | `sync auto on [--interval <seconds>]` | Enable the automatic background pull (opt-in; default interval 3600 s). |
 | `sync auto off` | Disable the automatic background pull. |
 | `sync auto` | Print the current auto-pull setting and last run time. |
 
-**`--scope`** on `sync target add` controls which workflows land in that directory: `owned` (default), `all` (owned plus shared), or `selected` (only slugs or globs supplied with `--only`).
+**`--scope`** on `sync target add` controls which of your hosted skills land in that directory: `owned` (default), `all` (owned plus shared), or `selected` (only slugs or globs supplied with `--only`).
 
 The opt-in `sync auto` background pull (turn on with `sync auto on`, default
-interval one hour) pulls only new and updated workflows after a command
-completes: it never overwrites local edits, deletes local files, or pushes, and
-local conflicts are reported but never clobbered. It is suppressed in CI, for
-machine-readable output, and during a manual sync. See
-[Syncing a bundle locally](workflows.md#syncing-a-bundle-locally) for depth.
+interval one hour) pulls only new and updated hosted skills after a command
+completes: it never overwrites your local edits, deletes skill files on disk, or
+pushes, and a local conflict is reported rather than clobbered. It is suppressed
+in CI, for machine-readable output, and during a manual sync. See
+[Syncing a bundle locally](skills.md#syncing-a-bundle-locally) for depth.
 
 ---
 
 ## `templates`
 
-Manages the public template catalog. Templates are the public form of a workflow, addressable as `@handle/slug`. See [templates.md](templates.md) for the full publishing lifecycle.
+Manages the public template catalog. Templates are the public form of a skill, addressable as `@handle/slug`. See [templates.md](templates.md) for the full publishing lifecycle.
 
 ### `templates list`
 
@@ -340,7 +331,7 @@ Ranked natural-language search over public templates. Defaults to `--limit 5` (m
 goodeye templates get <identifier> [--version N] [--output PATH] [--json]
 ```
 
-Fetches a public template by UUID, `@handle/slug`, or `@handle/slug@vN`. No authentication required. Non-owner reads include an unverified-template safety banner in the body. The output format and flags behave identically to `workflows get` (agent-facing markers by default, `--json` for the full record, `--output PATH` to write to a file).
+Fetches a public template by UUID, `@handle/slug`, or `@handle/slug@vN`. No authentication required. Non-owner reads include an unverified-template safety banner in the body. The output format and flags behave identically to `skills get` (the standing run directive by default, `--json` for the full record, `--output PATH` to write to a file).
 
 **Tip:** if a handle was renamed and the old URL now redirects, the CLI prints a note to stderr so downstream processes that captured stdout are not affected.
 
@@ -355,10 +346,10 @@ Writes one attached file from a template (for example a demo preview image) to a
 ### `templates publish`
 
 ```sh
-goodeye templates publish <workflow-uuid-or-name> [--release-notes TEXT]
+goodeye templates publish <skill-uuid-or-name> [--release-notes TEXT]
 ```
 
-Publishes a private workflow as a new public template version. The first publish creates the template (slug is reused from the workflow); subsequent calls add the next version number. Requires a claimed handle (run `goodeye me claim-handle` first). Every publish runs automated safety checks. If the block verifier fails, the command exits with code 2 and does not publish.
+Publishes a private skill as a new public template version. The first publish creates the template (slug is reused from the skill); subsequent calls add the next version number. Requires a claimed handle (run `goodeye me claim-handle` first). Every publish runs automated safety checks. If the block verifier fails, the command exits with code 2 and does not publish.
 
 ### `templates fork`
 
@@ -366,7 +357,7 @@ Publishes a private workflow as a new public template version. The first publish
 goodeye templates fork <identifier> [--version N] [--name NAME]
 ```
 
-Copies a public template into your private workflow namespace. Authentication required. If the forked version carries a deprecation warning, the CLI prints it to stderr. To fetch the body and run it, follow with `goodeye workflows get <workflow-id>`.
+Copies a public template into your private skill namespace. Authentication required. If the forked version carries a deprecation warning, the CLI prints it to stderr. To fetch the body and run it, follow with `goodeye skills get <skill-id>`.
 
 ### `templates unpublish`
 
@@ -421,16 +412,16 @@ Initiates an ownership transfer. Returns an invitation the recipient must accept
 ### `templates lineage`
 
 ```sh
-goodeye templates lineage <workflow-ref> [--json]
+goodeye templates lineage <skill-ref> [--json]
 ```
 
-Shows a forked workflow's lineage relative to the template it was forked from. Pass the forked workflow's id, not a template id. Equivalent to `workflows lineage`.
+Shows a forked skill's lineage relative to the template it was forked from. Pass the forked skill's id, not a template id. Equivalent to `skills lineage`.
 
 ---
 
 ## `verifiers`
 
-Manages owner-scoped LLM judges. Each verifier scores a single criterion ("does this output satisfy this rule?") and returns pass/fail plus reasoning. Workflows reference deployed verifiers by UUID or `UUID@version`. See [verifiers.md](verifiers.md) for a deeper look at criterion writing and calibration examples.
+Manages owner-scoped LLM judges. Each verifier scores a single criterion ("does this output satisfy this rule?") and returns pass/fail plus reasoning. Skills reference deployed verifiers by UUID or `UUID@version`. See [verifiers.md](verifiers.md) for a deeper look at criterion writing and calibration examples.
 
 All `verifiers` subcommands require authentication.
 
@@ -466,7 +457,7 @@ Shows one verifier version: criterion, input contract, input fields, calibration
 goodeye verifiers run <verifier_id> \
   [--inputs-json '{"field": "value"}'] \
   [--media-url URL] [--version N] \
-  [--workflow-id UUID] [--workflow-version N] [--workflow-ref TEXT] \
+  [--skill-id UUID] [--skill-version N] [--skill-ref TEXT] \
   [--run-id TEXT] [--anonymous] [--json]
 ```
 
@@ -474,7 +465,7 @@ Runs a verifier and prints `PASS` or `FAIL` plus reasoning. `<verifier_id>` acce
 
 - `--inputs-json`: JSON object whose keys must match the deployed `input_fields` exactly.
 - `--media-url`: required for `text_image` and `image` contracts.
-- `--workflow-id`, `--workflow-version`, `--workflow-ref`, `--run-id`: optional provenance fields stamped onto the run row.
+- `--skill-id`, `--skill-version`, `--skill-ref`, `--run-id`: optional provenance fields stamped onto the run row.
 - `--anonymous`: run without credentials, spending against a small per-IP credit budget. Requires a UUID or `system:<name>`.
 
 The command exits 0 on a successful judgment regardless of pass/fail. Check the `PASS`/`FAIL` line or the `--json` output's `passed` field to gate downstream actions.
@@ -499,7 +490,7 @@ goodeye verifiers delete <verifier_id> [--yes]
 
 ## `image-generators`
 
-Manages owner-scoped image generation configurations. Workflows can reference a deployed generator by UUID to run image generation with consistent settings. See [image-generators.md](image-generators.md) for usage patterns.
+Manages owner-scoped image generation configurations. Skills can reference a deployed generator by UUID to run image generation with consistent settings. See [image-generators.md](image-generators.md) for usage patterns.
 
 Most subcommands require authentication. `generate` supports `--anonymous` for public preview.
 
@@ -543,7 +534,7 @@ goodeye image-generators generate \
   [--num-images 1-4] [--seed N] \
   [--params-json '{"key": "value"}'] \
   [--version N] \
-  [--workflow-id UUID] [--workflow-version N] [--workflow-ref TEXT] \
+  [--skill-id UUID] [--skill-version N] [--skill-ref TEXT] \
   [--run-id TEXT] [--anonymous] [--json]
 ```
 
@@ -598,7 +589,7 @@ Four shortcuts wrap `images update` for common edits:
 
 ## `teams`
 
-Manages teams and membership. Teams can be used as grantees for shared workflows. See [teams.md](teams.md) for team-based access patterns.
+Manages teams and membership. Teams can be used as grantees for shared skills. See [teams.md](teams.md) for team-based access patterns.
 
 ```sh
 goodeye teams create <handle>
@@ -616,7 +607,7 @@ goodeye teams transfer-ownership <team> <new-owner>
 
 ## `invitations`
 
-Invitations are created by `teams add-member`, `teams transfer-ownership`, `workflows transfer-ownership`, and `templates transfer-ownership`.
+Invitations are created by `teams add-member`, `teams transfer-ownership`, `skills transfer-ownership`, and `templates transfer-ownership`.
 
 ```sh
 goodeye invitations list [--filter received|sent|all] [--state pending|all] \
@@ -668,13 +659,13 @@ Both require authentication. You can also pass `--referral-code <code>` to `regi
 ## `design`
 
 ```sh
-goodeye design          # print the workflow-designer prompt to stdout
+goodeye design          # print the skill-designer prompt to stdout
 goodeye design --json   # print the full response object as JSON
 ```
 
-Pipe the printed prompt into your AI assistant to start designing a workflow with built-in verifiers. Requires sign-in: the command errors without credentials.
+Pipe the printed prompt into your AI assistant to start designing a skill with built-in verifiers. Requires sign-in: the command errors without credentials.
 
-**Note:** the designer prompt is the recommended starting point for new workflows. After the design session, save the result with `goodeye workflows publish -`.
+**Note:** the designer prompt is the recommended starting point for new skills. After the design session, save the result with `goodeye skills publish -`.
 
 ---
 
@@ -690,7 +681,7 @@ Pipe the printed prompt into your AI assistant to start designing a workflow wit
 ## See also
 
 - [Getting started](getting-started.md)
-- [Workflows](workflows.md)
+- [Skills](skills.md)
 - [Templates](templates.md)
 - [Verifiers](verifiers.md)
 - [Image generators](image-generators.md)

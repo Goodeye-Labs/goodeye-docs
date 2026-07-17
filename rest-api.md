@@ -1,6 +1,6 @@
 # REST API
 
-The Goodeye REST API drives workflows, templates, verifiers, and image generators straight from your own application or automation pipeline.
+The Goodeye REST API drives skills, templates, verifiers, and image generators straight from your own application or automation pipeline.
 
 ## Base URL
 
@@ -83,7 +83,7 @@ All errors return JSON with a stable `error` slug and a human-readable `message`
 ```json
 {
   "error": "not_found",
-  "message": "workflow not found"
+  "message": "skill not found"
 }
 ```
 
@@ -215,22 +215,22 @@ POST /v1/referrals/redeem    # redeem another user's code for bonus credits
 
 Redeem body: `{"code": "..."}`. Both require authentication. See [Referrals](referrals.md).
 
-## Workflows
+## Skills
 
-Workflows are private to their owner. Use [templates](templates.md) to share publicly.
+Skills are private to their owner. Use [templates](templates.md) to share publicly.
 
-### `POST /v1/workflows`
+### `POST /v1/skills`
 
-Create or update a workflow. Required fields: `name`, `body`. Optional: `description`, `outcome`, `tags`, `slug`, `files` (multi-file bundle).
+Create or update a skill. Required fields: `name`, `body`. Optional: `description`, `tags`, `outcome`, `slug`, `files` (multi-file bundle).
 
 ```http
-POST /v1/workflows
+POST /v1/skills
 Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
 Content-Type: application/json
 
 {
   "name": "Weekly report",
-  "outcome": "Deliver a concise weekly summary to the team",
+  "description": "Produce a concise weekly summary for the team, gated by a clarity verifier.",
   "body": "# Weekly report\n\n...",
   "tags": ["reporting"]
 }
@@ -238,7 +238,7 @@ Content-Type: application/json
 
 ```json
 {
-  "workflow_id": "89dcc843-d056-44d9-ae34-ebcff4903885",
+  "skill_id": "89dcc843-d056-44d9-ae34-ebcff4903885",
   "version": 1,
   "version_token": "...",
   "name": "Weekly report",
@@ -247,94 +247,94 @@ Content-Type: application/json
 }
 ```
 
-### `GET /v1/workflows`
+### `GET /v1/skills`
 
-List workflows visible to you. Query params: `filter` (`mine`, `all`, `shared-with-me`), `tag`, `search`, `limit`, `cursor`, `include_archived`.
+List skills visible to you. Query params: `filter` (`mine`, `all`, `shared-with-me`), `tag`, `search`, `limit`, `cursor`, `include_archived`.
 
-### `POST /v1/workflows/search`
+### `POST /v1/skills/search`
 
 Natural language search. Body: `{"query": "..."}`.
 
-### `GET /v1/workflows/{id_or_slug}`
+### `GET /v1/skills/{id_or_slug}`
 
-Fetch a workflow. Pass `?version=N` to pin a specific version. Add `Accept: text/markdown` to receive the body as plain markdown (the agent's runbook fetch path).
+Fetch a skill. Pass `?version=N` to pin a specific version. Add `Accept: text/markdown` to receive the body as plain markdown (the agent's runbook fetch path).
 
-### `GET /v1/workflows/{id_or_slug}/versions/{version}`
+### `GET /v1/skills/{id_or_slug}/versions/{version}`
 
 Fetch a specific version directly.
 
-### `GET /v1/workflows/{id_or_slug}/files`
+### `GET /v1/skills/{id_or_slug}/files`
 
-Fetch files from a workflow bundle. Use `?path=relative/path.md` for a single file or `?paths=a.md&paths=b.md` for a batch. On a single-file fetch, `format=raw` returns the file's raw bytes instead of a JSON envelope, and `sha256=` content-addresses the fetch.
+Fetch files from a skill bundle. Use `?path=relative/path.md` for a single file or `?paths=a.md&paths=b.md` for a batch. On a single-file fetch, `format=raw` returns the file's raw bytes instead of a JSON envelope, and `sha256=` content-addresses the fetch.
 
-### `POST /v1/workflows/{id_or_slug}/archive`
+### `POST /v1/skills/{id_or_slug}/archive`
 
-Reversibly hide a workflow. The slug stays occupied and the workflow is recoverable.
+Reversibly hide a skill. The slug stays occupied and the skill is recoverable.
 
-### `POST /v1/workflows/{id_or_slug}/unarchive`
+### `POST /v1/skills/{id_or_slug}/unarchive`
 
-Restore an archived workflow.
+Restore an archived skill.
 
-### `DELETE /v1/workflows/{id_or_slug}`
+### `DELETE /v1/skills/{id_or_slug}`
 
-Permanently erase a workflow and all its versions. No recovery. Works on live and archived workflows.
+Permanently erase a skill and all its versions. No recovery. Works on live and archived skills.
 
-### `DELETE /v1/workflows/{id_or_slug}/versions/{n}`
+### `DELETE /v1/skills/{id_or_slug}/versions/{n}`
 
-Permanently erase a single non-current version. The current version cannot be erased this way; use `DELETE /v1/workflows/{id_or_slug}` to remove everything.
+Permanently erase a single non-current version. The current version cannot be erased this way; use `DELETE /v1/skills/{id_or_slug}` to remove everything.
 
-### `POST /v1/workflows/{id_or_slug}/teach`
+### `POST /v1/skills/{id_or_slug}/teach`
 
-Teach an existing workflow with new examples.
+Teach an existing skill with new examples.
 
-### `POST /v1/workflows/{id_or_slug}/optimize`
+### `POST /v1/skills/{id_or_slug}/optimize`
 
 Run an iterative optimization loop. Optional query param `max_iterations` (1 to 1000).
 
-### `POST /v1/workflows/{id_or_slug}/optimize-description`
+### `POST /v1/skills/{id_or_slug}/optimize-description`
 
-Tune the workflow's trigger description for accuracy (description-only). Optional query param `max_iterations` (1 to 1000, defaults to 10).
+Tune the skill's trigger description for accuracy (description-only). Optional query param `max_iterations` (1 to 1000, defaults to 10).
 
-### `POST /v1/workflows/{id_or_slug}/audit`
+### `POST /v1/skills/{id_or_slug}/audit`
 
-Return the audit pack for a workflow: a prompt pack your agent runs locally to assess the workflow against a best-practice rubric and produce a priority-ranked report (P0, P1, P2) with concrete fixes. No server-side LLM call, so the endpoint itself draws no credits. Requires at least `view` access.
+Return the audit pack for a skill: a prompt pack your agent runs locally to assess the skill against the authoring checks and produce a priority-ranked report (P0, P1, P2) with concrete fixes. No server-side LLM call, so the endpoint itself draws no credits. Requires at least `view` access.
 
-### `GET /v1/audit/workflow-prompt`
+### `GET /v1/audit/skill-prompt`
 
-Fetch the audit pack with no workflow subject, for auditing a local skill that is not on Goodeye yet.
+Fetch the audit pack with no hosted subject, for auditing a skill file on disk that is not saved to Goodeye yet.
 
-### `POST /v1/workflows/{id_or_slug}/safety-check`
+### `POST /v1/skills/{id_or_slug}/safety-check`
 
-Run both platform safety checks on a workflow version. Requires auth; bills two metered runs.
+Run both platform safety checks on a skill version. Requires auth; bills two metered runs.
 
 ### Grants
 
 ```
-POST   /v1/workflows/{id_or_slug}/grants      # grant access
-GET    /v1/workflows/{id_or_slug}/grants      # list grants
-DELETE /v1/workflows/{id_or_slug}/grants      # revoke a grant
-POST   /v1/workflows/{id_or_slug}/leave       # leave a shared workflow
+POST   /v1/skills/{id_or_slug}/grants      # grant access
+GET    /v1/skills/{id_or_slug}/grants      # list grants
+DELETE /v1/skills/{id_or_slug}/grants      # revoke a grant
+POST   /v1/skills/{id_or_slug}/leave       # leave a shared skill
 ```
 
 Grant body: `{"grantee_email_or_at_team_handle": "...", "role": "view|edit|admin", "include_history": false}`.
 
 Revoke body: `{"grantee_email_or_at_team_handle": "..."}`.
 
-### `POST /v1/workflows/{id_or_slug}/transfer-ownership`
+### `POST /v1/skills/{id_or_slug}/transfer-ownership`
 
 Transfer ownership to another user. Returns an invitation envelope; the recipient calls `POST /v1/invitations/{id}/accept` to apply.
 
-### `GET /v1/workflows/{id_or_slug}/lineage`
+### `GET /v1/skills/{id_or_slug}/lineage`
 
-Trace a workflow back to its template fork source.
+Trace a skill back to its template fork source.
 
 ## Templates
 
-Templates are the public form of a workflow. Anonymous callers can list, search, and read templates.
+Templates are the public form of a skill. Anonymous callers can list, search, and read templates.
 
 ### `POST /v1/templates`
 
-Publish a workflow as a new template version. Runs safety checks before any writes; returns `safety_verification` with `status` and optional `advisory_reasoning`.
+Publish a skill as a new template version. Runs safety checks before any writes; returns `safety_verification` with `status` and optional `advisory_reasoning`.
 
 Errors: `safety_verification_failed` (422) on a hard block, `safety_verification_unavailable` (503) if the runtime is unreachable.
 
@@ -344,7 +344,7 @@ Authorization: Bearer good_live_EXAMPLE_xxxxxxxx
 Content-Type: application/json
 
 {
-  "workflow_id": "89dcc843-d056-44d9-ae34-ebcff4903885",
+  "skill_id": "89dcc843-d056-44d9-ae34-ebcff4903885",
   "release_notes": "Initial release"
 }
 ```
@@ -359,7 +359,7 @@ Natural language search. Body: `{"query": "..."}`. Anonymous callers may search.
 
 ### `POST /v1/templates/fork`
 
-Fork a template into a private workflow. Body: `{"identifier": "@handle/slug", "version": null, "name": null}`. Works for anonymous callers (creates an ephemeral workflow) or authenticated users (creates a persisted workflow).
+Fork a template into a private skill. Body: `{"identifier": "@handle/slug", "version": null, "name": null}`. Works for anonymous callers (creates an ephemeral skill) or authenticated users (creates a persisted skill).
 
 ### `GET /v1/templates/{identifier}`
 
@@ -476,7 +476,7 @@ Content-Type: application/json
 }
 ```
 
-Use `system:<name>` as the path segment to invoke a platform-managed verifier: `POST /v1/verifiers/system:workflow-design-qa/runs`. Anonymous callers may run a verifier UUID if it appears in a live public template snapshot.
+Use `system:<name>` as the path segment to invoke a platform-managed verifier: `POST /v1/verifiers/system:skill-design-qa/runs`. Anonymous callers may run a verifier UUID if it appears in a live public template snapshot.
 
 ### `DELETE /v1/verifiers/{verifier_id}`
 
@@ -570,7 +570,7 @@ Add member body: `{"user_identifier": "email@example.com"}`.
 
 ## Invitations
 
-Transfers of workflow or template ownership, team membership additions, and team ownership transfers all go through invitations. The recipient must accept for the action to take effect.
+Transfers of skill or template ownership, team membership additions, and team ownership transfers all go through invitations. The recipient must accept for the action to take effect.
 
 ```
 GET    /v1/invitations                         # list (filter: received|sent|all; state: pending|all)
@@ -582,10 +582,10 @@ POST   /v1/invitations/{id}/cancel             # cancel (proposer only)
 ## Design
 
 ```
-GET /v1/design/workflow-prompt
+GET /v1/design/skill-prompt
 ```
 
-Returns the workflow designer prompt pack (the same payload the MCP `design_workflow` tool returns). Auth required.
+Returns the skill designer prompt pack (the same payload the MCP `design_skill` tool returns). Auth required.
 
 ## Health and observability
 
@@ -598,7 +598,7 @@ Returns `{"status": "ok"}`. Available on every host without auth.
 ## See also
 
 - [Getting started](getting-started.md)
-- [Workflows](workflows.md)
+- [Skills](skills.md)
 - [Templates](templates.md)
 - [Verifiers](verifiers.md)
 - [Image generators](image-generators.md)

@@ -104,14 +104,14 @@ browsing are free; only the work that calls a frontier model draws credits.
 
 | Metered (draws credits) | Free |
 |---|---|
-| Verifier runs, including safety checks | Saving, fetching, and listing workflows and templates |
+| Verifier runs, including safety checks | Saving, fetching, and listing skills and templates |
 | Image generation, billed per image | Lexical `list` filtering and browsing |
-| Natural-language (LLM-ranked) search | Designing, teaching, optimizing, and auditing a workflow |
+| Natural-language (LLM-ranked) search | Designing, teaching, optimizing, and auditing a skill |
 | Public-image content screening | Managing teams, grants, handles, and API keys |
 
 Designing, teaching, optimizing, and auditing return a prompt pack your agent runs
 locally, so they draw no Goodeye credits. Your agent's own model usage while it
-runs that prompt pack (or executes a workflow body) bills through whatever model
+runs that prompt pack (or executes a skill body) bills through whatever model
 you run it on, separately from Goodeye.
 
 ### Checking your usage
@@ -150,7 +150,7 @@ access ends.
 | Tier | Description |
 |---|---|
 | `hobby` | Default tier for new accounts. A monthly credit grant for personal and exploratory use. |
-| `pro` | A paid subscription (20 USD per month, billed through Stripe) with a higher monthly credit grant than Hobby, suitable for production workflows. Upgrade yourself any time; see [Upgrading to Pro](#upgrading-to-pro). |
+| `pro` | A paid subscription (20 USD per month, billed through Stripe) with a higher monthly credit grant than Hobby, suitable for production use. Upgrade yourself any time; see [Upgrading to Pro](#upgrading-to-pro). |
 
 ### Upgrading to Pro
 
@@ -226,7 +226,7 @@ same way an authenticated account does; exhausting it returns `402
 budget_exhausted`. Separately, total anonymous spend across everyone is bounded by
 a shared daily ceiling that returns `402 anonymous_daily_cap` until the next day.
 Either way the grant covers Goodeye-metered work (verifier runs and safety
-checks), not the model usage your agent incurs while executing a workflow body.
+checks), not the model usage your agent incurs while executing a skill body.
 Signing in gives you your own credits.
 
 ### Billing errors
@@ -256,7 +256,7 @@ optional flag, a new command) ship without ceremony.
 
 ## See also
 
-- [Teams](teams.md) for sharing workflows with groups.
-- [Workflows](workflows.md) for saving and granting access to workflows.
+- [Teams](teams.md) for sharing skills with groups.
+- [Skills](skills.md) for saving and granting access to skills.
 - [Verifiers](verifiers.md) for deploying and running semantic checks.
-- [Templates](templates.md) for publishing your workflows publicly.
+- [Templates](templates.md) for publishing your skills publicly.

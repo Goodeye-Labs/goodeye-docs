@@ -2,7 +2,7 @@
 
 This guide takes you from zero to a verified artifact: install the CLI, point
 your agent at Goodeye, have it run a public template and watch a verifier return
-PASS, then fork that template into your own private workflow and author one from
+PASS, then fork that template into your own private skill and author one from
 scratch. No account is needed to run a template; you sign in when you want to
 save work of your own. For the concepts behind each step, see
 [Overview](overview.md).
@@ -11,8 +11,8 @@ save work of your own. For the concepts behind each step, see
 Install the CLI | uv tool install goodeye
 Point your agent at Goodeye | CLI, MCP, or REST
 Run a public template | your agent produces a verified artifact
-Fork it into a private workflow | a saveable, editable copy
-* Author your own workflow | from scratch, tied to an outcome
+Fork it into a private skill | a saveable, editable copy
+* Author your own skill | from scratch, gated by your verifiers
 ```
 
 ## Step 1: Install the CLI
@@ -37,8 +37,8 @@ goodeye --version
 
 ## Step 2: Point your agent at Goodeye
 
-Goodeye is built for an AI agent acting on your behalf. The agent fetches a
-workflow and executes it as a runbook (see
+Goodeye is built for an AI agent acting on your behalf. The agent fetches a skill
+and executes it as a runbook (see
 [the agent contract](overview.md#the-agent-contract)), so connect the agent you
 will drive Goodeye with:
 
@@ -64,7 +64,7 @@ goodeye templates list
 
 Each result is addressed as `@handle/slug`, the public identifier you use to
 fetch it. Point your agent at one and tell it to run the template. For the
-canonical demo, that is the high-signal chart workflow:
+canonical demo, that is the high-signal chart template:
 
 ```text
 Run the Goodeye template @randalolson/high-signal-chart-workflow.
@@ -91,23 +91,17 @@ artifact produced, and a real verifier returning PASS, with no account and no
 signup.
 
 To see the runbook your agent executes, fetch it by hand. By default this prints
-the body to stdout, wrapped with agent-facing markers:
+the body to stdout:
 
 ```sh
 goodeye templates get @randalolson/high-signal-chart-workflow
 ```
 
-```
-# Goodeye workflow - execute the instructions below as the user's agent.
-
-...the workflow body...
-
-# End of Goodeye workflow.
-```
-
-Those markers are the agent contract in action: they tell the calling agent the
-body is for it to act on, not to summarize. Pass `--output PATH` for the raw
-markdown or `--json` for the full record.
+The body opens with a standing directive telling the calling agent to run the
+skill on your behalf rather than display it, to quote each verifier's real
+verdict, and to tell you at the end how the output was checked. That directive is
+the agent contract in action. Pass `--output PATH` for the raw markdown without
+it, or `--json` for the full record.
 
 **Notes**
 
@@ -120,11 +114,11 @@ markdown or `--json` for the full record.
   carries an unverified-template safety banner as a cross-user trust signal.
 
 Ran it and like what it produced? Next you make it yours: sign in, then fork it
-into a private workflow you can edit and tune.
+into a private skill you can edit and tune.
 
 ## Step 4: Sign in to save your work
 
-Running templates needs no account. To fork a template or save a workflow of your
+Running templates needs no account. To fork a template or save a skill of your
 own, create an account or sign in. The quickest path, at a machine with a
 browser:
 
@@ -142,28 +136,26 @@ email-code flow instead. See [CLI](cli.md) for the `register-verify` /
 `login-verify` steps, and [Accounts and Billing](accounts-and-billing.md) for
 creating a `good_live_` API key for programmatic REST or MCP clients.
 
-## Step 5: Fork the template into a private workflow
+## Step 5: Fork the template into a private skill
 
 Running a template is great for a one-off; to make it your own, fork it. Forking
-copies the template into a new private workflow you own, carrying lineage back to
+copies the template into a new private skill you own, carrying lineage back to
 the version you forked. This is the persistent, tunable path:
 
 ```sh
 goodeye templates fork @randalolson/high-signal-chart-workflow
 ```
 
-The command prints the new workflow's id and slug (and any semantic verifiers
-pinned onto the fork). From here the workflow is yours to edit, version, and
-tune; fetch and act on it with `goodeye workflows get <id-or-name>`. See
-[Workflows](workflows.md) for teaching and optimizing a workflow against its
-verifiers.
+The command prints the new skill's id and slug (and any semantic verifiers
+pinned onto the fork). From here the skill is yours to edit, version, and tune;
+fetch and act on it with `goodeye skills get <id-or-name>`. See
+[Skills](skills.md) for teaching and optimizing a skill against its verifiers.
 
-## Step 6: Author your own workflow
+## Step 6: Author your own skill
 
 Forking adapts someone else's work; you can also author your own from scratch.
 The best first path is a guided design session: it works with you to design a
-workflow and its verifiers tied to an outcome, then saves the result when you
-approve it.
+skill and the verifiers that gate it, then saves the result when you approve it.
 
 ```sh
 goodeye design
@@ -171,20 +163,19 @@ goodeye design
 
 `goodeye design` prints a designer prompt; pipe it into your AI assistant
 (`goodeye design > design.md`, or straight into your agent) and follow along. The
-session produces the workflow plus its verifiers and saves it for you.
+session produces the skill plus its verifiers and saves it for you.
 
-Prefer to write it yourself? A workflow is markdown with a short metadata header
-(`name`, `description`, and `outcome` are required; `tags` optional). Publish a
-file directly, or pipe the body from stdin for agent-generated output so no
+Prefer to write it yourself? A skill is markdown with a short metadata header
+(`name` and `description` are required; `tags` optional). Publish a file
+directly, or pipe the body from stdin for agent-generated output so no
 intermediate file is left behind:
 
 ```sh
-goodeye workflows publish ./high-signal-chart.md
+goodeye skills publish ./high-signal-chart.md
 # or, from stdin:
-goodeye workflows publish - \
+goodeye skills publish - \
   --name high-signal-chart \
   --description "Produce a publication-quality chart on a topic, gated by a design verifier." \
-  --outcome "Engagement on the charts we publish" \
   --tag data --tag viz <<'EOF'
 # Body: find an authoritative dataset, draft chart variants, render the chart,
 # then run the design verifier, revising until it passes. Inline structural and
@@ -193,22 +184,24 @@ goodeye workflows publish - \
 EOF
 ```
 
-Workflows are always private to you. Publishing the same `name` again appends a
-new version. To share a workflow publicly later, claim a handle
+Skills are always private to you. Publishing the same `name` again appends a new
+version. To share a skill publicly later, claim a handle
 (`goodeye me claim-handle <handle>`) and run
-`goodeye templates publish <workflow-id-or-name>` as a separate, explicit step.
+`goodeye templates publish <skill-id-or-name>` as a separate, explicit step. To
+share it privately with a teammate instead, grant them access; see
+[Sharing with grants](skills.md#sharing-with-grants).
 
-**Already have skills on disk?** If you keep agent skills under
+**Already have skill files on disk?** If you keep agent skill files under
 `~/.claude/skills/` (or `~/.agents/skills/`, `~/.cursor/skills/`), import one by
-pointing `publish` at its directory and supplying an `outcome`. See
-[Importing an existing skill](workflows.md#importing-an-existing-skill).
+pointing `publish` at its directory. See
+[Importing a skill file from disk](skills.md#importing-a-skill-file-from-disk).
 
 ## Next steps
 
-- [Workflows](workflows.md): version, teach, and optimize a workflow.
+- [Skills](skills.md): version, teach, and optimize a skill.
 - [Verifiers](verifiers.md): add structural, functional, and semantic checks.
 - [Templates](templates.md): publish and manage public templates.
-- [Auditing workflows](auditing-workflows.md): grade a workflow against the
-  best-practice checks.
+- [Auditing skills](auditing-skills.md): grade a skill against the authoring
+  checks.
 - [Accounts and Billing](accounts-and-billing.md): handles, API keys, usage, and
   credits (`goodeye usage`).

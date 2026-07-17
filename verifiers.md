@@ -1,25 +1,25 @@
 # Verifiers
 
-A verifier is a check a workflow runs on agent output to confirm the work hit a
-measurable result. This page covers the three verifier types, how to deploy and
-version your own semantic verifiers, and how workflows reference them.
+A verifier is a check a skill runs on agent output to confirm the work meets your
+standard. This page covers the three verifier types, how to deploy and
+version your own semantic verifiers, and how skills reference them.
 
-A verifier is always outcome-specific. It scores one concrete property of the
+A verifier is always specific. It scores one concrete property of the
 output ("did the response cite a source for every claim?", "is the JSON valid
 against this schema?"). It is never a holistic "is this good overall?" check. If
 you cannot say what a pass and a fail look like in one sentence, the check is not
 specific enough yet.
 
 For where verifiers fit in the larger picture, see [Overview](overview.md). For
-the runbooks that invoke them, see [Workflows](workflows.md).
+the runbooks that invoke them, see [Skills](skills.md).
 
 ## The three verifier types
 
-A single workflow usually combines all three. They differ in what they check and
+A single skill usually combines all three. They differ in what they check and
 where they run.
 
 ```diagram-verifier-types
-head: Verifier | a check the workflow runs on agent output, pass or fail with reasoning
+head: Verifier | a check the skill runs on agent output, pass or fail with reasoning
 Structural | Format and schema | required fields, the shape parses | inline, free
 Functional | Tests and bounds | tests, ranges, regex, hashes | inline, free
 * Semantic | Interpretive judgment | tone, factuality, image quality | judge runtime
@@ -28,8 +28,8 @@ Functional | Tests and bounds | tests, ranges, regex, hashes | inline, free
 ### Structural
 
 Format and schema checks: required fields are present, the output parses, the
-shape matches. These are deterministic and live inline in the workflow body as
-plain code or assertions. There is nothing to deploy; the workflow runs them
+shape matches. These are deterministic and live inline in the skill body as
+plain code or assertions. There is nothing to deploy; the skill runs them
 itself.
 
 Use a structural check when a pass or fail is decidable by inspecting the shape of
@@ -39,8 +39,8 @@ the output (valid JSON, all required keys present, the right number of rows).
 
 Tests, bounds, and computed checks: unit tests pass, a number lands inside a
 range, a regular expression matches, a hash compares equal. Like structural
-checks, functional checks are deterministic and live inline in the workflow body,
-or as a script the workflow ships and invokes (the ideal for anything nontrivial).
+checks, functional checks are deterministic and live inline in the skill body,
+or as a script the skill ships and invokes (the ideal for anything nontrivial).
 
 Use a functional check when a pass or fail is decidable by running code against
 the output (a test suite, a numeric tolerance, a checksum).
@@ -57,8 +57,8 @@ you deploy, run, and reference by ID. The rest of this page is about semantic
 verifiers.
 
 **Note:** Semantic verifiers are private and owner-scoped. There is no public
-verifier catalog. You deploy them for your own workflows, and access can cascade
-to people you grant a workflow to.
+verifier catalog. You deploy them for your own skills, and access can cascade
+to people you grant a skill to.
 
 ## Semantic verifier concepts
 
@@ -75,7 +75,7 @@ When you deploy a semantic verifier you define three things:
   - `text`: one or more named text fields only.
   - `text_image`: named text fields plus one image.
   - `image`: a single image only, no text fields (the chart-design check in the
-    high-signal chart workflow is an `image` verifier).
+    high-signal chart skill is an `image` verifier).
 
 | Contract | input_fields | Image required | Example |
 |---|---|---|---|
@@ -144,7 +144,7 @@ response shape).
 Versions are immutable once written: to change a criterion or its calibration,
 deploy a new version, and old versions keep running for anyone who pinned them.
 Each deploy is guarded by a `version_token`, the same guard used when saving a
-workflow (see [Updating safely](workflows.md#updating-safely)):
+skill (see [Updating safely](skills.md#updating-safely)):
 the first deploy of a name omits the token, every later deploy includes the latest
 one, and a mismatch returns a `conflict` (409) so two callers cannot clobber each
 other.
@@ -157,7 +157,7 @@ reserved (see [Platform-managed verifiers](#platform-managed-system-verifiers)).
 
 ### List
 
-Lists the active (non-revoked) verifiers you own or can access through a workflow
+Lists the active (non-revoked) verifiers you own or can access through a skill
 grant. Platform-managed verifiers never appear here.
 
 - **CLI:** `goodeye verifiers list` (add `--json`, `--table`, `--all`)
@@ -169,8 +169,8 @@ grant. Platform-managed verifiers never appear here.
 Returns one verifier version in full: criterion, input contract, input fields,
 calibration examples, and judge config. Defaults to the current version; pin one
 with `--version`. Anyone who can reach the verifier can read it in full: the owner,
-and anyone you grant the workflow to, at any role (including `view`). Deploying a
-new version needs `edit` or `admin` on the workflow. Anything you cannot reach
+and anyone you grant the skill to, at any role (including `view`). Deploying a
+new version needs `edit` or `admin` on the skill. Anything you cannot reach
 returns 404.
 
 - **CLI:** `goodeye verifiers show <id-or-name> [--version N]`
@@ -190,7 +190,7 @@ goodeye verifiers run claims-cite-source \
 ```
 
 - **CLI:** `goodeye verifiers run <id-or-name>` (`--inputs-json`, `--media-url`,
-  `--version`, `--workflow-id`, `--run-id`, `--anonymous`, `--json`)
+  `--version`, `--skill-id`, `--run-id`, `--anonymous`, `--json`)
 - **MCP tool:** `run_verifier`
 - **REST:** `POST /v1/verifiers/{verifier_id}/runs`
 
@@ -206,7 +206,7 @@ row with `status="error"` and an `error_code` of `runtime_error`,
 
 ### Pin a version
 
-Pin a specific version with `verifier_id@version` wherever a workflow references a
+Pin a specific version with `verifier_id@version` wherever a skill references a
 verifier, or with `--version` / `?version=N` on a run. With no version, the run
 uses the current version.
 
@@ -237,28 +237,28 @@ retry.
 **Note:** Revoke and delete are owner-only and accept your own verifiers only.
 Pointing at someone else's verifier returns 404.
 
-## How workflows reference verifiers
+## How skills reference verifiers
 
-A workflow names the deployed verifiers it depends on by `verifier_id` or
+A skill names the deployed verifiers it depends on by `verifier_id` or
 `verifier_id@version`. At run time the agent invokes `run_verifier` with the inputs
 the verifier's contract expects, then gates its next step on the returned `passed`.
-Structural and functional checks stay inline in the workflow body; semantic
+Structural and functional checks stay inline in the skill body; semantic
 verifiers are referenced by ID rather than embedded, so a redeploy can ship a
-sharper criterion without rewriting the workflow.
+sharper criterion without rewriting the skill.
 
-When you grant a workflow to another user or team, the semantic verifiers it
+When you grant a skill to another user or team, the semantic verifiers it
 references cascade with the grant: the grantee's agent can run them, and because a
 verifier you can reach is fully readable (criterion and calibration examples
 included), collaborators can see and improve the grader instead of tuning against a
 black box. Writing stays gated: deploying a new version needs `edit` access, and
-revoking, deleting, or rewiring which verifiers a workflow references stays with the
-owner. See [Workflows](workflows.md) for grants, and [Templates](templates.md) for
+revoking, deleting, or rewiring which verifiers a skill references stays with the
+owner. See [Skills](skills.md) for grants, and [Templates](templates.md) for
 how public templates publish verifier definitions.
 
 ## Platform-managed (system) verifiers
 
 Some verifiers are platform-managed. They are run-only: you invoke them through a
-`system:<name>` alias (for example, `system:workflow-design-qa`), but their
+`system:<name>` alias (for example, `system:skill-design-qa`), but their
 criterion, calibration, and judge configuration are never exposed. They do not
 appear in `list_verifiers`, cannot be fetched with `get_verifier`, and cannot be
 revoked, deleted, deployed, or forked. Their names are reserved, so you cannot
@@ -267,7 +267,7 @@ deploy a new verifier that reuses one.
 To run one, pass the alias as the verifier id:
 
 ```sh
-goodeye verifiers run system:workflow-design-qa \
+goodeye verifiers run system:skill-design-qa \
   --inputs-json '{"...": "..."}'
 ```
 
@@ -299,7 +299,7 @@ grants, and the full error reference.
 ## See also
 
 - [Overview](overview.md)
-- [Workflows](workflows.md)
+- [Skills](skills.md)
 - [Templates](templates.md)
 - [Image generators](image-generators.md)
 - [CLI reference](cli.md)

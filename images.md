@@ -6,8 +6,8 @@ covers uploading images, managing visibility and expiry, and how generated
 images get durable hosted URLs automatically.
 
 For the image generation capability itself, see
-[Image generators](image-generators.md). For general workflow usage, see
-[Workflows](workflows.md).
+[Image generators](image-generators.md). For how skills use them, see
+[Skills](skills.md).
 
 ## Upload and host an image
 
@@ -194,7 +194,7 @@ Uploading and managing images can return these errors. Each carries a stable
 ## See also
 
 - [Image generators](image-generators.md)
-- [Workflows](workflows.md)
+- [Skills](skills.md)
 - [Templates](templates.md)
 - [CLI reference](cli.md)
 - [REST API](rest-api.md)
