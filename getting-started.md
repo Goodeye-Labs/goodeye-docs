@@ -144,8 +144,9 @@ goodeye skills grants high-signal-chart
 goodeye skills revoke-grant high-signal-chart @teammate
 ```
 
-A grant reaches a person, a whole team, or one of your own machines running
-headless. See [Teams](teams.md) for team-wide grants and invitations, and
+A grant reaches a person or a whole team. Your own headless machines need no
+grant: authenticated with your own API key, they already read every skill you
+own. See [Teams](teams.md) for team-wide grants and invitations, and
 [Sharing with grants](skills.md#sharing-with-grants) for the full model.
 
 ## Step 6: Add a hosted check
