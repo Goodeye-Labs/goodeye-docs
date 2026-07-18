@@ -18,6 +18,8 @@ Everything Goodeye does is reachable over MCP. Once connected, your AI assistant
 
 **Agent contract:** when your assistant calls `get_skill` or `get_template` and receives a body back, it executes that body as your runbook. It follows the instructions itself rather than summarizing or just displaying them.
 
+Your skills are account-scoped, not client-scoped. Connect Goodeye in more than one client and each of them reads the same skills at the same current version, so a skill you improve in one is the skill every other one runs next. The same holds for the CLI: `goodeye skills sync` mirrors those skills into the directories a tool reads from disk, which covers assistants that load skill files instead of speaking MCP. See [Syncing a bundle locally](skills.md#syncing-a-bundle-locally).
+
 ## The endpoint
 
 ```
@@ -94,6 +96,35 @@ To connect with an API key on Claude Desktop, you need a bridge tool. Add this t
 ```
 
 Replace `good_live_EXAMPLE_xxxxxxxx` with your actual API key and restart Claude.
+
+### Codex
+
+Add Goodeye to `~/.codex/config.toml` (or a project-scoped `.codex/config.toml`):
+
+```toml
+[mcp_servers.goodeye]
+url = "https://mcp.goodeye.dev/mcp"
+```
+
+Start Codex and sign in when prompted.
+
+To connect with an API key instead, point Codex at an environment variable
+holding the key:
+
+```toml
+[mcp_servers.goodeye]
+url = "https://mcp.goodeye.dev/mcp"
+bearer_token_env_var = "GOODEYE_API_KEY"
+```
+
+```sh
+export GOODEYE_API_KEY="good_live_EXAMPLE_xxxxxxxx"
+```
+
+The variable holds the raw key with no `Bearer ` prefix; Codex adds it when it
+sends the header. On older Codex versions that only pick up stdio servers, add
+`experimental_use_rmcp_client = true` at the top of the config to enable remote
+servers, or upgrade Codex.
 
 ### Cursor
 

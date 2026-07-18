@@ -279,7 +279,9 @@ Shows a skill's fork lineage: the parent template, pinned version, and whether t
 goodeye skills sync [--target DIR] [--force] [--yes] [--json|--table]
 ```
 
-Pulls every configured sync target and then reports status. Equivalent to `sync pull` followed by `sync status`. Subcommands:
+Keeps the skill files on disk matching your hosted skills, so every machine and every agent reads the current version instead of a copy someone forgot to update. Point a target at the directory a tool reads (`~/.claude/skills`, `~/.agents/skills`, `~/.cursor/skills`, or any path), and one edit to the hosted skill reaches all of them on the next pull.
+
+Bare `goodeye skills sync` pulls every configured target and then reports status. Equivalent to `sync pull` followed by `sync status`. Subcommands:
 
 | Subcommand | Purpose |
 |---|---|
