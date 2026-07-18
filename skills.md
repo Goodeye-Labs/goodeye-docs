@@ -215,6 +215,11 @@ goodeye skills sync target add --preset cursor    # ~/.cursor/skills
 goodeye skills sync target add ~/work/skills
 ```
 
+`--preset codex` is another name for `--preset agents`: Codex reads personal
+skills from `~/.agents/skills`, so either name configures the same directory.
+Use whichever reads more clearly to you, but configure only one of them, since a
+second target on the same directory is rejected as a conflict.
+
 - `sync pull` writes your hosted skills down to skill directories on disk.
 - `sync push` uploads a skill file you edited on disk back to its hosted skill.
 - `sync status` reports drift between the two without writing anything.

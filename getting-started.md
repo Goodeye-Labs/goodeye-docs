@@ -94,7 +94,7 @@ your tools read, and it mirrors your skills into each one:
 
 ```sh
 goodeye skills sync target add --preset claude    # ~/.claude/skills
-goodeye skills sync target add --preset agents    # ~/.agents/skills
+goodeye skills sync target add --preset agents    # ~/.agents/skills (Codex reads here too)
 goodeye skills sync target add --preset cursor    # ~/.cursor/skills
 ```
 

@@ -285,7 +285,7 @@ Bare `goodeye skills sync` pulls every configured target and then reports status
 
 | Subcommand | Purpose |
 |---|---|
-| `sync target add <DIR>` | Configure a local directory to mirror your hosted skills into. Pass `--preset claude`, `--preset agents`, or `--preset cursor` instead of a path for known locations. |
+| `sync target add <DIR>` | Configure a local directory to mirror your hosted skills into. Pass `--preset claude`, `--preset agents`, `--preset codex`, or `--preset cursor` instead of a path for known locations. `agents` and `codex` are the same directory (`~/.agents/skills`), so configure one or the other, not both. |
 | `sync target list` | List configured sync targets. |
 | `sync target remove <DIR>` | Remove a configured sync target. |
 | `sync pull [SLUG...]` | Write your hosted skills down to skill directories on disk. |
