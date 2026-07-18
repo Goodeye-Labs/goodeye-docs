@@ -67,8 +67,8 @@ goodeye skills publish ~/.claude/skills/high-signal-chart
 
 `SKILL.md` becomes the hosted skill's body and the sibling files upload with it.
 Front-matter keys Goodeye does not recognize are preserved verbatim. The command
-prints the skill's id, its slug, and a `version_token` you keep for the next
-update.
+prints the skill's name and new version number, its `skill_id`, and a
+`version_token` you keep for the next update.
 
 The same works for `~/.agents/skills/` and `~/.cursor/skills/`, or any directory
 in that shape. To bring over a library, run one `publish` per skill file. See
@@ -125,7 +125,8 @@ Check for drift at any time with `goodeye skills sync status`. See
 
 ## Step 5: Share it privately
 
-Grant a named user or team access, identified by `@handle`:
+Grant a named user or team access. Identify them by `@handle`, email address, or
+UUID; a teammate who has not claimed a handle yet is reachable by email:
 
 ```sh
 goodeye skills grant high-signal-chart @teammate view
