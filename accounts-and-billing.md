@@ -99,8 +99,10 @@ one; and revoke a key immediately if it is exposed.
 ## Usage and credits
 
 Goodeye meters its LLM-powered features with credits. Each account has a monthly
-grant that refills at the start of each billing period. Saving, fetching, and
-browsing are free; only the work that calls a frontier model draws credits.
+grant that refreshes once a month on your account's own cycle, not on the
+calendar first: Pro follows your billing period, and Hobby runs a month at a
+time from your first credit use. Saving, fetching, and browsing are free; only
+the work that calls a frontier model draws credits.
 
 | Metered (draws credits) | Free |
 |---|---|

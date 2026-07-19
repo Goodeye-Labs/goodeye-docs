@@ -102,12 +102,7 @@ prefixed value there would fail to authenticate.
 
 ### Codex
 
-Add Goodeye to `~/.codex/config.toml` (or a project-scoped `.codex/config.toml`):
-
-A project-scoped file applies only once you have marked that project trusted.
-Codex reads an untrusted project's config but leaves it switched off, so the
-entry is ignored with no error. Use `~/.codex/config.toml` if you want Goodeye
-available everywhere.
+Add Goodeye to `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.goodeye]
@@ -115,6 +110,11 @@ url = "https://mcp.goodeye.dev/mcp"
 ```
 
 Start Codex and sign in when prompted.
+
+A project-scoped `.codex/config.toml` works too, but only once you have marked
+that project trusted: Codex reads an untrusted project's config and leaves it
+switched off, so the entry is ignored with no error. Use `~/.codex/config.toml`
+if you want Goodeye available everywhere.
 
 To connect with an API key instead, point Codex at an environment variable
 holding the key:
