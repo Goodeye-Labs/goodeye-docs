@@ -99,15 +99,18 @@ one; and revoke a key immediately if it is exposed.
 ## Usage and credits
 
 Goodeye meters its LLM-powered features with credits. Each account has a monthly
-grant that refills at the start of each billing period. Saving, fetching, and
-browsing are free; only the work that calls a frontier model draws credits.
+grant that refreshes once a month on your account's own cycle, not on the
+calendar first: Pro follows your billing period, and Hobby runs a month at a
+time from your first credit use. Saving, fetching, and browsing are free; only
+the work that calls a frontier model draws credits.
 
 | Metered (draws credits) | Free |
 |---|---|
 | Verifier runs, including safety checks | Saving, fetching, and listing skills and templates |
 | Image generation, billed per image | Lexical `list` filtering and browsing |
 | Natural-language (LLM-ranked) search | Designing, teaching, optimizing, and auditing a skill |
-| Public-image content screening | Managing teams, grants, handles, and API keys |
+| | Managing teams, grants, handles, and API keys |
+| | Image content screening on public images |
 
 Designing, teaching, optimizing, and auditing return a prompt pack your agent runs
 locally, so they draw no Goodeye credits. Your agent's own model usage while it

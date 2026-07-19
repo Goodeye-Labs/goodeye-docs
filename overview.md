@@ -1,67 +1,78 @@
 # Overview
 
-Goodeye makes an AI agent meet your standard before you ever see the output,
-even on work too subjective for a test. This page is the mental model: the
-problem Goodeye solves, the pieces you will work with, and how they fit together.
-Read it first, then jump to [Getting Started](getting-started.md) for a hands-on
-first run.
+Goodeye is a private home for the skills your AI follows and the verifiers its
+work must pass. A skill is a markdown runbook. A verifier is a check the output
+has to clear. You keep both in one account, they stay private until you say
+otherwise, and they reach every machine and every agent you run.
 
-## The problem
+This page is the mental model. For a hands-on first run, see
+[Getting Started](getting-started.md).
 
-Capability is no longer the bottleneck. Frontier models can already do
-remarkable work; the hard part is getting work you would sign your name to, every
-time. Models are jagged: reliable where the output is easy to check (code that
-compiles and passes its tests) and shaky where it is not (brand voice, visual
-taste, pedagogy, policy). The capabilities that improved fastest are the ones
-that were easy to verify, which leaves the work most businesses actually need
-sitting in the hard-to-verify zone.
+## Why host them at all
 
-Observability tools tell you what an agent did after the fact. They do not hold
-it to your standard while it works. That is the gap Goodeye closes: reliable
-checks in the domains where "good" is a judgment call, so an agent gets the work
-right even where the model is weakest.
+Most people start with skill files on disk, under `~/.claude/skills/` or
+whatever directory their tool reads. That works until it doesn't:
 
-## What Goodeye is
+- You work on a laptop and a desktop, and the good version is on the other one.
+- You run more than one agent, and each keeps its own copy.
+- A teammate asks for your skill, so you paste it into chat. Now two copies
+  exist and only yours ever gets fixed.
+- The standard that makes the skill worth running is in your head, not in the
+  file, so nobody else's output clears it.
 
-You capture the work you want done as a markdown runbook (a skill), and you pair
-that runbook with checks (verifiers) that judge the agent's output. The agent
-runs the skill, the verifiers judge, and the agent revises until the output
-passes. Nothing reaches you until it has cleared your checks.
+Goodeye is where those live instead. Your skills and verifiers sit in one
+account you own, and three things follow from that.
 
-Skills are private. You share one with the people and teams you choose, and the
-verifiers it references travel with it, so a teammate who runs your skill is held
-to the same standard you are.
+## What you get
 
-The intended caller is an AI agent acting on your behalf, and it runs a skill
-rather than just reading it. That behavior is the agent contract, and most of
-Goodeye is built around it (see [The agent contract](#the-agent-contract) below).
+### Private by default
 
-Goodeye reaches you on three peer surfaces (a CLI, an MCP server, and a REST
-API), so the same capability is available wherever your agent runs.
+Skills are private. Nothing is public until you publish a template, which is a
+separate step you take on purpose. To share without going public, grant a named
+user or team access, and the verifiers the skill references go with it at the
+same version. Revoking works the same way. See
+[Sharing with grants](skills.md#sharing-with-grants).
 
-## The pieces
+### Always in sync
+
+The hosted skill is the source of truth. `goodeye skills sync` mirrors it down
+into the directories your tools already read, so Claude Code, Codex, Cursor, and
+anything else that loads skill files from disk all read the same current
+version. Edit a skill once and every machine picks it up on the next pull.
+Nobody has to be told to update. See
+[Syncing a bundle locally](skills.md#syncing-a-bundle-locally).
+
+### Verifiers, hosted
+
+A verifier scores one concrete property of the output. It is never a vague "is
+this good overall?" rating. Deploy a semantic verifier once and every skill that
+references it runs that exact version, on your laptop, in CI, or on the machine
+of someone you granted it to. See [Verifiers](verifiers.md).
 
 ```diagram-chain
-Task | the recurring work you hand an agent
-Skill | the markdown runbook the agent follows
-Verifiers | the checks it must clear
-* Verified output | nothing reaches you until the checks pass
+Skill | the markdown runbook your agent follows
+Verifiers | the checks its output has to clear
+Grant | who else can run them, at the same version
+* In sync everywhere | every machine and agent runs the current one
 ```
+
+## The pieces
 
 - **Skill**: a markdown runbook stored privately in your Goodeye account, with a
   `name`, a one-line `description`, and optional `tags`. An agent fetches the body
   and executes it as a runbook.
 - **Verifier**: a check the skill runs on agent output. Structural, functional, or
   semantic (an LLM judge calibrated with examples).
+- **Grant**: private access to one of your skills for a named user or team. The
+  verifiers the skill references travel with it.
+- **Sync target**: a local directory Goodeye mirrors your hosted skills into, so
+  the agents on that machine read the current version.
 - **Template**: the public form of a skill, shared under your handle so other
   people and their agents can find, fetch, and fork it.
 - **Image generator**: a deployed, owner-scoped image generation capability a
   skill can call.
 - **Hosted image**: an image stored by Goodeye with a stable URL that never
   changes, including images produced by a generator.
-
-A holistic "is this output good overall?" check is not a Goodeye verifier. Every
-verifier targets one concrete property and one specific failure mode.
 
 ## The agent contract
 
@@ -145,7 +156,8 @@ loop: Gaps found, teach and optimize again
 - **Audit** it against the authoring checks to find and fix gaps.
 
 A saved skill is a first draft. Teach, optimize, and audit are how it gets better
-against real results. See [Skills](skills.md) and
+against real results. When you improve one, everyone you granted it to picks up
+the improvement on their next pull. See [Skills](skills.md) and
 [Auditing skills](auditing-skills.md).
 
 ## The three surfaces
@@ -163,20 +175,21 @@ REST | You integrate in code | services and pipelines | api.goodeye.dev/v1
 The same operations exist on all three, so you can start in one surface and move
 to another without losing capability. The public template catalog is also
 readable over REST without an account. [Getting Started](getting-started.md)
-walks through connecting each surface, and [CLI](cli.md), [MCP](mcp.md), and
-[REST API](rest-api.md) are the per-surface references.
+works through the CLI and points at the other two, and [CLI](cli.md),
+[MCP](mcp.md), and [REST API](rest-api.md) are the per-surface references.
 
 ## Where to go next
 
 | You want to... | Start here |
 |---|---|
-| Run your first public template, with no account | [Getting Started](getting-started.md) |
-| Author, version, teach, and optimize a skill | [Skills](skills.md) |
+| Put a skill you already have into Goodeye | [Getting Started](getting-started.md) |
+| Mirror your skills onto every machine you use | [Syncing a bundle locally](skills.md#syncing-a-bundle-locally) |
+| Share a skill privately with a person or team | [Teams](teams.md) |
 | Add structural, functional, and semantic checks | [Verifiers](verifiers.md) |
+| Author, version, teach, and optimize a skill | [Skills](skills.md) |
 | Grade a skill against the authoring checks | [Auditing skills](auditing-skills.md) |
 | Publish, fork, and manage public templates | [Templates](templates.md) |
 | Generate images inside a skill | [Image Generators](image-generators.md) |
 | Host and serve images with durable URLs | [Images](images.md) |
-| Share skills with teammates | [Teams](teams.md) |
 | Manage handles, API keys, usage, and credits | [Accounts and Billing](accounts-and-billing.md) |
 | Connect over the command line, MCP, or REST | [CLI](cli.md), [MCP](mcp.md), [REST API](rest-api.md) |

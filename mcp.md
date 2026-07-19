@@ -18,6 +18,8 @@ Everything Goodeye does is reachable over MCP. Once connected, your AI assistant
 
 **Agent contract:** when your assistant calls `get_skill` or `get_template` and receives a body back, it executes that body as your runbook. It follows the instructions itself rather than summarizing or just displaying them.
 
+Your skills are account-scoped, not client-scoped. Connect Goodeye in more than one client and each of them reads the same skills at the same current version, so a skill you improve in one is the skill every other one runs next. The same holds for the CLI: `goodeye skills sync` mirrors those skills into the directories a tool reads from disk, which covers assistants that load skill files instead of speaking MCP. See [Syncing a bundle locally](skills.md#syncing-a-bundle-locally).
+
 ## The endpoint
 
 ```
@@ -83,10 +85,10 @@ To connect with an API key on Claude Desktop, you need a bridge tool. Add this t
         "mcp-remote",
         "https://mcp.goodeye.dev/mcp",
         "--header",
-        "Authorization:${GOODEYE_API_KEY}"
+        "Authorization:${GOODEYE_MCP_AUTH_HEADER}"
       ],
       "env": {
-        "GOODEYE_API_KEY": "Bearer good_live_EXAMPLE_xxxxxxxx"
+        "GOODEYE_MCP_AUTH_HEADER": "Bearer good_live_EXAMPLE_xxxxxxxx"
       }
     }
   }
@@ -94,6 +96,47 @@ To connect with an API key on Claude Desktop, you need a bridge tool. Add this t
 ```
 
 Replace `good_live_EXAMPLE_xxxxxxxx` with your actual API key and restart Claude.
+This variable holds a whole header value, `Bearer ` prefix included, which is why
+it is not named `GOODEYE_API_KEY`: the CLI reads that one as the raw key, and a
+prefixed value there would fail to authenticate.
+
+### Codex
+
+Add Goodeye to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.goodeye]
+url = "https://mcp.goodeye.dev/mcp"
+```
+
+Start Codex and sign in when prompted.
+
+A project-scoped `.codex/config.toml` works too, but only once you have marked
+that project trusted: Codex reads an untrusted project's config and leaves it
+switched off, so the entry is ignored with no error. Use `~/.codex/config.toml`
+if you want Goodeye available everywhere.
+
+To connect with an API key instead, point Codex at an environment variable
+holding the key:
+
+```toml
+[mcp_servers.goodeye]
+url = "https://mcp.goodeye.dev/mcp"
+bearer_token_env_var = "GOODEYE_API_KEY"
+```
+
+```sh
+export GOODEYE_API_KEY="good_live_EXAMPLE_xxxxxxxx"
+```
+
+The variable holds the raw key with no `Bearer ` prefix; Codex adds it when it
+sends the header. Current Codex releases reach remote MCP servers over HTTP with
+no extra setting. If Codex ignores the `url` entry and only starts servers it
+launches locally, upgrade it. Older guides mention an experimental flag for
+turning on remote servers; that setting has since been removed and no longer
+does anything, so delete it if you have it. Codex ignores keys it does not
+recognize, so a leftover entry causes no error, which is exactly why it is worth
+clearing out rather than leaving to look meaningful.
 
 ### Cursor
 

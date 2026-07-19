@@ -2,8 +2,9 @@
 
 An image generator is a deployed, owner-scoped image-generation capability that a
 skill can call. You deploy one once with a fixed model and default parameters,
-then reference it by ID from a skill so the agent can produce images that meet the
-standard you defined.
+then reference it by ID from a skill, so every run goes to the same model on the
+same input contract, with the generator's defaults applied to any parameter the
+call does not set.
 
 This page covers deploying and managing your own generators, the three ways to
 call image generation, and how anonymous and billing behavior works. For where

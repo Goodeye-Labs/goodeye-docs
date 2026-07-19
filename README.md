@@ -1,30 +1,44 @@
 # Goodeye Documentation
 
-Official documentation for [Goodeye](https://goodeye.dev), which makes an AI
-agent meet your standard before you ever see the output, even on work too
-subjective for a test. You author skills as markdown runbooks, pair them with
-verifiers that judge what an AI agent produces, and share both privately with the
-people and teams you choose. Everything is reachable from three peer surfaces:
-the CLI, an MCP server, and a REST API.
+Official documentation for [Goodeye](https://goodeye.dev), a private home for the
+skills your AI follows and the verifiers its work must pass. You keep both in one
+account, they stay private until you say otherwise, and they reach every machine
+and every agent you run. Everything is reachable from three peer surfaces: the
+CLI, an MCP server, and a REST API.
 
 ## What is Goodeye?
 
-Goodeye holds an AI agent to your standard while it works. You write the runbook,
-you write the checks, and nothing reaches you until the checks pass.
+A skill is a markdown runbook. A verifier is a check the output has to clear.
+Goodeye is where yours live.
+
+Skills are private. Nothing is public until you publish a template, which is a
+separate step you take on purpose. To share without going public, grant a named
+user or team access, and the verifiers the skill references go with it at the
+same version.
+
+They also stay current everywhere you work. `goodeye skills sync` mirrors your
+hosted skills into the directories your tools already read, so Claude Code,
+Codex, Cursor, and anything else reading skill files from disk get the same
+version. Edit a skill once and every machine picks it up on the next pull.
+
+Verifiers are hosted the same way. Deploy a semantic verifier once and every
+skill that references it runs that exact version, on your laptop, in CI, or on
+the machine of someone you granted it to.
+
+The objects you work with:
 
 - **Skill**: a markdown runbook stored privately in your Goodeye account. An agent
   fetches the body and executes it as a runbook.
 - **Verifier**: a check the skill runs on agent output. Structural, functional,
   or semantic (an LLM judge calibrated with examples).
+- **Grant**: private access to one of your skills for a named user or team.
+- **Sync target**: a local directory Goodeye mirrors your hosted skills into.
 - **Template**: the public form of a skill, shared under your handle so other
   people and their agents can find, fetch, and fork it.
 - **Image generator**: a deployed, owner-scoped image generation capability a
   skill can call.
 - **Hosted image**: an image stored by Goodeye with a stable URL that never
   changes, including images produced by a generator.
-
-Skills stay private. You share one with named users or teams through a grant, and
-the verifiers it references travel with it.
 
 ## Documentation
 
@@ -35,8 +49,8 @@ assistants via Context7. Pages:
 | Page | Description |
 |------|-------------|
 | [Overview](overview.md) | Core concepts and the Goodeye mental model |
-| [Getting Started](getting-started.md) | Install the CLI, sign in, fetch and run your first template |
-| [Skills](skills.md) | Author, version, teach, optimize, and share skills |
+| [Getting Started](getting-started.md) | Install the CLI, host a skill you already have, sync it, and share it |
+| [Skills](skills.md) | Author, version, teach, optimize, sync, and share skills |
 | [Verifiers](verifiers.md) | Judge agent output with structural, functional, and semantic checks |
 | [Templates](templates.md) | Publish, fork, and manage public templates |
 | [Auditing skills](auditing-skills.md) | Grade a skill against the authoring checks |

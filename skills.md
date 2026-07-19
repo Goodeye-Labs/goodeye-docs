@@ -8,6 +8,10 @@ teams through a grant, and the verifiers it references travel with it. Public
 sharing happens on a separate surface, where you publish a snapshot as a
 [template](templates.md). There is no visibility switch on a skill itself.
 
+The hosted skill is the source of truth. [Sync](#syncing-a-bundle-locally)
+mirrors it into the directories your tools read, so every machine and every agent
+runs the current version, and so does everyone you granted it to.
+
 When an agent fetches a skill body, it executes that body as your runbook rather
 than summarizing it (see [the agent contract](overview.md#the-agent-contract)).
 
@@ -125,6 +129,9 @@ and similar) are ignored by default, and per-file and total size caps apply.
 
 ## Importing a skill file from disk
 
+This is the usual way in: most people arrive with a working skill file and want
+it hosted rather than starting over.
+
 Agent skill files on disk (under `~/.claude/skills/`, `~/.agents/skills/`, or
 `~/.cursor/skills/`) are already directory-shaped: a `SKILL.md` plus optional
 sibling files. That is exactly what directory-mode `publish` expects, so importing
@@ -185,11 +192,33 @@ distinct from the lexical filtering on `list`.
 
 ## Syncing a bundle locally
 
+Sync is what keeps one hosted skill current everywhere you work. Agents that load
+skill files from disk read whatever is in their directory, so without sync each
+machine and each tool drifts into its own copy. Point a target at the directory a
+tool reads and the hosted skill stays the source of truth: edit it once, and
+Claude Code, Codex, Cursor, and anything else reading those directories pick up
+the change on the next pull.
+
 Sync mirrors your hosted skills into local directories as
 `<target>/<slug>/SKILL.md` plus sibling files, and reconciles drift between the
 skill files on disk and the hosted copies in both directions. It is CLI-only and
 requires authentication. The subcommands are `sync target add`, `sync pull`,
 `sync status`, `sync push`, and `sync auto`.
+
+Configure a target with a preset for a known location, or a path for anything
+else:
+
+```sh
+goodeye skills sync target add --preset claude    # ~/.claude/skills
+goodeye skills sync target add --preset agents    # ~/.agents/skills
+goodeye skills sync target add --preset cursor    # ~/.cursor/skills
+goodeye skills sync target add ~/work/skills
+```
+
+`--preset codex` is another name for `--preset agents`: Codex reads personal
+skills from `~/.agents/skills`, so either name configures the same directory.
+Use whichever reads more clearly to you, but configure only one of them, since a
+second target on the same directory is rejected as a conflict.
 
 - `sync pull` writes your hosted skills down to skill directories on disk.
 - `sync push` uploads a skill file you edited on disk back to its hosted skill.
