@@ -104,6 +104,11 @@ prefixed value there would fail to authenticate.
 
 Add Goodeye to `~/.codex/config.toml` (or a project-scoped `.codex/config.toml`):
 
+A project-scoped file applies only once you have marked that project trusted.
+Codex reads an untrusted project's config but leaves it switched off, so the
+entry is ignored with no error. Use `~/.codex/config.toml` if you want Goodeye
+available everywhere.
+
 ```toml
 [mcp_servers.goodeye]
 url = "https://mcp.goodeye.dev/mcp"
@@ -129,8 +134,9 @@ sends the header. Current Codex releases reach remote MCP servers over HTTP with
 no extra setting. If Codex ignores the `url` entry and only starts servers it
 launches locally, upgrade it. Older guides mention an experimental flag for
 turning on remote servers; that setting has since been removed and no longer
-does anything, so delete it if you have it, since config validation reports it
-as an unknown key.
+does anything, so delete it if you have it. Codex ignores keys it does not
+recognize, so a leftover entry causes no error, which is exactly why it is worth
+clearing out rather than leaving to look meaningful.
 
 ### Cursor
 

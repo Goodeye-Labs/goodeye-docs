@@ -146,7 +146,7 @@ UUID; a teammate who has not claimed a handle yet is reachable by email:
 goodeye skills grant high-signal-chart @teammate view
 ```
 
-Roles are `view` (fetch and run), `edit` (also publish new versions), and
+Roles are `view` (fetch and run), `edit` (also save new versions), and
 `admin`. The grantee's agent now runs your skill, and any semantic verifiers it
 references travel with the grant at the same version, so their output is held to
 the checks you wrote. When you improve the skill, they get the improvement on

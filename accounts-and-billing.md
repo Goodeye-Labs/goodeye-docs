@@ -108,7 +108,7 @@ browsing are free; only the work that calls a frontier model draws credits.
 | Image generation, billed per image | Lexical `list` filtering and browsing |
 | Natural-language (LLM-ranked) search | Designing, teaching, optimizing, and auditing a skill |
 | | Managing teams, grants, handles, and API keys |
-| | Image content screening when you publish |
+| | Image content screening on public images |
 
 Designing, teaching, optimizing, and auditing return a prompt pack your agent runs
 locally, so they draw no Goodeye credits. Your agent's own model usage while it
