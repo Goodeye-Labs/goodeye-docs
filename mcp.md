@@ -125,9 +125,12 @@ export GOODEYE_API_KEY="good_live_EXAMPLE_xxxxxxxx"
 ```
 
 The variable holds the raw key with no `Bearer ` prefix; Codex adds it when it
-sends the header. On older Codex versions that only pick up stdio servers, add
-`experimental_use_rmcp_client = true` at the top of the config to enable remote
-servers, or upgrade Codex.
+sends the header. Current Codex releases reach remote MCP servers over HTTP with
+no extra setting. If Codex ignores the `url` entry and only starts servers it
+launches locally, upgrade it. Older guides mention an experimental flag for
+turning on remote servers; that setting has since been removed and no longer
+does anything, so delete it if you have it, since config validation reports it
+as an unknown key.
 
 ### Cursor
 
