@@ -175,8 +175,8 @@ REST | You integrate in code | services and pipelines | api.goodeye.dev/v1
 The same operations exist on all three, so you can start in one surface and move
 to another without losing capability. The public template catalog is also
 readable over REST without an account. [Getting Started](getting-started.md)
-walks through connecting each surface, and [CLI](cli.md), [MCP](mcp.md), and
-[REST API](rest-api.md) are the per-surface references.
+works through the CLI and points at the other two, and [CLI](cli.md),
+[MCP](mcp.md), and [REST API](rest-api.md) are the per-surface references.
 
 ## Where to go next
 

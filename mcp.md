@@ -85,10 +85,10 @@ To connect with an API key on Claude Desktop, you need a bridge tool. Add this t
         "mcp-remote",
         "https://mcp.goodeye.dev/mcp",
         "--header",
-        "Authorization:${GOODEYE_API_KEY}"
+        "Authorization:${GOODEYE_MCP_AUTH_HEADER}"
       ],
       "env": {
-        "GOODEYE_API_KEY": "Bearer good_live_EXAMPLE_xxxxxxxx"
+        "GOODEYE_MCP_AUTH_HEADER": "Bearer good_live_EXAMPLE_xxxxxxxx"
       }
     }
   }
@@ -96,6 +96,9 @@ To connect with an API key on Claude Desktop, you need a bridge tool. Add this t
 ```
 
 Replace `good_live_EXAMPLE_xxxxxxxx` with your actual API key and restart Claude.
+This variable holds a whole header value, `Bearer ` prefix included, which is why
+it is not named `GOODEYE_API_KEY`: the CLI reads that one as the raw key, and a
+prefixed value there would fail to authenticate.
 
 ### Codex
 

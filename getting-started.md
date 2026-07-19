@@ -108,6 +108,20 @@ Each target now holds `<slug>/SKILL.md` plus siblings for every skill you own.
 Run the same two commands on your other machines and they all read the same
 current version.
 
+One case to know about on this first pull: the skill you published in Step 3 came
+from a directory that is now a sync target, so a copy of it is already sitting
+there. Goodeye did not write that copy, so it reports the skill as modified and
+leaves it alone rather than overwriting work it does not recognize. The hosted
+version is what you just published, so adopt it once:
+
+```sh
+goodeye skills sync pull --force <slug>
+```
+
+From then on it is tracked like everything else and updates on every pull. This
+applies only to skills already on disk before the target was added; anything you
+publish from elsewhere lands normally.
+
 From here, editing the hosted skill is what updates everything. Change it once,
 and the next pull brings every machine and every agent up to date. To have that
 happen on its own:
@@ -250,7 +264,9 @@ skill on your behalf rather than display it, to quote each verifier's real
 verdict, and to tell you at the end how the output was checked. Pass
 `--output PATH` for the raw markdown without it, or `--json` for the full record.
 
-Like what it produced? Fork it into a private skill you own and can edit:
+Like what it produced? Fork it into a private skill you own and can edit. This is
+the one step in this section that needs an account, since the fork lands in your
+registry:
 
 ```sh
 goodeye templates fork @randalolson/high-signal-chart-workflow
