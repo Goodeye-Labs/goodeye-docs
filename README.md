@@ -19,7 +19,8 @@ same version.
 They also stay current everywhere you work. `goodeye skills sync` mirrors your
 hosted skills into the directories your tools already read, so Claude Code,
 Codex, Cursor, and anything else reading skill files from disk get the same
-version. Edit a skill once and every machine picks it up on the next pull.
+version. Automatic sync is on once you have a target, unless you turn it off, so
+edit a skill once and every machine picks it up on its own.
 
 Verifiers are hosted the same way. Deploy a semantic verifier once and every
 skill that references it runs that exact version, on your laptop, in CI, or on
