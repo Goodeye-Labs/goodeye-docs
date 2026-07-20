@@ -94,8 +94,9 @@ hyphens. Append a version (`name=verifier_id@version`) to pin it, which keeps a
 published template's verifier snapshot deterministic; an unpinned binding resolves
 to the verifier's current version at publish time. On an update, omitting verifiers
 preserves the prior set, while `--clear-verifiers` (an empty list) removes them
-all. Only the skill owner can change verifier references. See
-[Verifiers](verifiers.md) for deploying them.
+all. Only the skill owner can change verifier references; someone editing a skill
+shared with them can send the existing references back unchanged, which leaves
+them as they are. See [Verifiers](verifiers.md) for deploying them.
 
 ### Image generator references
 
@@ -106,7 +107,8 @@ structured `image_generators` array). The `generator_ref` is a quality tier
 Binding names follow the same rule as verifiers, and the same update semantics
 apply: omitting image generators preserves the prior set, while
 `--clear-image-generators` removes them all. Only the skill owner can change
-image generator references. See [Image generators](image-generators.md) for
+image generator references, with the same allowance for sending the existing
+ones back unchanged. See [Image generators](image-generators.md) for
 deploying them.
 
 ### Multi-file bundles (directory mode)
