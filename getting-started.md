@@ -123,18 +123,20 @@ applies only to skills already on disk before the target was added; anything you
 publish from elsewhere lands normally.
 
 From here, editing the hosted skill is what updates everything. Change it once,
-and the next pull brings every machine and every agent up to date. To have that
-happen on its own:
+and every machine and every agent picks it up. Now that you have a target,
+automatic sync is on, so this happens without you asking: after a command
+finishes, the CLI brings down new and updated skills in the background, no more
+than once an hour.
 
-```sh
-goodeye skills sync auto on
-```
+Automatic sync is conservative. It never overwrites your local edits, never
+deletes skill files, and never pushes. A local conflict is reported rather than
+clobbered. It is suppressed in CI, for machine-readable output, and during a
+manual sync. Turn it off with `goodeye skills sync auto off` and it stays off,
+however many targets you add later.
 
-The background pull is opt-in and conservative. It brings down only new and
-updated skills, never overwrites your local edits, never deletes skill files, and
-never pushes. A local conflict is reported rather than clobbered. Edited a skill
-file on disk and want the hosted copy to match? Use `goodeye skills sync push`.
-Check for drift at any time with `goodeye skills sync status`. See
+Edited a skill file on disk and want the hosted copy to match? Use
+`goodeye skills sync push`. Check for drift at any time with
+`goodeye skills sync status`. See
 [Syncing a bundle locally](skills.md#syncing-a-bundle-locally).
 
 ## Step 5: Share it privately

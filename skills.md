@@ -226,18 +226,23 @@ second target on the same directory is rejected as a conflict.
 - `sync push` uploads a skill file you edited on disk back to its hosted skill.
 - `sync status` reports drift between the two without writing anything.
 
-### Automatic pull
+### Automatic sync
 
-The automatic background pull is opt-in: turn it on with `sync auto on` (default
-interval one hour). It pulls only new and updated hosted skills after a command
-completes. It never overwrites your local edits, deletes skill files on disk, or
-pushes, and a local conflict is reported rather than clobbered. It is suppressed
-in CI, for machine-readable output, and during a manual sync.
+Automatic sync is on once you have a sync target (default interval one hour), so
+a configured mirror keeps itself current without a second command. It pulls only
+new and updated hosted skills after a command completes. It never overwrites your
+local edits, deletes skill files on disk, or pushes, and a local conflict is
+reported rather than clobbered. It is suppressed in CI, for machine-readable
+output, and during a manual sync.
 
 ```sh
+goodeye skills sync auto           # show the current setting and last run
+goodeye skills sync auto off       # turn it off
 goodeye skills sync auto on --interval 3600
-goodeye skills sync auto off
 ```
+
+`auto on` and `auto off` always win, and adding more targets never overrides
+them. Turn it off once and it stays off.
 
 See [CLI](cli.md) for the full sync reference.
 

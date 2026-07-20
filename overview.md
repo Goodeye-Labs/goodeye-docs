@@ -38,8 +38,8 @@ same version. Revoking works the same way. See
 The hosted skill is the source of truth. `goodeye skills sync` mirrors it down
 into the directories your tools already read, so Claude Code, Codex, Cursor, and
 anything else that loads skill files from disk all read the same current
-version. Edit a skill once and every machine picks it up on the next pull.
-Nobody has to be told to update. See
+version. Configuring a target turns automatic sync on, so edit a skill once and
+every machine picks it up on its own. Nobody has to be told to update. See
 [Syncing a bundle locally](skills.md#syncing-a-bundle-locally).
 
 ### Verifiers, hosted

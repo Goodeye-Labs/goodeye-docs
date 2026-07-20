@@ -291,17 +291,19 @@ Bare `goodeye skills sync` pulls every configured target and then reports status
 | `sync pull [SLUG...]` | Write your hosted skills down to skill directories on disk. |
 | `sync push [SLUG...]` | Upload a skill file you edited on disk back to its hosted skill. |
 | `sync status` | Report drift between your hosted skills and the skill files on disk without writing anything. |
-| `sync auto on [--interval <seconds>]` | Enable the automatic background pull (opt-in; default interval 3600 s). |
-| `sync auto off` | Disable the automatic background pull. |
-| `sync auto` | Print the current auto-pull setting and last run time. |
+| `sync auto on [--interval <seconds>]` | Turn automatic sync on, optionally setting the interval (default 3600 s). Only needed to set an interval or to undo `off`. |
+| `sync auto off` | Turn automatic sync off, and keep it off. |
+| `sync auto` | Print the current automatic-sync setting and last run time. |
 
 **`--scope`** on `sync target add` controls which of your hosted skills land in that directory: `owned` (default), `all` (owned plus shared), or `selected` (only slugs or globs supplied with `--only`).
 
-The opt-in `sync auto` background pull (turn on with `sync auto on`, default
-interval one hour) pulls only new and updated hosted skills after a command
-completes: it never overwrites your local edits, deletes skill files on disk, or
-pushes, and a local conflict is reported rather than clobbered. It is suppressed
-in CI, for machine-readable output, and during a manual sync. See
+Automatic sync is on once you have a sync target (default interval one hour), so
+a configured target keeps itself current without a second command. It pulls only
+new and updated hosted skills after a command completes: it never overwrites your
+local edits, deletes skill files on disk, or pushes, and a local conflict is
+reported rather than clobbered. It is suppressed in CI, for machine-readable
+output, and during a manual sync. `sync auto on` and `sync auto off` always win,
+and adding more targets never overrides them. See
 [Syncing a bundle locally](skills.md#syncing-a-bundle-locally) for depth.
 
 ---
