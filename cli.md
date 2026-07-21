@@ -188,6 +188,16 @@ If a skill with the same name already exists under your account, a new version i
 
 Skills are always private. To share one publicly, run `goodeye templates publish` as a separate step.
 
+### `skills put-file` / `skills rm-file`
+
+```sh
+goodeye skills put-file <id-or-name> <path> [--from-file LOCAL_PATH | --stdin] \
+  [--executable/--no-executable] [--purpose LABEL] [--expected-version-token TOKEN]
+goodeye skills rm-file <id-or-name> <path> [--expected-version-token TOKEN]
+```
+
+Change or remove one named file in an existing skill, including `SKILL.md`, without resending the rest of the tree: the reverse of `skills publish <dir>`, which replaces the whole bundle. `put-file` reads the new content from `--from-file` or `--stdin` (pass one, not both); `--executable` marks the file as a script and `--purpose` attaches a short label, and both carry forward from the current file when omitted. `--expected-version-token` is optional; leave it out and the command reads the current token first and passes it along, so a stale write is still rejected if another writer landed in between.
+
 ### `skills archive` / `skills unarchive`
 
 ```sh

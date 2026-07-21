@@ -68,7 +68,8 @@ tags: [data, viz]
 Two fields are optional, and neither changes whether a skill saves, runs, or
 publishes:
 
-- `tags`: discovery facets you can filter on with `list`.
+- `tags`: discovery facets you can filter on with `list`. On an update, omitting
+  `tags` preserves the skill's existing tags; an explicit empty list clears them.
 - `outcome`: a one-line note on the result the skill serves. Set it with
   `--outcome` or a front-matter key when it helps you and your teammates track
   why a skill exists. It is displayed when present and omitted when not.
@@ -128,6 +129,15 @@ stdin save never drops siblings); sending `files: []` (or `--clear-files`) clear
 the tree; sending a non-empty list snapshots exactly those files. Common build
 artifacts (`.git/`, `node_modules/`, `__pycache__/`, `.venv/`, `dist/`, `build/`,
 and similar) are ignored by default, and per-file and total size caps apply.
+
+`update_skill_files` (`PATCH /v1/skills/{id_or_slug}/files` on REST, or
+`goodeye skills put-file` / `goodeye skills rm-file` on the CLI) takes the
+opposite shape from this snapshot: it changes only the paths you name, including
+`SKILL.md` itself, and keeps every path you do not name. Reach for it to edit or
+remove one file in an existing skill without resending the tree; `save_skill`
+stays the way to create a skill, change its name, description, or tags, or
+replace the whole tree at once. Deleting `SKILL.md` is rejected, since a skill
+must always have a body.
 
 ## Importing a skill file from disk
 

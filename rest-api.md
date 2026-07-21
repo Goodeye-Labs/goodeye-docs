@@ -267,6 +267,10 @@ Fetch a specific version directly.
 
 Fetch files from a skill bundle. Use `?path=relative/path.md` for a single file or `?paths=a.md&paths=b.md` for a batch. On a single-file fetch, `format=raw` returns the file's raw bytes instead of a JSON envelope, and `sha256=` content-addresses the fetch.
 
+### `PATCH /v1/skills/{id_or_slug}/files`
+
+Change or remove specific files in an existing skill, including `SKILL.md`, without resending the rest of the tree. Body: `{"files": [{"path": "...", "content": "..."}], "delete_paths": ["..."], "expected_version_token": "..."}`. Paths you do not name in either list are kept unchanged, the reverse of `POST /v1/skills`, where an omitted path is deleted. Returns the skill's id, version, and version token plus `changed`, `deleted`, and `carried_forward`.
+
 ### `POST /v1/skills/{id_or_slug}/archive`
 
 Reversibly hide a skill. The slug stays occupied and the skill is recoverable.
