@@ -5,8 +5,9 @@
   "projectTitle": "Goodeye",
   "description": "A private home for your skills and verifiers. Keep them in sync across every machine and agent, run them from the CLI, MCP, or REST API, and fork public templates to reuse.",
   "rules": [
-    "Goodeye holds an agent to the user's standard: a skill is the markdown runbook the agent follows, and verifiers are the checks its output must pass.",
+    "A skill is a markdown runbook plus the verifiers it invokes. An agent runs the skill, the verifiers judge its output, and the agent revises until they pass.",
     "Skills are private to the owner. They are shared privately with named users or teams by grant, and the verifiers a skill references travel with the grant. Publishing a snapshot as a template is the separate, public path.",
+    "A skill and its verifiers stay in sync across every machine and agent you use. Deployed semantic verifiers are hosted and pinned by id and version, so the same skill runs the same checks everywhere.",
     "An agent fetches a skill or template body and executes it as a runbook, it does not summarize it.",
     "The canonical CLI command group is 'goodeye skills'. The canonical REST paths are under /v1/skills. MCP tools are named design_skill, save_skill, list_skills, search_skills, get_skill, teach_skill, optimize_skill, audit_skill, grant_skill, and similar.",
     "A skill requires a name and a description. Tags and outcome are optional metadata: never required, never prompted for.",
