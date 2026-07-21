@@ -381,7 +381,7 @@ POST   /v1/templates/{identifier}/versions/{v}/deprecate   # flag as deprecated 
 
 ### `POST /v1/templates/{identifier}/safety-check`
 
-Run platform safety checks on a template version. Auth optional; anonymous callers are billed against their anonymous credit grant. The scan reads the body, description, and outcome. If a field is too long to scan in full it is shortened for this check rather than failing: `truncated` is then `true` and `truncated_fields` names the shortened fields, so you know the verdict is partial. Invalid input returns `validation_error` (400).
+Run platform safety checks on a template version. Auth optional; anonymous callers are billed for the underlying verifier runs against their anonymous credit grant. The scan reads the body, description, and outcome. If a field is too long to scan in full it is shortened for this check rather than failing: `truncated` is then `true` and `truncated_fields` names the shortened fields, so you know the verdict is partial. Invalid input returns `validation_error` (400).
 
 ### `POST /v1/templates/{identifier}/archive`
 

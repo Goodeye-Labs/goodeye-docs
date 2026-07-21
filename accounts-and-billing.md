@@ -106,9 +106,9 @@ the work that calls a frontier model draws credits.
 
 | Metered (draws credits) | Free |
 |---|---|
-| Verifier runs, including safety checks | Saving, fetching, and listing skills and templates |
+| Verifier runs | Saving, fetching, and listing skills and templates |
 | Image generation, billed per image | Lexical `list` filtering and browsing |
-| Natural-language (LLM-ranked) search | Designing, teaching, optimizing, and auditing a skill |
+| | Designing, teaching, optimizing, and auditing a skill |
 | | Managing teams, grants, handles, and API keys |
 | | Image content screening on public images |
 

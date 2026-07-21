@@ -281,8 +281,8 @@ other skill you own.
 **Notes**
 
 - **Credits:** the anonymous run draws on a small monthly grant for anonymous
-  use. That grant covers Goodeye-metered work (the verifier run above and
-  template safety checks), not your agent's own model usage, which bills through
+  use. That grant covers Goodeye-metered work (the verifier run above), not
+  your agent's own model usage, which bills through
   whatever model you run it on. See
   [Accounts and Billing](accounts-and-billing.md).
 - **Safety banner:** because you are not the template's owner, the fetched record
