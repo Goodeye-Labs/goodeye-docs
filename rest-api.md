@@ -269,7 +269,7 @@ Fetch files from a skill bundle. Use `?path=relative/path.md` for a single file 
 
 ### `PATCH /v1/skills/{id_or_slug}/files`
 
-Change or remove specific files in an existing skill, including `SKILL.md`, without resending the rest of the tree. Body: `{"files": [{"path": "...", "content": "..."}], "delete_paths": ["..."], "expected_version_token": "..."}`. Paths you do not name in either list are kept unchanged, the reverse of `POST /v1/skills`, where an omitted path is deleted. Returns the skill's id, version, and version token plus `changed`, `deleted`, and `carried_forward`.
+Change or remove specific files in an existing skill, including `SKILL.md`, without resending the rest of the tree. Body: `{"files": [{"path": "...", "content": "..."}], "delete_paths": ["..."], "expected_version_token": "..."}`. Paths you do not name in either list are kept unchanged, the reverse of `POST /v1/skills`, where an omitted path is deleted. Returns the skill's id, version, and version token plus `changed`, `deleted`, and `carried_forward` (a count of the paths left unchanged).
 
 ### `POST /v1/skills/{id_or_slug}/archive`
 
