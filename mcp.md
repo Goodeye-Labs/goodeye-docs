@@ -256,6 +256,7 @@ Any authenticated caller gets every tool. The groups below follow the main resou
 |------|--------------|
 | `design_skill` | Start a guided skill and verifier design session. Returns the skill designer prompt pack. |
 | `save_skill` | Create or update a skill. Accepts multi-file bundles. |
+| `update_skill_files` | Change or remove named files in an existing skill, including `SKILL.md`, while keeping every path you do not name. |
 | `list_skills` | List skills you own or have been granted access to. |
 | `search_skills` | Natural language search across your skills. |
 | `get_skill` | Fetch a skill by id or slug. The agent executes the returned body as a runbook. |
