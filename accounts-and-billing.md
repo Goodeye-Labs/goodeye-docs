@@ -239,7 +239,7 @@ Signing in gives you your own credits.
 | `400` | `billing_not_enabled` | Self-service subscription billing is not enabled on this deployment. |
 | `402` | `budget_exhausted` | Your available credit balance is zero. Wait for your next monthly refill. |
 | `402` | `anonymous_daily_cap` | The shared daily ceiling for all anonymous usage has been reached. Sign in for your own credits, or try again after the next day. |
-| `403` | `account_suspended` | Your account has been suspended. [Contact us](mailto:hello@goodeyelabs.com). |
+| `403` | `account_suspended` | Your account has been suspended. [Contact us](mailto:hello@goodeye.dev). |
 | `409` | `already_subscribed` | You already have an active Pro subscription. Manage it from the [billing portal](#updating-your-card-or-viewing-invoices) instead of starting a new checkout. |
 | `409` | `no_active_subscription` | There is no active subscription to cancel. |
 
