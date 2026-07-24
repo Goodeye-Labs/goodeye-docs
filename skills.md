@@ -416,8 +416,15 @@ leave their own skill.
 ## Transferring ownership
 
 Transferring a skill does not apply immediately. It creates an invitation
-envelope; the recipient must accept it before ownership and the verifier
-dependencies move over. A self-transfer is a no-op.
+envelope; the recipient must accept it before ownership moves over. A
+self-transfer is a no-op.
+
+On accept, the skill's dependencies come with it. Every verifier and image
+generator the skill references is copied into the new owner's account, so they
+can run and edit the skill straight away. The originals stay where they are and
+keep working for the previous owner. Copies are renamed only if the name is
+already taken in the new owner's account. Shared platform tiers referenced as
+`system:<tier>` are not copied; the skill keeps pointing at the live tier.
 
 - **CLI:** `goodeye skills transfer-ownership <id-or-name> <new-owner>`
 - **MCP tool:** `transfer_skill_ownership`
