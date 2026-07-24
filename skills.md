@@ -424,7 +424,10 @@ generator the skill references is copied into the new owner's account, so they
 can run and edit the skill straight away. The originals stay where they are and
 keep working for the previous owner. Copies are renamed only if the name is
 already taken in the new owner's account. Shared platform tiers referenced as
-`system:<tier>` are not copied; the skill keeps pointing at the live tier.
+`system:<tier>` are not copied; the skill keeps pointing at the live tier. If any
+of those dependencies has been revoked or deleted by the time the recipient
+accepts, the accept fails and the whole transfer rolls back: rewire the skill and
+send a new transfer.
 
 - **CLI:** `goodeye skills transfer-ownership <id-or-name> <new-owner>`
 - **MCP tool:** `transfer_skill_ownership`
