@@ -419,15 +419,17 @@ Transferring a skill does not apply immediately. It creates an invitation
 envelope; the recipient must accept it before ownership moves over. A
 self-transfer is a no-op.
 
-On accept, the skill's dependencies come with it. Every verifier and image
-generator the skill references is copied into the new owner's account, so they
-can run and edit the skill straight away. The originals stay where they are and
-keep working for the previous owner. Copies are renamed only if the name is
-already taken in the new owner's account. Shared platform tiers referenced as
-`system:<tier>` are not copied; the skill keeps pointing at the live tier. If any
-of those dependencies has been revoked or deleted by the time the recipient
-accepts, the accept fails and the whole transfer rolls back: rewire the skill and
-send a new transfer.
+On accept, the skill's dependencies come with it. Every verifier and deployed
+image generator the skill references is copied into the new owner's account, so
+they can run and edit the skill straight away. The originals stay where they are
+and keep working for the previous owner. Each copy is stored under the skill's
+binding name for that dependency, suffixed with a number if that name is already
+in use in the new owner's account or reserved by the platform. The binding name
+in the skill itself does not change. Quality tiers referenced as `system:<tier>`
+are not copied, and the skill keeps pointing at the live tier. If a verifier or
+generator being copied has been revoked or deleted by the time the recipient
+accepts, the accept fails and nothing changes. The invitation stays open, so the
+recipient can accept again once the owner has rewired the skill.
 
 - **CLI:** `goodeye skills transfer-ownership <id-or-name> <new-owner>`
 - **MCP tool:** `transfer_skill_ownership`
