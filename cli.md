@@ -186,6 +186,8 @@ tags: [data, cleanup]
 
 If a skill with the same name already exists under your account, a new version is appended. Pass `--expected-version-token TOKEN` (from the previous response or `skills list`) to confirm the parent version and prevent accidental overwrites.
 
+If the skill is mirrored into a sync target, publishing keeps that local copy current instead of leaving it out of sync. Local edits you have not pushed yet are left alone.
+
 Skills are always private. To share one publicly, run `goodeye templates publish` as a separate step.
 
 ### `skills put-file` / `skills rm-file`
@@ -196,7 +198,7 @@ goodeye skills put-file <id-or-name> <path> [--from-file LOCAL_PATH | --stdin] \
 goodeye skills rm-file <id-or-name> <path> [--expected-version-token TOKEN]
 ```
 
-Change or remove one named file in an existing skill, including `SKILL.md`, without resending the rest of the tree: the reverse of `skills publish <dir>`, which replaces the whole bundle. `put-file` reads the new content from `--from-file` or `--stdin` (pass one, not both); `--executable` marks the file as a script and `--purpose` attaches a short label, and both carry forward from the current file when omitted. `--expected-version-token` is optional; leave it out and the command reads the current token first and passes it along, so a stale write is still rejected if another writer landed in between.
+Change or remove one named file in an existing skill without resending the rest of the tree: the reverse of `skills publish <dir>`, which replaces the whole bundle. `put-file` reads the new content from `--from-file` or `--stdin` (pass one, not both) and can rewrite any file, including `SKILL.md`; `rm-file` removes any file except `SKILL.md`, which every skill keeps. `--executable` marks the file as a script and `--purpose` attaches a short label, and both carry forward from the current file when omitted. `--expected-version-token` is optional; leave it out and the command reads the current token first and passes it along, so a stale write is still rejected if another writer landed in between.
 
 ### `skills archive` / `skills unarchive`
 
