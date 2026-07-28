@@ -241,8 +241,8 @@ second target on the same directory is rejected as a conflict.
 - `sync push` uploads a skill file you edited on disk back to its hosted skill.
 - `sync status` reports drift between the two without writing anything.
 
-Publishing a skill that one of these directories mirrors keeps the local copy
-current, so a publish does not leave the directory out of sync.
+Publishing a skill that one of these directories mirrors also updates the local
+copy.
 
 ### Automatic sync
 

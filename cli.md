@@ -186,7 +186,7 @@ tags: [data, cleanup]
 
 If a skill with the same name already exists under your account, a new version is appended. Pass `--expected-version-token TOKEN` (from the previous response or `skills list`) to confirm the parent version and prevent accidental overwrites.
 
-If the skill is mirrored into a sync target, publishing keeps that local copy current instead of leaving it out of sync. Local edits you have not pushed yet are left alone.
+If the skill is mirrored into a sync target, publishing updates that local copy as well. Local edits you have not pushed are preserved.
 
 Skills are always private. To share one publicly, run `goodeye templates publish` as a separate step.
 
